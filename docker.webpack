@@ -1,0 +1,13 @@
+# docker.webpack
+
+FROM alpine
+
+WORKDIR /app
+COPY . /app
+
+RUN apk --no-cache add curl
+RUN apk --no-cache add nodejs
+
+RUN npm install webpack -g
+RUN npm install
+CMD webpack --watch --watch-poll
