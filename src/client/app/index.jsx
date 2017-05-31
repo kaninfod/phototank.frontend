@@ -17,7 +17,7 @@ import Home from './pages/home';
 
 import Catalogs from './pages/catalogs';
 
-import CatalogList from './components/catalogs/catalogList';
+import CatalogList from './components/catalogs/cataloglist';
 import NewCatalog from './components/catalogs/new';
 import CatalogPhotos from './pages/photos/catalog';
 
@@ -38,6 +38,7 @@ render(
     <MuiThemeProvider>
       <BrowserRouter history={history}>
         <div>
+
           <Route path="/login" component={Login} />
           <App>
 
@@ -46,13 +47,14 @@ render(
             <Photos>
               <Route path="/photos" component={SearchPhotos}/>
             </Photos>
-            <div></div>
+
             <Catalogs>
               <Route path="/catalogs/list" component={CatalogList}/>
               <Route path="/catalogs/new" component={NewCatalog}/>
               <Route path="/catalogs/:id/photos/" component={CatalogPhotos}/>
               <Route path="/catalogs/:id/photos/:photoId/card" component={PhotoCard}/>
             </Catalogs>
+
           </App>
         </div>
       </BrowserRouter>

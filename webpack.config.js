@@ -3,7 +3,7 @@ var path = require('path');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
-var BUILD_DIR = '/wwwroot'; //path.resolve(__dirname, 'src/client/public');
+var BUILD_DIR = path.resolve(__dirname, 'public');
 var APP_DIR = path.resolve(__dirname, 'src/client/app');
 
 var config = {
@@ -17,7 +17,7 @@ var config = {
     main: APP_DIR + '/index.jsx',
   },
   output: {
-    publicPath: './',
+    publicPath: '/',
     path: BUILD_DIR,
     filename: '[name].js',
   },
@@ -54,7 +54,7 @@ var config = {
     new HtmlWebpackPlugin({
       title: 'PhotoTank',
       template: 'src/client/app/html-template.ejs',
-      filename: '/wwwroot/index.html',
+      filename: 'index.html',
     }),
   ],
 
