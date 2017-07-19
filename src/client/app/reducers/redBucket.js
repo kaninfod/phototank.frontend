@@ -16,6 +16,7 @@ const initialState = Map(fromJS(init));
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
+
     case stateTypes.LOAD_BUCKET_FULFILLED: {
       return state.setIn(['data'], (fromJS(action.payload)));
     }

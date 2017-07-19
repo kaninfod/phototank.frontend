@@ -1,6 +1,6 @@
 import React from 'react';
 import './fab.scss';
-import { login, logout } from '../../actions/actAuth'
+import { login, logout } from '../../redux/actAuth'
 $
 class FAB extends React.Component {
   constructor(props) {

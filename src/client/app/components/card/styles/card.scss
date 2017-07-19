@@ -5,7 +5,7 @@
   position: fixed;
   z-index: 5;
   right: 15px;
-  top:15px;
+  bottom: 25px;
 }
 
 .fixed-action-button {
@@ -17,9 +17,7 @@
 .pt-card {
   max-width: 300px;
   display: inline-block;
-  background-color: white;
-
-
+  background-color: #e0f7fa;
 
   @import 'widget';
   @import 'buttons';

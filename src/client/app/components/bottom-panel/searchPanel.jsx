@@ -6,7 +6,7 @@ import MenuItem from 'material-ui/MenuItem';
 
 const searchPanel = (props) => {
   const countries = props.countries.map(country => {
-    return (<MenuItem value={country} key={country} primaryText={country} />);
+    return (<MenuItem value={country.id} key={country.id} primaryText={country.name} />);
   });
 
   return (

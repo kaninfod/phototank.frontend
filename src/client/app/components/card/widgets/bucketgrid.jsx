@@ -1,13 +1,20 @@
 import React from 'react';
 import { Header } from './header.jsx';
-import BucketThumb from './bucket-thumb';
-
 
 class Bucketgrid extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handleRemovePhoto = this.handleRemovePhoto.bind(this);
+  }
+
+  handleRemovePhoto(id) {
+    console.log(id);
+    this.props.widgetHandlers.REMOVE_FROM_BUCKET(id);
+  }
 
   render() {
     var photos = this.props.data.bucket.map(bucketPhoto => {
-      return BucketThumb({ bucketPhoto: bucketPhoto, onRemovePhoto: this.props.widgetHandlers.REMOVE_FROM_BUCKET });
+      return BucketThumb({ bucketPhoto: bucketPhoto, onRemovePhoto: this.handleRemovePhoto });
     });
 
     return (
@@ -24,3 +31,14 @@ class Bucketgrid extends React.Component {
 }
 
 export default Bucketgrid;
+
+const BucketThumb = (props) => {
+  return (
+    <img
+      onClick={() => props.onRemovePhoto(props.bucketPhoto.id)}
+      class="responsive-img"
+      key={props.bucketPhoto.id}
+      data-photoid={props.bucketPhoto.id}
+      src={props.bucketPhoto.photo_url.concat('?token=', sessionStorage.jwt)}/>
+  );
+};

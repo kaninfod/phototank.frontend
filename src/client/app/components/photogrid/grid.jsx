@@ -1,5 +1,5 @@
 import React from 'react';
-import '../../stylesheets/grid';
+import './grid.scss';
 import Widget from './widget';
 import lazyload from 'jquery-lazyload';
 
@@ -7,7 +7,7 @@ export default class Grid extends React.Component {
   constructor(props) {
     super(props);
     this.handleScroll = this.handleScroll.bind(this);
-    this.loading = true;
+    this.loading = false;
     this.state = {
 
     };
@@ -32,8 +32,9 @@ export default class Grid extends React.Component {
                             - ($(window).height()
                             + $(window).scrollTop()
                             + this.props.offset);
-      if (scrollPosition < 0 && this.loading && !this.props.lastPage) {
-        this.loading = false;
+
+      if (scrollPosition < 0 && !this.loading && !this.props.lastPage) {
+        this.loading = true;
         this.props.photoActions.SCROLL();
       }
     }

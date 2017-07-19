@@ -1,5 +1,6 @@
 import React from 'react';
 import { Header } from './header';
+import TextField from 'material-ui/TextField';
 
 export default class Comment extends React.Component {
   constructor(props) {
@@ -9,16 +10,15 @@ export default class Comment extends React.Component {
     };
   }
 
-  handleKeyDown(e) {
-    if (e.which == 13 && e.target.value.length > 0) {
-
-      this.props.widgetHandlers.COMMENTS(e.target.value);
-      e.target.value = '';
+  handleKeyDown(event, newValue) {
+    if (event.which == 13 && event.target.value.length > 0) {
+      this.props.widgetHandlers.COMMENTS(event.target.value);
+      event.target.value = '';
     }
   }
 
   render() {
-    const comments = this.props.data.comments;
+    const comments = this.props.data.photo.comments;
     const avatar = this.props.data.current_user.avatar.concat('?token=', sessionStorage.jwt);
     return (
       <div className="pt-widget">
@@ -29,7 +29,11 @@ export default class Comment extends React.Component {
               <div className="comment-container">
                 <div className="card">
                   <p className="comment-date"></p>
-                  <input onKeyDown={this.handleKeyDown}/>
+                    <TextField
+                      fullWidth={true}
+                      floatingLabelText="Comment"
+                      onKeyDown={this.handleKeyDown}
+                    />
                 </div>
                 <img className="circle responsive-img" src={avatar}/>
               </div>

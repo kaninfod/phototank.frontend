@@ -1,0 +1,90 @@
+@import '../../stylesheets/material-icons';
+
+.outer.outer_rilu.outerAnimating_rilu {
+  z-index:2000;
+}
+
+.photogrid {
+  margin: 15px;
+  padding-top: 75px;
+}
+
+.alertify,  .alertify-logs {
+  z-index: 2000;
+}
+
+.overlay-button > .material-icons{
+  font-size: 16px;
+}
+
+.overlay-button {
+  display: none;
+  position: absolute;
+  height: 20px;
+  width: 20px;
+  text-align: center;
+  color: #ffffff;
+  opacity: 0.7;
+  background-color: black;
+  cursor:pointer;
+  text-align: center;
+  text-decoration: none;
+  color: #ffffff;
+  z-index: 5;
+}
+.overlay-show {
+  display: inline-block;
+}
+.overlay-select {
+  left: 100px;
+  top: 10px;
+}
+
+.overlay-select.selected {
+  display:inline-block;
+}
+.overlay-zoom {
+  left: 100px;
+  top: 35px;
+}
+
+.overlay-delete {
+  left: 100px;
+  top: 60px;
+}
+
+.overlay-processing {
+  left: 100px;
+  top: 85px;
+}
+
+.photo-widget {
+  float: left;
+  border: none;
+  position: relative;
+  width:125px;
+  margin-bottom: 6px;
+  margin-left:3px;
+  margin-right:3px;
+}
+
+.photo-widget:focus {
+  opacity:0.5;
+}
+
+.photo-widget-header {
+  height: 125px;
+}
+
+.photo-widget-header img {
+  position: absolute;
+}
+
+.photo-widget-date {
+  background-color: #6E7C84;
+  color: white;
+  text-align: center;
+  height: 14px;
+  font-size: 10px;
+  font-weight: 900;
+}

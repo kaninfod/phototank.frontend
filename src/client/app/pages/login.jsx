@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from "react-redux";
-import { login, logout } from '../actions/actAuth'
+// import {  } from '../redux/actAuth'
+import { logout, login } from '../redux/auth'
 import '../stylesheets/login'
 
 @connect((store) => {
@@ -18,8 +19,6 @@ export default class Login extends React.Component {
       password: "123123123"
     }
   }
-
-
 
   handleLogout() {
     this.props.dispatch(logout())

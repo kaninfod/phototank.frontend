@@ -5,12 +5,16 @@ import Draggable, {DraggableCore} from 'react-draggable';
 import {getButtons} from './button.props.js'
 import { Buttons, Info, Rotate, Albums, Comments, Tag, Map } from '../widgets'
 import '../styles/card.scss'
-import { loadPhoto,
-  setWidget,
-  addToAlbum,
+import { addPhotoAlbum } from '../../../redux/album'
+import {
+  fetchPhoto,
   rotatePhoto,
-  addComment,
-  likePhoto } from '../../../actions/actPhotoCard'
+  commentPhoto,
+  likePhoto,
+  addTagPhoto,
+  removeTagPhoto,
+  deletePhoto } from '../../../redux/photo'
+import { setWidget } from '../../../redux/appState'
 
 const components = {
   INFO:     Info,
@@ -25,64 +29,60 @@ const components = {
 
 @connect((store) => {
   return {
-    selectedWidget: store.photoCard.get('selectedWidget'),
-    photoId: store.photoCard.get('photoId'),
-    cardData: store.photoCard.get('cardData').toJS(),
+    selectedWidget: store.app.get('selectedWidget'),
+    photoId: store.app.get('selectedPhoto'),
+    photoData: store.nPhoto.get('photoData').toJS(),
   };
 })
 export default class PhotoCard extends React.Component {
   constructor(props) {
     super(props);
-    this.handleWidget = this.handleWidget.bind(this);
-    this.rotatePhoto = this.rotatePhoto.bind(this);
-    this.hide = this.hide.bind(this);
-    this.addToAlbum  = this.addToAlbum.bind(this);
+
     this.addComment  = this.addComment.bind(this);
+    this.addTag = this.addTag.bind(this);
+    this.addToAlbum  = this.addToAlbum.bind(this);
+    this.deletePhoto = this.deletePhoto.bind(this);
+    this.hide = this.hide.bind(this);
+    this.likePhoto = this.likePhoto.bind(this);
+    this.likeState = this.likeState.bind(this);
+    this.removeTag = this.removeTag.bind(this);
+    this.rotatePhoto = this.rotatePhoto.bind(this);
+    this.setWidget = this.setWidget.bind(this);
     this.state = {
       hidden: true,
     };
   }
 
-  componentWillMount() {
-    // console.log('CARD', this.props.match.params.photoId);
-    if (this.props.photoId) {
-      this.props.dispatch(loadPhoto(this.props.photoId))
-    }
-  }
+  // componentWillMount() {
+  //   if (this.props.photoId) {
+  //     console.log('I DID FIRE!!!');
+  //     this.props.dispatch(fetchPhoto(this.props.photoId))
+  //   }
+  // }
 
   componentWillReceiveProps(nextProps){
-
-
     if (this.props.photoId != nextProps.photoId) {
       this.setState({ hidden: false });
-      this.props.dispatch(loadPhoto(nextProps.photoId))
+      this.props.dispatch(fetchPhoto(nextProps.photoId))
     }
   }
 
-  handleWidget(e) {
-    var action = e.target.dataset.widget
-    if (action == 'DELETE') {
-      // AppActions.deleteCardPhoto({
-      //   photoId: this.state.photocard.photo.id
-      // });
-    } else if (action == 'LIKE') {
-      this.props.dispatch(likePhoto(this.props.cardData.photo.id))
-    } else {
-      this.props.dispatch(setWidget(action))
-    }
+  setWidget(widget) {
+    console.log('howdy', widget.target.dataset.widget);
+    this.props.dispatch(setWidget(widget.target.dataset.widget))
   }
 
   addToAlbum(albumId) {
     var payload = {
-      photoId: this.props.cardData.photo.id,
+      photoId: this.props.photoData.photo.id,
       albumId: albumId
     }
-    this.props.dispatch(addToAlbum(payload))
+    this.props.dispatch(addPhotoAlbum(payload))
   }
 
   rotatePhoto(rotation) {
     var payload = {
-      photoId: this.props.cardData.photo.id,
+      photoId: this.props.photoData.photo.id,
       rotation: rotation
     }
     this.props.dispatch(rotatePhoto(payload))
@@ -90,35 +90,58 @@ export default class PhotoCard extends React.Component {
 
   addComment(comment) {
     var payload = {
-      photoId: this.props.cardData.photo.id,
+      photoId: this.props.photoData.photo.id,
       comment: comment
     }
-    this.props.dispatch(addComment(payload))
+    this.props.dispatch(commentPhoto(payload))
+  }
+
+  addTag(tag) {
+    this.props.dispatch(addTagPhoto({photoId: this.props.photoData.photo.id, name: tag}))
+  }
+
+  removeTag(tag) {
+    this.props.dispatch(removeTagPhoto({photoId: this.props.photoData.photo.id, name: tag}))
+  }
+
+  deletePhoto() {
+    this.props.dispatch(deletePhoto(this.props.photoData.photo.id))
+    this.hide()
   }
 
   hide() {
     this.setState({ hidden: !this.state.hidden });
   }
 
+  likePhoto() {
+    this.props.dispatch(likePhoto(this.props.photoData.photo.id))
+  }
+
   likeState() {
-    if (this.props.cardData.photo.like) { return "green" } else {return "blue-grey lighten-2"}
+    if (this.props.photoData.photo.like) { return "green" } else {return "blue-grey lighten-2"}
   }
 
   render() {
-
-    if (!Object.keys(this.props.cardData).length || this.state.hidden) {
+    if (!Object.keys(this.props.photoData).length || this.state.hidden) {
       return null
     }
 
     const props = this.props
-    const buttons = getButtons({likeState: this.likeState()})
     const WidgetType = components[props.selectedWidget];
     const widgetHandlers = {
-      ROTATE:   this.rotatePhoto,
-      ALBUMS:   this.addToAlbum,
-      COMMENTS: this.addComment,
-      HIDE:     this.hide
+      ROTATE:     this.rotatePhoto,
+      ALBUMS:     this.addToAlbum,
+      COMMENTS:   this.addComment,
+      HIDE:       this.hide,
+      ADDTAG:     this.addTag,
+      REMOVETAG:  this.removeTag,
+      DELETE:     this.deletePhoto,
+      LIKE:       this.likePhoto,
+      LIKESTATE:  this.likeState(),
+      SETWIDGET:  this.setWidget,
     }
+
+    const buttons = getButtons(widgetHandlers)
 
     if (!['INFO', 'MAP'].includes(props.selectedWidget)) {
       buttons.vert = []
@@ -127,22 +150,13 @@ export default class PhotoCard extends React.Component {
     return (
       <Draggable handle=".header">
         <div className="pt-card upper-right show">
-          <WidgetType data={props.cardData} widgetHandlers={widgetHandlers}/>
+          <WidgetType data={props.photoData} widgetHandlers={widgetHandlers}/>
           <Buttons buttons={buttons}
             widget={props.selectedWidget}
-            handleWidget={this.handleWidget}/>
+            widgetHandlers={this.widgetHandlers}
+            />
         </div>
      </Draggable>
     )
   }
-}
-
-const FloatingButton = (props) => {
-  return (
-    <a onClick={props.onHide} className="fixed-action-button btn-floating waves-effect waves-light">
-      <i className="material-icons">
-        info
-      </i>
-    </a>
-  )
 }

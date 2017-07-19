@@ -22,6 +22,7 @@ var config = {
     filename: '[name].js',
   },
   module: {
+
     loaders: [
       {
         test: /\.jsx?/,
@@ -37,10 +38,11 @@ var config = {
         },
       },
       { test: /.(woff|woff2|eot|ttf)$/, loader: 'url-loader?prefix=font/&limit=5000', },
-      { test: /\.(scss|css)$/, loader: ExtractTextPlugin.extract('css-loader!sass-loader'), },
+      { test: /\.(scss|css|sass)$/, loader: ExtractTextPlugin.extract(['css-loader', 'sass-loader']), },
     ],
   },
   devtool: '#inline-source-map',
+
   plugins: [
     new webpack.ProvidePlugin({
       'Promise': 'es6-promise',
@@ -62,8 +64,8 @@ var config = {
     contentBase: path.resolve(__dirname, 'src/client'),
     proxy: {
       '/api': {
-          target: 'http://192.168.2.189:3000',
-          pathRewrite: { '^/api': '' },
+          target: 'http://localhost:3000',
+          pathRewrite: { '': '' },
         },
     },
     historyApiFallback: true,

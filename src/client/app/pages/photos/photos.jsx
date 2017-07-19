@@ -5,23 +5,20 @@ import PhotoCard from '../../components/card/photo';
 import Bucket from '../../components/card/bucket';
 import BottomPanel from '../../components/bottom-panel';
 import Zoombox from '../../components/photogrid/zoombox';
-import { selectPhoto } from '../../actions/actBucket';
-import { loadPhotos,
-  clickPhoto,
-  deletePhoto,
-  getPhotos,
-  getCountries,
-  resetGrid } from '../../actions/actGrid'
+import { fetchCities, fetchCountries } from '../../redux/location'
+import { fetchPhotos, clickPhoto, deletePhoto } from '../../redux/photo';
+import { togglePhotosBucket } from '../../redux/bucket';
+
 
 @connect((store) => {
   return {
-    selectedPhoto: store.grid.get('selectedPhoto'),
-    loading: store.grid.get('loading'),
-    lastPage: store.grid.getIn(['pagination', 'last_page']),
-    page: store.grid.getIn(['pagination', 'next_page']),
-    photos: store.grid.get('photos'),
-    countries: store.grid.get('countries').toJS(),
-    photosBucket: store.bucket.getIn(['data', 'bucket']).toJS(),
+    selectedPhoto: store.nPhoto.get('selectedPhoto'),
+    lastPage:      store.nPhoto.getIn(['pagination', 'last_page']),
+    page:          store.nPhoto.getIn(['pagination', 'next_page']),
+    photos:        store.nPhoto.get('photos'),
+    countries:     store.nLocation.get('countries').toJS(),
+    photosBucket:  store.nBucket.getIn(['bucket', 'bucket']).toJS(),
+    loading:       store.app.getIn(['loadingStates', 'photoGrid']),
   };
 })
 class Photos extends React.Component {
@@ -43,7 +40,7 @@ class Photos extends React.Component {
       zoomboxIndex: 0,
       searchParams: {
         startdate: new Date(),
-        country: 'All',
+        country: -1,
         direction: false,
         like: false,
         tags: [],
@@ -52,9 +49,8 @@ class Photos extends React.Component {
   };
 
   componentWillMount() {
-    console.log('PROPS: ',this.props);
-    this.props.dispatch(getCountries());
-    this.props.dispatch(getPhotos({
+    this.props.dispatch(fetchCountries());
+    this.props.dispatch(fetchPhotos({
       context: this.props.context,
       contextId: this.props.contextId,
       searchParams: this.state.searchParams,
@@ -63,10 +59,9 @@ class Photos extends React.Component {
   }
 
   componentWillUpdate(nextProps, nextState) {
-
     if (this.updateGrid) {
       this.updateGrid = false;
-      this.props.dispatch(getPhotos({
+      this.props.dispatch(fetchPhotos({
         context: this.props.context,
         contextId: this.props.contextId,
         searchParams: this.state.searchParams,
@@ -79,12 +74,12 @@ class Photos extends React.Component {
     this.setState({ hidden: !this.state.hidden });
   }
 
-  removeBucketPhoto(e) {
-      this.props.dispatch(selectPhoto(e.target.dataset.photoid))
+  removeBucketPhoto(photoId) {
+      this.props.dispatch(togglePhotosBucket(photoId))
   }
 
   handleInfiniteScroll() {
-    this.props.dispatch(getPhotos({
+    this.props.dispatch(fetchPhotos({
       context: this.props.context,
       contextId: this.props.contextId,
       searchParams: this.state.searchParams,
@@ -100,7 +95,7 @@ class Photos extends React.Component {
   }
 
   handleSelect(photoId) {
-    this.props.dispatch(selectPhoto(photoId))
+    this.props.dispatch(togglePhotosBucket(photoId))
   }
 
   handleDelete(photoId) {
@@ -112,9 +107,7 @@ class Photos extends React.Component {
   }
 
   showZoombox(photoId) {
-    var index = this.props.photos.findIndex(obj => {
-      return obj.get('id') === photoId;
-    });
+    var index = this.props.photos.findIndex(obj =>  obj.get('id') === photoId );
     this.setState({ zoomPhotoId: photoId, zoomboxOpen: true, zoomboxIndex: index });
   }
 
@@ -126,7 +119,7 @@ class Photos extends React.Component {
 
     const photoActions = {
       DELETE: this.handleDelete,
-      SELECT: this.handleSelect,
+      SELECT: this.removeBucketPhoto,
       CLICK:  this.handleClick ,
       ZOOM:   this.showZoombox,
       SCROLL: this.handleInfiniteScroll,
@@ -140,12 +133,13 @@ class Photos extends React.Component {
           lastPage={this.props.lastPage}
           loading={this.props.loading}
           photoActions={photoActions}
-          >
+        >
           <PhotoCard/>
           <Bucket
             hidden={this.state.hidden}
             onHideBucket={this.hideBucket}
-            onRemovePhoto={this.removeBucketPhoto}/>
+            onRemovePhoto={this.removeBucketPhoto}
+          />
           <BottomPanel
             photos={this.props.photosBucket}
             countries={this.props.countries}

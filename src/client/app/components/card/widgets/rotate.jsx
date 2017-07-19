@@ -30,7 +30,8 @@ export default class Rotate extends React.Component {
             <ul className="rotate" onChange={this.handleChange}>
               {this.rotations.map(rotation.bind(this))}
             </ul>
-            <a className="waves-effect waves-teal btn-flat right" onClick={this.handleClick}>Rotate Photo</a>
+            <a className="waves-effect waves-teal btn-flat right"
+              onClick={this.handleClick}>Rotate Photo</a>
 
           </div>
         </div>
@@ -40,10 +41,12 @@ export default class Rotate extends React.Component {
 }
 
 var rotation = function (rotation) {
+  var idStr = 'rotation_'.concat(rotation);
   return (
     <li key={rotation}>
-      <input id={rotation} value={rotation} name="rotate" type="radio" onChange={this.handleChange}/>
-      <label htmlFor={rotation}>{rotation  + String.fromCharCode(176)}</label>
+      <input id={idStr} value={rotation} name="rotate" type="radio"
+        onChange={this.handleChange}/>
+      <label htmlFor={idStr}>{rotation  + String.fromCharCode(176)}</label>
     </li>
   );
 };

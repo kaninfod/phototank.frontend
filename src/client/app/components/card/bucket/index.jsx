@@ -6,17 +6,19 @@ import AppConstants from '../../../constants/constants';
 import Draggable, { DraggableCore } from 'react-draggable';
 import { getButtons } from './bucket-button.props';
 import { Buttons, Bucketgrid, Rotate, Albums, Comments, Tag } from '../widgets';
-import { addCommentToPhotosInBucket,
-  rotatePhotosInBucket,
-  likePhotosInBucket,
-  addBucketToAlbum,
-  loadBucket,
-  loadAlbums,
-  setWidget } from '../../../actions/actBucket';
-
+import { setWidget } from '../../../redux/appState'
+import {
+  getPhotosBucket,
+  togglePhotosBucket,
+  addPhotoAlbumBucket,
+  commentPhotosBucket,
+  rotatePhotosBucket,
+  likePhotosBucket,
+  tagPhotosBucket,
+} from '../../../redux/bucket';
 
 const components = {
-  BUCKETGRID:   Bucketgrid,
+  INFO:   Bucketgrid,
   ROTATE:   Rotate,
   ALBUMS:   Albums,
   COMMENTS: Comments,
@@ -27,58 +29,99 @@ const components = {
 
 @connect((store) => {
   return {
-    selectedWidget: store.bucket.get('selectedWidget'),
-    data: store.bucket.get('data').toJS(),
+    selectedWidget: store.app.get('selectedWidget'),//store.bucket.get('selectedWidget'),
+    bucketData: store.nBucket.get('bucket').toJS(),
+    bucket: store.nBucket.getIn(['bucket', 'bucket']),
+    albums: store.nBucket.getIn(['bucket', 'albums']),
+    current_user: store.nBucket.getIn(['bucket', 'current_user']),
+    taglist: store.nBucket.getIn(['bucket', 'taglist']),
   };
 })
 export default class Bucket extends React.Component {
   constructor(props) {
     super(props);
-    this.handleWidget = this.handleWidget.bind(this);
+    // this.handleWidget = this.handleWidget.bind(this);
     this.addToAlbum = this.addToAlbum.bind(this);
     this.rotatePhotos = this.rotatePhotos.bind(this);
     this.addComment = this.addComment.bind(this);
     this.likePhotos = this.likePhotos.bind(this);
-    // this.hide = this.hide.bind(this);
+    this.deletePhotos = this.deletePhotos.bind(this);
+    this.setWidget = this.setWidget.bind(this);
+    this.addTag = this.addTag.bind(this);
+    this.removeTag = this.removeTag.bind(this);
+    this.dataProvider = this.dataProvider.bind(this);
+    this.removePhoto = this.removePhoto.bind(this);
     this.state = {
       hidden: this.props.hidden,
     };
   };
 
-  componentWillMount() {
-    this.props.dispatch(loadBucket());
+  setWidget(widget) {
+    this.props.dispatch(setWidget(widget.target.dataset.widget))
   }
 
-  deletePhotos() {}
+  componentWillMount() {
+    this.props.dispatch(getPhotosBucket());
+  }
+
+  removePhoto(id) {
+    this.props.dispatch(togglePhotosBucket(id));
+  }
+
+  deletePhotos() {
+    console.log('delete photos');
+  }
+
+  addTag(tag) {
+    this.props.dispatch(tagPhotosBucket(tag));
+  }
+
+  removeTag() {
+    console.log('remove photos');
+  }
 
   likePhotos() {
-    this.props.dispatch(likePhotosInBucket());
+    this.props.dispatch(likePhotosBucket());
   }
 
-  likeState() { }
-
   rotatePhotos(degrees) {
-    this.props.dispatch(rotatePhotosInBucket(degrees))
+    this.props.dispatch(rotatePhotosBucket(degrees))
   }
 
   addToAlbum(albumId) {
-    this.props.dispatch(addBucketToAlbum(albumId));
+    this.props.dispatch(addPhotoAlbumBucket(albumId));
   }
 
   addComment(comment) {
-    this.props.dispatch(addCommentToPhotosInBucket(comment));
+    this.props.dispatch(commentPhotosBucket(comment));
   }
 
-  handleWidget(e) {
-    var action = e.target.dataset.widget
-    if (action == 'DELETE') {
-      // AppActions.deleteCardPhoto({
-      //   photoId: this.state.photocard.photo.id
-      // });
-    } else if (action == 'LIKE') {
-      this.props.dispatch(likePhotosInBucket());
-    } else {
-      this.props.dispatch(setWidget(action))
+  dataProvider() {
+    switch (this.props.selectedWidget) {
+      case 'INFO': {
+        return {
+          bucket: this.props.bucket.toJS()
+        }
+      }
+
+      case 'ALBUMS': {
+        return {
+          albums: this.props.albums.toJS()
+        }
+      }
+
+      case 'COMMENTS': {
+        return {
+          photo: { comments: [] },
+          current_user: this.props.current_user.toJS(),
+        }
+      }
+      case 'TAG': {
+        return {
+          photo: { tags: [] },
+          taglist: this.props.taglist.toJS(),
+        }
+      }
     }
   }
 
@@ -86,28 +129,35 @@ export default class Bucket extends React.Component {
 
     if (this.props.hidden) { return null}
     const props = this.props
-    const buttons = getButtons({ likeState: this.likeState() });
+
     const WidgetType = components[props.selectedWidget];
     const widgetHandlers = {
       ROTATE:   this.rotatePhotos,
       ALBUMS:   this.addToAlbum,
       COMMENTS: this.addComment,
+      ADDTAG:     this.addTag,
+      REMOVETAG:  this.removeTag,
+      DELETE:     this.deletePhotos,
+      LIKE:       this.likePhotos,
       HIDE:     this.props.onHideBucket,
-      REMOVE_FROM_BUCKET: this.props.onRemovePhoto
+      REMOVE_FROM_BUCKET: this.removePhoto,
+      SETWIDGET:  this.setWidget,
     };
 
-    if (!['BUCKETGRID'].includes(props.selectedWidget)) {
+    const buttons = getButtons(widgetHandlers)
+
+    if (!['INFO'].includes(props.selectedWidget)) {
       buttons.vert = []
     }
 
     return (
       <Draggable handle=".header">
         <div className="pt-card upper-right show">
-            <WidgetType data={this.props.data} widgetHandlers={widgetHandlers}/>
+            <WidgetType data={this.dataProvider()} widgetHandlers={widgetHandlers}/>
             <Buttons buttons={buttons}
               widget={this.props.selectedWidget}
-              handleWidget={this.handleWidget}/>
-          </div>
+              widgetHandlers={this.widgetHandlers}/>
+        </div>
      </Draggable>
    );
   }

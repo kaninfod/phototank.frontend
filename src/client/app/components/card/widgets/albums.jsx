@@ -22,9 +22,7 @@ export default class Albums extends React.Component {
   }
 
   render() {
-    var albums = this.props.data.albums.map((a) => {
-      return album(a, this.handleChange);
-    });
+    var albums = this.props.data.albums.map(a =>  album(a, this.handleChange));
     return (
       <div className="pt-widget">
         <Header handleClose={this.props.widgetHandlers.HIDE} title="Add photo to album"/>

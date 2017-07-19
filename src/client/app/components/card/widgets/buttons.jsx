@@ -24,8 +24,12 @@ export default class Buttons extends React.Component {
 var Button = function (props) {
     return (
       <li key={props.key}>
-        <a data-tooltip={props.tooltip} data-position={props.position} className={ 'tooltipped btn-floating waves-effect waves-light ' + props.color }
-          onClick={this.props.handleWidget}>
+        <a
+          data-tooltip={props.tooltip}
+          data-position={props.position}
+          className={ 'tooltipped btn-floating waves-effect waves-light ' + props.color }
+          onClick={props.handler}
+          >
           <i className="material-icons" data-widget={props.widgetContent}>
             {props.icon}
           </i>

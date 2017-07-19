@@ -1,13 +1,7 @@
 import React from 'react';
 import { connect } from "react-redux";
 import { Link } from 'react-router-dom';
-
-import {
-  newCatalog,
-  getCatalogs,
-  createCatalogs,
-  importCatalog,
-} from '../../actions/actCatalog';
+import { fetchCatalogs, importCatalog } from '../../redux/catalog';
 import './card';
 import Catalog from './catalog';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
@@ -15,70 +9,35 @@ import ContentAdd from 'material-ui/svg-icons/content/add';
 
 @connect((store) => {
   return {
-    catalogs: store.catalog.get('catalogs'),
-    albums: store.catalog.get('albums'),
-    catalog: store.catalog.get('catalog'),
-    loading: store.catalog.get('loading'),
+    catalogs: store.nCatalog.get('catalogs'),
   };
 })
 class CatalogList extends React.Component {
   constructor(props) {
     super(props);
-    this.openEdit = this.openEdit.bind(this);
-    this.closeEdit = this.closeEdit.bind(this);
     this.importToCatalog = this.importToCatalog.bind(this);
     this.getCatalogs = this.getCatalogs.bind(this);
-    // this.setRenderMode = this.setRenderMode.bind(this);
-    this.openNew = this.openNew.bind(this);
-
     this.state = {
-      showNew: false,
-      showEdit: false,
-      // renderMode: 'list',
+
     };
   }
 
   componentWillMount() {
-    this.props.dispatch(getCatalogs());
-    // this.props.dispatch(loadAlbums());
+    this.props.dispatch(fetchCatalogs());
   }
 
   importToCatalog(catalog) {
     this.props.dispatch(importCatalog({id: catalog.get('id')}))
   }
 
-  openEdit(catalog) {
-    this.setState({ showEdit: true, catalog: catalog })
-  }
-
-  closeEdit(e) {
-    this.setState({ showEdit: false, catalog: null })
-  }
-
-  // setRenderMode(mode) {
-  //   this.setState({ renderMode: mode })
-  // }
-
   getCatalogs() {
-    this.props.dispatch(getCatalogs())
-  }
-
-  openNew() {
-
-    this.props.dispatch(newCatalog())
-    // this.setState({ renderMode: 'new' })
-  }
-
-  submitEdit() {
-
+    this.props.dispatch(fetchCatalogs())
   }
 
   render() {
 
     const menuActions = {
       importToCatalog: this.importToCatalog,
-      openEdit:        this.openEdit,
-      submitEdit:      this.submitEdit,
     }
 
     return (
@@ -96,6 +55,7 @@ class CatalogList extends React.Component {
 }
 
 function List(props) {
+
   return (
     <div>
       {props.catalogs.map(catalog => {
@@ -104,8 +64,6 @@ function List(props) {
           key={catalog.get('id')}
           catalog={catalog}
           importToCatalog={props.menuActions.importToCatalog}
-          openEdit={props.menuActions.openEdit}
-          submitEdit={props.menuActions.submitEdit}
           />
           }
         )

@@ -37,13 +37,10 @@ class Catalog extends React.Component {
                 iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
                 anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
                 targetOrigin={{ horizontal: 'right', vertical: 'top' }}>
-                <MenuItem>
-                  <Link
-                    to={'/catalogs/'.concat(this.props.catalog.get('id'), '/photos')}
-                    style={{ textDecoration: 'none' }}>
-                    View photos
-                  </Link>
-                </MenuItem>
+                <MenuItem
+                  containerElement={<Link to={'/catalogs/'.concat(this.props.catalog.get('id'), '/photos') }/>}
+                  primaryText="View photos" />
+
                 <MenuItem primaryText="Edit" onClick={this.edit}/>
                 <MenuItem primaryText="Jobs" />
                 <MenuItem primaryText="Update" onClick={this.importToCatalog}/>
