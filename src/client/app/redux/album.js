@@ -1,4 +1,4 @@
-import { createRequest, responseHandler, notAuthorized } from './apiUtils';
+import { apiHandler, createRequest, requestTypes } from './apiUtils';
 import { List, Map, fromJS } from 'immutable';
 
 //actions
@@ -18,7 +18,10 @@ export const DELETE_ALBUM_SUCCESS = 'DELETE_ALBUM_SUCCESS';
 // Reducer
 var init = Map(fromJS({
   albums: [],
-  album: [],
+  album: {
+    start: null,
+    end: null,
+  },
 }));
 
 var newState = null;
@@ -27,48 +30,49 @@ export function reducer(state=init, action={}) {
   switch (action.type) {
 
     case FETCH_ALBUMS_SUCCESS: {
-      newState = state.set('albums', fromJS(action.payload.albums));
+      newState = state.set('albums', fromJS(action.payload));
       return newState;
     }
 
     case FETCH_ALBUM_SUCCESS: {
-      newState = state.set('album', fromJS(action.payload.album));
+      newState = state.set('album', fromJS(action.payload));
       return newState;
     }
 
     case CREATE_ALBUM_SUCCESS: {
-      newState = state.set('album', fromJS(action.payload.album));
+      newState = state.set('album', fromJS(action.payload));
       return newState;
     }
 
     case UPDATE_ALBUM_SUCCESS: {
-      newState = state.set('album', fromJS(action.payload.album));
-      return newState;
+      return state.set('album', fromJS(action.payload));
     }
 
     case DELETE_ALBUM_SUCCESS: {
-      // newState = state.set('album', fromJS(action.payload.album));
-      return newState;
+      const albums = state.get('albums').filter(album =>
+        album.get('id') !== action.payload.id);
+      return state.set('albums', albums);
     }
   }
   return state;
 }
 
 // Action Creators
-export function getAlbumsPending(response) {
+export function getAlbumsPending(respose) {
   return {
     type: FETCH_ALBUMS_REQUEST,
   };
 }
 
 export function getAlbumsSuccess(response) {
+  console.log(response);
   return {
     type: FETCH_ALBUMS_SUCCESS,
     payload: response,
   };
 }
 
-export function getAlbumPending(response) {
+export function getAlbumPending() {
   return {
     type: REQUEST_ALBUM,
   };
@@ -81,7 +85,7 @@ export function getAlbumSuccess(response) {
   };
 }
 
-function createAlbumPending(response) {
+function createAlbumPending() {
   return {
     type: CREATE_ALBUM,
   };
@@ -94,7 +98,7 @@ function createAlbumSuccess(response) {
   };
 }
 
-export function updateAlbumPending(response) {
+export function updateAlbumPending() {
   return {
     type: UPDATE_ALBUM,
   };
@@ -107,7 +111,7 @@ export function updateAlbumSuccess(response) {
   };
 }
 
-export function addPhotoAlbumPending(response) {
+export function addPhotoAlbumPending() {
   return {
     type: ADDPHOTO_ALBUM_REQUEST,
   };
@@ -120,7 +124,7 @@ export function addPhotoAlbumSuccess(response) {
   };
 }
 
-export function deleteAlbumPending(response) {
+export function deleteAlbumPending() {
   return {
     type: DELETE_ALBUM_REQUEST,
   };
@@ -136,78 +140,60 @@ export function deleteAlbumSuccess(response) {
 //API
 export function fetchAlbums() {
   const url = '/api/albums.json';
+  const requestType = requestTypes.GET;
+  const params = null;
+  const request = createRequest(requestType, url, params);
   return dispatch => {
-
-    dispatch(getAlbumsPending());
-
-    fetch(createRequest('GET', url, null))
-    .then(response => responseHandler(response, dispatch))
-    .then(data => dispatch(getAlbumsSuccess(data)))
-    .catch(error => console.log('request failed', error));
+    apiHandler(getAlbumsPending, getAlbumsSuccess, request, dispatch);
   };
 }
 
 export function fetchAlbum(id) {
-  var url = '/api/albums/'.concat(id);
-
+  const url = '/api/albums/'.concat(id);
+  const requestType = requestTypes.GET;
+  const params = null;
+  const request = createRequest(requestType, url, params);
   return dispatch => {
-    dispatch(getAlbumPending());
-
-    fetch(createRequest('GET', url, null))
-    .then(response => responseHandler(response))
-    .then(data => dispatch(getAlbumSuccess({ album: data })))
-    .catch(error => console.log('request failed', error));
+    apiHandler(getAlbumPending, getAlbumSuccess, request, dispatch);
   };
 }
 
-export function createAlbum(params) {
+export function createAlbum(payload) {
   const url = '/api/albums/';
-
+  const requestType = requestTypes.POST;
+  const params = payload;
+  const request = createRequest(requestType, url, params);
   return dispatch => {
-    dispatch(createAlbumPending());
-
-    fetch(createRequest('POST', url, params))
-    .then(response => responseHandler(response))
-    .then(data => dispatch(createAlbumSuccess({ album: data })))
-    .catch(error => console.log('request failed', error));
+    apiHandler(createAlbumPending, createAlbumSuccess, request, dispatch);
   };
 }
 
-export function updateAlbum(params) {
-  var url = '/api/albums/'.concat(params.id);
-
+export function updateAlbum(payload) {
+  const url = '/api/albums/'.concat(payload.id);
+  const requestType = requestTypes.PUT;
+  const params = payload;
+  const request = createRequest(requestType, url, params);
   return dispatch => {
-    dispatch(updateAlbumPending());
-
-    fetch(createRequest('PUT', url, params))
-    .then(response => responseHandler(response))
-    .then(data => dispatch(updateAlbumSuccess({ album: data })))
-    .catch(error => console.log('request failed', error));
+    apiHandler(updateAlbumPending, updateAlbumSuccess, request, dispatch);
   };
 }
 
 export function addPhotoAlbum(payload) {
-  var url = '/api/albums/'.concat(payload.albumId, '/photo/', payload.photoId);
-
+  const url = '/api/albums/'.concat(payload.albumId, '/photo/', payload.photoId);
+  const requestType = requestTypes.PUT;
+  const params = null;
+  const request = createRequest(requestType, url, params);
   return dispatch => {
-    dispatch(addPhotoAlbumPending());
-
-    fetch(createRequest('PUT', url, null))
-    .then(response => responseHandler(response))
-    .then(data => dispatch(addPhotoAlbumSuccess({ album: data })))
-    .catch(error => console.log('request failed', error));
+    apiHandler(addPhotoAlbumPending, addPhotoAlbumSuccess, request, dispatch);
   };
 }
 
-export function deleteAlbum(params) {
-  var url = '/api/albums/'.concat(params.id);
-
+export function deleteAlbum(albumId) {
+  const url = '/api/albums/'.concat(albumId);
+  const requestType = requestTypes.DELETE;
+  const params = null;
+  const request = createRequest(requestType, url, params);
   return dispatch => {
-    dispatch(deleteAlbumPending());
-
-    fetch(createRequest('DELETE', url, params))
-    .then(response => responseHandler(response))
-    .then(data => dispatch(deleteAlbumSuccess({ album: data })))
-    .catch(error => console.log('request failed', error));
+    apiHandler(deleteAlbumPending, deleteAlbumSuccess, request, dispatch);
   };
 }

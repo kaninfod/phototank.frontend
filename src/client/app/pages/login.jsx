@@ -13,6 +13,8 @@ export default class Login extends React.Component {
     super(props);
     this.handleLogin = this.handleLogin.bind(this);
     this.handleLogout = this.handleLogout.bind(this);
+    this.emailChanged = this.emailChanged.bind(this);
+    this.passwordChanged = this.passwordChanged.bind(this);
     // this._setState = this._setState.bind(this);
     this.state = {
       email: "example@mail.com",
@@ -32,9 +34,17 @@ export default class Login extends React.Component {
     }))
   }
 
-  emailChanged() {  }
+  emailChanged(event) {
+    this.setState(
+      { email: event.target.value}
+    )
+  }
 
-  passwordChanged() {  }
+  passwordChanged(event) {
+
+    this.setState(
+      { password: event.target.value}
+    )  }
 
   render() {
     return (

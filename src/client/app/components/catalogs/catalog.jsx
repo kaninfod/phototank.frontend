@@ -26,7 +26,7 @@ class Catalog extends React.Component {
   render () {
     return (
       <div class="pt-card-catalog">
-        <img src={this.props.catalog.get('url').concat('?token=', sessionStorage.jwt)}></img>
+        <img src={this.props.catalog.get('cover_url').concat('?token=', sessionStorage.jwt)}></img>
           <div class="title">
             <div class="alignleft">
               <p>{this.props.catalog.get('name')}</p>

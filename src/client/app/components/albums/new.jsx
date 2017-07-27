@@ -9,12 +9,8 @@ import Toggle from 'material-ui/Toggle';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 import './card';
-// import { fetchCountries } from '../../redux/fetchCountries'
-// import { fetchCities } from '../../redux/fetchCities'
 import { fetchCities, fetchCountries } from '../../redux/location'
 import { fetchAlbum, createAlbum, updateAlbum } from '../../redux/album'
-// import { updateAlbum } from '../../redux/updateAlbum'
-// import { createAlbum } from '../../redux/createAlbum'
 import {orange500, blue500} from 'material-ui/styles/colors';
 const styles = { errorStyle: { color: orange500 } }
 
@@ -37,8 +33,8 @@ class NewAlbum extends React.Component {
     this.state = {
       id: null,
       name: '',
-      start: null,
-      end: null,
+      start_date: null,
+      end_date: null,
       make: null,
       model: null,
       country: -1,
@@ -62,8 +58,8 @@ class NewAlbum extends React.Component {
     if (nextProps.album != this.props.album) {
       const album = nextProps.album
       this.setState({
-          start: new Date(album.get('start')),
-          end: new Date(album.get('end')),
+          start_date: new Date(album.get('start_date')),
+          end_date: new Date(album.get('end_date')),
           id: album.get('id'),
           name: album.get('name'),
           make: null,
@@ -86,11 +82,11 @@ class NewAlbum extends React.Component {
   };
 
   handleChangeStartdate(event, date) {
-    this.setState({ start: date });
+    this.setState({ start_date: date });
   };
 
   handleChangeEnddate(event, date) {
-    this.setState({ end: date });
+    this.setState({ end_date: date });
   };
 
   handleChangeCountry(event, index, value) {
@@ -103,18 +99,17 @@ class NewAlbum extends React.Component {
 
   handleClickSave() {
     const album = {
-      start:    this.state.start,
-      end:      this.state.end,
-      id:       this.state.id,
-      name:     this.state.name,
-      make:     this.state.make,
-      model:    this.state.model,
-      country:  this.state.country,
-      city:     this.state.city,
-      tags:     this.state.tags,
-      like:     this.state.like,
+      start_date:     this.state.start_date,
+      end_date:       this.state.end_date,
+      id:             this.state.id,
+      name:           this.state.name,
+      make:           this.state.make,
+      model:          this.state.model,
+      country:        this.state.country,
+      city:           this.state.city,
+      tags:           this.state.tags,
+      like:           this.state.like,
     };
-
     if (!album.name) {
       this.setState({
         errorName: 'At least give the album a name',
@@ -131,7 +126,6 @@ class NewAlbum extends React.Component {
   }
 
   render() {
-    const {finished, stepIndex} = this.state;
     const countries = this.props.countries.map(country => {
       return (<MenuItem value={country.get('id')} key={country.get('id')} primaryText={country.get('name')} />);
     });
@@ -152,13 +146,13 @@ class NewAlbum extends React.Component {
             floatingLabelText="Ranged Date Picker"
             hintText="Start date"
             onChange={this.handleChangeStartdate}
-            value={this.state.start}
+            value={this.state.start_date}
           />
           <DatePicker
             floatingLabelText="Ranged Date Picker"
             hintText="End date"
             onChange={this.handleChangeEnddate}
-            value={this.state.end}
+            value={this.state.end_date}
           />
 
         <SelectField
@@ -201,10 +195,5 @@ class NewAlbum extends React.Component {
     );
   }
 }
-
-function stepButtons(currentStep, stepIndex) {
-
-}
-
 
 export default NewAlbum;

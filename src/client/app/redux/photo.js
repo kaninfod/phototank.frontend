@@ -1,4 +1,10 @@
-import { createRequest, responseHandler, headers, notAuthorized, toQueryString } from './apiUtils';
+import {
+  apiHandler,
+  requestTypes,
+  createRequest,
+  responseHandler,
+  notAuthorized,
+  toQueryString } from './apiUtils';
 import { List, Map, fromJS, Set } from 'immutable';
 import * as bucketActions from './bucket';
 
@@ -213,92 +219,71 @@ function removeTagPhotoSuccess(data) {
 //API
 export function fetchPhoto(photoId) {
   const url = '/api/photos/'.concat(photoId, '.json');
+  const requestType = requestTypes.GET;
+  const params = null;
+  const request = createRequest(requestType, url, params);
   return dispatch => {
-
-    dispatch(fetchPhotoPending());
-
-    fetch(createRequest('GET', url, null))
-    .then(response => responseHandler(response, dispatch))
-    .then(data => dispatch(fetchPhotoSuccess(data)))
-    .catch(error => console.log('request failed', error));
+    apiHandler(fetchPhotoPending, fetchPhotoSuccess, request, dispatch);
   };
 }
 
 export function rotatePhoto(payload) {
   const url = '/api/photos/'.concat(payload.photoId, '/rotate/', payload.rotation);
+  const requestType = requestTypes.GET;
+  const params = null;
+  const request = createRequest(requestType, url, params);
   return dispatch => {
-
-    dispatch(rotatePhotoPending());
-
-    fetch(createRequest('GET', url, null))
-    .then(response => responseHandler(response, dispatch))
-    .then(data => dispatch(rotatePhotoSuccess(data)))
-    .catch(error => console.log('request failed', error));
+    apiHandler(rotatePhotoPending, rotatePhotoSuccess, request, dispatch);
   };
 }
 
 export function addTagPhoto(payload) {
   const url = '/api/photos/'.concat(payload.photoId, '/addtag?name=', payload.name);
+  const requestType = requestTypes.GET;
+  const params = null;
+  const request = createRequest(requestType, url, params);
   return dispatch => {
-
-    dispatch(addTagPhotoPending());
-
-    fetch(createRequest('GET', url, null))
-    .then(response => responseHandler(response, dispatch))
-    .then(data => dispatch(addTagPhotoSuccess(data)))
-    .catch(error => console.log('request failed', error));
+    apiHandler(addTagPhotoPending, addTagPhotoSuccess, request, dispatch);
   };
 }
 
 export function removeTagPhoto(payload) {
   const url = '/api/photos/'.concat(payload.photoId, '/removetag?name=', payload.name);
+  const requestType = requestTypes.GET;
+  const params = null;
+  const request = createRequest(requestType, url, params);
   return dispatch => {
-
-    dispatch(removeTagPhotoPending());
-
-    fetch(createRequest('GET', url, null))
-    .then(response => responseHandler(response, dispatch))
-    .then(data => dispatch(removeTagPhotoSuccess(data)))
-    .catch(error => console.log('request failed', error));
+    apiHandler(removeTagPhotoPending, removeTagPhotoSuccess, request, dispatch);
   };
 }
 
 export function commentPhoto(payload) {
   const url = '/api/photos/'.concat(payload.photoId, '/add_comment');
+  const requestType = requestTypes.POST;
+  const params = { comment: payload.comment };
+  const request = createRequest(requestType, url, params);
   return dispatch => {
-
-    dispatch(commentPhotoPending());
-
-    fetch(createRequest('POST', url, { comment: payload.comment }))
-    .then(response => responseHandler(response, dispatch))
-    .then(data => dispatch(commentPhotoSuccess(data)))
-    .catch(error => console.log('request failed', error));
+    apiHandler(commentPhotoPending, commentPhotoSuccess, request, dispatch);
   };
 }
 
 export function likePhoto(photoId) {
   const url = '/api/photos/'.concat(photoId, '/like');
+  const requestType = requestTypes.GET;
+  const params = null;
+  const request = createRequest(requestType, url, params);
   return dispatch => {
-
-    dispatch(likePhotoPending());
-
-    fetch(createRequest('GET', url, null))
-    .then(response => responseHandler(response, dispatch))
-    .then(data => dispatch(likePhotoSuccess(data)))
-    .catch(error => console.log('request failed', error));
+    apiHandler(likePhotoPending, likePhotoSuccess, request, dispatch);
   };
 }
 
 export function deletePhoto(photoId) {
-  const url = '/api/photos/' + photoId + '.json';
+  const url = '/api/photos/'.concat(photoId, '.json');
+  const requestType = requestTypes.DELETE;
+  const params = null;
+  const request = createRequest(requestType, url, params);
   return dispatch => {
-
-    dispatch(deletePhotoPending());
-
-    fetch(createRequest('DELETE', url, null))
-    .then(response => responseHandler(response, dispatch))
-    .then(data => dispatch(deletePhotoSuccess(data)))
-    .catch(error => console.log('request failed', error));
+    apiHandler(deletePhotoPending, deletePhotoSuccess, request, dispatch);
   };
 }
 

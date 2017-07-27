@@ -16,7 +16,7 @@ class Album extends React.Component {
   render () {
     return (
       <div class="pt-card-album">
-        <img src={this.props.album.get('url').concat('?token=', sessionStorage.jwt)}></img>
+        <img src={this.props.album.get('cover_url').concat('?token=', sessionStorage.jwt)}></img>
           <div class="title">
             <div class="alignleft">
               <p>{this.props.album.get('name')}</p>
@@ -36,7 +36,7 @@ class Album extends React.Component {
                   primaryText="Edit" />
 
                 <MenuItem
-                  
+                  onClick={() => this.props.deleteAlbum(this.props.album.get('id'))}
                   primaryText="Delete" />
 
                 <MenuItem primaryText="Jobs" />

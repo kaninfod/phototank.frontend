@@ -27,7 +27,7 @@ class CatalogList extends React.Component {
   }
 
   importToCatalog(catalog) {
-    this.props.dispatch(importCatalog({id: catalog.get('id')}))
+    this.props.dispatch(importCatalog(catalog.get('id')))
   }
 
   getCatalogs() {

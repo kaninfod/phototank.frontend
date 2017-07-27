@@ -27,7 +27,8 @@ export function reducer(state=init, action={}) {
   switch (action.type) {
 
     case FETCH_CATALOGS_SUCCESS: {
-      state = state.set('catalogs', fromJS(action.payload.catalogs));
+      console.log(action.payload);
+      state = state.set('catalogs', fromJS(action.payload));
       return state;
     }
 
@@ -107,7 +108,7 @@ export function updateCatalogPending(response) {
 
 //API
 export function fetchCatalogs() {
-  const url = '/api/catalogs.json';
+  const url = '/api/catalogs';
   return dispatch => {
 
     dispatch(getCatalogsPending());
@@ -159,7 +160,7 @@ export function verifyCatalog(payload) {
   };
 }
 
-export function importCatalog(payload) {
+export function importCatalog(catalogId) {
   const url = '/api/catalogs/'.concat(catalogId, '/import');
   return dispatch => {
 

@@ -1,3 +1,10 @@
+export const requestTypes = {
+  POST:   'POST',
+  GET:    'GET',
+  DELETE: 'DELETE',
+  PUT:    'PUT',
+};
+
 export var headers = new Headers({
   'Authorization': sessionStorage.jwt,
   'Content-Type': 'application/json',
@@ -18,7 +25,7 @@ export function createRequest(type, url, params) {
     method: type,
   };
 
-  if (['POST', 'PUT'].includes(type)) {
+  if ([requestTypes.POST, requestTypes.PUT].includes(type)) {
     init.body = JSON.stringify(params);
   }
 
@@ -26,14 +33,22 @@ export function createRequest(type, url, params) {
   return request;
 }
 
+export function apiHandler(funcPending, funcSuccess, request, dispatch) {
+  dispatch(funcPending());
+  fetch(request)
+  .then(response => responseHandler(response, dispatch))
+  .then(data => dispatch(funcSuccess(data)))
+  .catch(error => console.log('request failed', error));
+}
+
 export function responseHandler(response, dispatch) {
   if (response.status >= 200 && response.status < 300) {
     return response.json();
   } else if (response.status == 401) {
-    const error = new Error(response.statusText);
-    error.response = response;
+    // const error = new Error(response.statusText);
+    // error.response = response;
     dispatch(notAuthorized());
-    throw error;
+    // throw error;
   } else {
     const error = new Error(response.statusText);
     error.response = response;
