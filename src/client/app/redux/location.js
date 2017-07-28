@@ -19,8 +19,8 @@ export function reducer(state=init, action={}) {
   switch (action.type) {
 
     case FETCH_COUNTRIES_SUCCESS: {
-      action.payload.countries.unshift({ id: -1, name: 'All' });
-      newState = state.set('countries', fromJS(action.payload.countries));
+      action.payload.unshift({ id: -1, name: 'All' });
+      newState = state.set('countries', fromJS(action.payload));
       return newState;
     }
 
@@ -63,7 +63,7 @@ function fetchCountriesSuccess(data) {
 
 //API
 export function fetchCities() {
-  var url = '/api/locations/cities.json?';
+  var url = '/api/locations/cities';
 
   return dispatch => {
 
@@ -77,7 +77,7 @@ export function fetchCities() {
 }
 
 export function fetchCountries() {
-  var url = '/api/locations/countries.json?';
+  var url = '/api/locations/countries';
 
   return dispatch => {
 

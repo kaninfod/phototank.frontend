@@ -66,7 +66,7 @@ export function reducer(state=init, action={}) {
       }
 
       if (state.getIn(['pagination', 'first_page'])) {
-        state = state.set('photos', List(fromJS(action.payload.photos)));
+        state = state.set('photos', List(fromJS(action.payload)));
       } else {
         const photos = unionPhotos(state.get('photos'), action);
         state = state.set('photos', List(photos));

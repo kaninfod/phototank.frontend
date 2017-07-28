@@ -48,7 +48,7 @@ export default class Widget extends React.Component {
 
               <img
                 className="lazy" id={photo.get('id')} onClick={this.handleClick}
-                data-original={photo.get('url').concat('?token=', sessionStorage.jwt)}/>
+                data-original={photo.get('url_tm').concat('?token=', sessionStorage.jwt)}/>
 
               <div className={'overlay-button overlay-select ' +
                 (photo.get('bucket') ? 'selected' : '')}
@@ -67,7 +67,7 @@ export default class Widget extends React.Component {
               </div>
 
             </div>
-            <div className="photo-widget-date">{photo.get('date_taken')}</div>
+            <div className="photo-widget-date">{photo.get('date_taken_formatted')}</div>
         </div>
 
       );
