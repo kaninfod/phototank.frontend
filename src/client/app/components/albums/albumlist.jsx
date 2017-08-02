@@ -27,7 +27,6 @@ class AlbumList extends React.Component {
   }
 
   render() {
-    console.log('kaj', this.props.albums);
     const menuActions = {
       DELETE: this.deleteAlbum,
     }

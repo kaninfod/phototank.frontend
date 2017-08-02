@@ -5,11 +5,6 @@ export const requestTypes = {
   PUT:    'PUT',
 };
 
-export var headers = new Headers({
-  'Authorization': sessionStorage.jwt,
-  'Content-Type': 'application/json',
-});
-
 export function toQueryString(paramsObject) {
   if (!paramsObject) return '';
   return Object
@@ -20,6 +15,11 @@ export function toQueryString(paramsObject) {
 }
 
 export function createRequest(type, url, params) {
+  const token = sessionStorage.jwt;
+  const headers = new Headers({
+    Authorization: token,
+    'Content-Type': 'application/json',
+  });
   var init = {
     headers: headers,
     method: type,

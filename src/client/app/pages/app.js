@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom';
 import createReactClass from 'create-react-class';
 import './app.scss';
 import Login from './login';
-import { logout } from '../redux/auth'
+import { logout, login, validateToken } from '../redux/auth'
 import AppBar from 'material-ui/AppBar';
 import Popover from 'material-ui/Popover';
 import Menu from 'material-ui/Menu';
@@ -15,9 +15,7 @@ const styles = { example: { position: 'fixed', top: 0, }, };
 
 @connect((store) => {
   return {
-    loggedIn: store.nAuth.get('loggedIn'),
     user:     store.nAuth.get('user'),
-    token:    store.nPhoto.get('token'),
   };
 })
 class App extends React.Component {
@@ -54,8 +52,11 @@ class App extends React.Component {
     const redirectURL = this.props.history.location.pathname;
     let children = null;
     if (!sessionStorage.jwt) {
-      children = <Login redirectURL={redirectURL}/>; // this.props.history.push('/login');
+      children = <Login redirectURL={redirectURL}/>;
     } else {
+      if (!this.props.user.size) {
+        this.props.dispatch(validateToken())
+      }
       children = this.props.children;
     }
 

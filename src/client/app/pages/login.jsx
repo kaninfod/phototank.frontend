@@ -1,11 +1,11 @@
 import React from 'react';
 import { connect } from "react-redux";
-// import {  } from '../redux/actAuth'
 import { logout, login } from '../redux/auth'
 import '../stylesheets/login'
 
 @connect((store) => {
   return {
+    auth: store.nAuth.get('user'),
   };
 })
 export default class Login extends React.Component {
@@ -15,10 +15,15 @@ export default class Login extends React.Component {
     this.handleLogout = this.handleLogout.bind(this);
     this.emailChanged = this.emailChanged.bind(this);
     this.passwordChanged = this.passwordChanged.bind(this);
-    // this._setState = this._setState.bind(this);
     this.state = {
-      email: "example@mail.com",
-      password: "123123123"
+      email: "admin@mail.com",
+      password: "123"
+    }
+  }
+
+  componentWillUpdate(nextProps, nextState) {
+    if (nextProps.remember_token) {
+      this.props.history.push('/albums/list');
     }
   }
 
