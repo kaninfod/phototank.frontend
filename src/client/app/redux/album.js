@@ -65,7 +65,6 @@ export function getAlbumsPending(respose) {
 }
 
 export function getAlbumsSuccess(response) {
-  console.log(response);
   return {
     type: FETCH_ALBUMS_SUCCESS,
     payload: response,
@@ -139,7 +138,7 @@ export function deleteAlbumSuccess(response) {
 
 //API
 export function fetchAlbums() {
-  const url = '/api/albums.json';
+  const url = '/api/albums';
   const requestType = requestTypes.GET;
   const params = null;
   const request = createRequest(requestType, url, params);

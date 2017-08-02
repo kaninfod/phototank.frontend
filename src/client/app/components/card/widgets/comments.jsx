@@ -18,7 +18,7 @@ export default class Comment extends React.Component {
   }
 
   render() {
-    const comments = this.props.data.photo.comments;
+    const comments = this.props.data.comments;
     const avatar = this.props.data.current_user.avatar.concat('?token=', sessionStorage.jwt);
     return (
       <div className="pt-widget">

@@ -25,8 +25,8 @@ export function reducer(state=init, action={}) {
     }
 
     case FETCH_CITIES_SUCCESS: {
-      action.payload.cities.unshift({ id: -1, name: 'All' });
-      newState = state.set('cities', fromJS(action.payload.cities));
+      action.payload.unshift({ id: -1, name: 'All' });
+      newState = state.set('cities', fromJS(action.payload));
       return newState;
     }
 

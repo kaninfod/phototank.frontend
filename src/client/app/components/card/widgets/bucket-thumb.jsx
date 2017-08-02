@@ -1,14 +1,13 @@
 import React from 'react';
 
-const bucketThumb = (props) => {
-  return (
+const bucketThumb = (props) => (
     <img
-      onClick={() => props.onRemovePhoto(props.bucketPhoto.id)}
+      onClick={() => props.onRemovePhoto(props.bucketPhoto.get('id'))}
       class="responsive-img"
-      key={props.bucketPhoto.id}
-      data-photoid={props.bucketPhoto.id}
-      src={props.bucketPhoto.photo_url.concat('?token=', sessionStorage.jwt)}/>
-  );
-};
+      key={props.bucketPhoto.get('id')}
+      data-photoid={props.bucketPhoto.get('id')}
+      src={props.bucketPhoto.get('url_tm').concat('?token=', sessionStorage.jwt)}
+    />
+);
 
 export default bucketThumb;

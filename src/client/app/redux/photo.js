@@ -9,29 +9,36 @@ import { List, Map, fromJS, Set } from 'immutable';
 import * as bucketActions from './bucket';
 
 //Actions
-export const FETCH_PHOTOS_SUCCESS = 'FETCH_PHOTOS_SUCCESS';
-export const FETCH_PHOTOS_REQUEST = 'FETCH_PHOTOS_REQUEST';
-export const SET_HEADER = 'SET_HEADER';
-export const CLICK_PHOTO = 'CLICK_PHOTO';
-export const SELECT_PHOTO_FULFILLED = 'SELECT_PHOTO_FULFILLED';
-export const DELETE_PHOTO_REQUEST = 'DELETE_PHOTO_REQUEST';
-export const DELETE_PHOTO_FULFILLED = 'DELETE_PHOTO_FULFILLED';
-export const FETCH_PHOTO_REQUEST = 'FETCH_PHOTO_REQUEST';
-export const FETCH_PHOTO_SUCCESS = 'FETCH_PHOTO_SUCCESS';
-export const ROTATE_PHOTO_REQUEST = 'ROTATE_PHOTO_REQUEST';
-export const ROTATE_PHOTO_SUCCESS = 'ROTATE_PHOTO_SUCCESS';
-export const COMMENT_PHOTO_REQUEST = 'COMMENT_PHOTO_REQUEST';
-export const COMMENT_PHOTO_SUCCESS = 'COMMENT_PHOTO_SUCCESS';
-export const LIKE_PHOTO_REQUEST = 'LIKE_PHOTO_REQUEST';
-export const LIKE_PHOTO_SUCCESS = 'LIKE_PHOTO_SUCCESS';
-export const ADDTAG_PHOTO_REQUEST = 'ADDTAG_PHOTO_REQUEST';
-export const ADDTAG_PHOTO_SUCCESS = 'ADDTAG_PHOTO_SUCCESS';
-export const REMOVETAG_PHOTO_REQUEST = 'REMOVETAG_PHOTO_REQUEST';
-export const REMOVETAG_PHOTO_SUCCESS = 'REMOVETAG_PHOTO_SUCCESS';
+export const FETCH_PHOTOS_SUCCESS       = 'FETCH_PHOTOS_SUCCESS';
+export const FETCH_PHOTOS_REQUEST       = 'FETCH_PHOTOS_REQUEST';
+export const FETCH_BUCKET_SUCCESS       = 'FETCH_BUCKET_SUCCESS';
+export const FETCH_BUCKET_REQUEST       = 'FETCH_BUCKET_REQUEST';
+export const SET_HEADER                 = 'SET_HEADER';
+export const CLICK_PHOTO                = 'CLICK_PHOTO';
+export const SELECT_PHOTO_FULFILLED     = 'SELECT_PHOTO_FULFILLED';
+export const DELETE_PHOTO_REQUEST       = 'DELETE_PHOTO_REQUEST';
+export const DELETE_PHOTO_FULFILLED     = 'DELETE_PHOTO_FULFILLED';
+export const FETCH_PHOTO_REQUEST        = 'FETCH_PHOTO_REQUEST';
+export const FETCH_PHOTO_SUCCESS        = 'FETCH_PHOTO_SUCCESS';
+export const ROTATE_PHOTO_REQUEST       = 'ROTATE_PHOTO_REQUEST';
+export const ROTATE_PHOTO_SUCCESS       = 'ROTATE_PHOTO_SUCCESS';
+export const COMMENT_PHOTO_REQUEST      = 'COMMENT_PHOTO_REQUEST';
+export const COMMENT_PHOTO_SUCCESS      = 'COMMENT_PHOTO_SUCCESS';
+export const LIKE_PHOTO_REQUEST         = 'LIKE_PHOTO_REQUEST';
+export const LIKE_PHOTO_SUCCESS         = 'LIKE_PHOTO_SUCCESS';
+export const ADDTAG_PHOTO_REQUEST       = 'ADDTAG_PHOTO_REQUEST';
+export const ADDTAG_PHOTO_SUCCESS       = 'ADDTAG_PHOTO_SUCCESS';
+export const REMOVETAG_PHOTO_REQUEST    = 'REMOVETAG_PHOTO_REQUEST';
+export const REMOVETAG_PHOTO_SUCCESS    = 'REMOVETAG_PHOTO_SUCCESS';
+export const GET_TAGLIST_PHOTO_REQUEST  = 'GET_TAGLIST_PHOTO_REQUEST';
+export const GET_TAGLIST_PHOTO_SUCCESS  = 'GET_TAGLIST_PHOTO_SUCCESS';
+export const TOGGLE_PHOTOS_BUCKET_REQUEST = 'TOGGLE_PHOTOS_BUCKET_REQUEST';
+export const TOGGLE_PHOTOS_BUCKET_SUCCESS = 'TOGGLE_PHOTOS_BUCKET_SUCCESS';
 
 // Reducer
 var init = Map(fromJS({
   photoData: [],
+  bucket: [],
   hidden: false,
   photoId: null,
   photos: [],
@@ -54,7 +61,7 @@ export function reducer(state=init, action={}) {
 
     case FETCH_PHOTO_SUCCESS: {
       return state
-          .set('photoId', action.payload.photo.id)
+          .set('photoId', action.payload.id)
           .set('photoData', fromJS(action.payload));
     }
 
@@ -88,24 +95,44 @@ export function reducer(state=init, action={}) {
     }
 
     case LIKE_PHOTO_SUCCESS: {
-      return state.setIn(['photoData', 'photo', 'like'], action.payload.liked_by_current_user);
+      return state.set('photoData', fromJS(action.payload));
     }
 
     case ADDTAG_PHOTO_SUCCESS: {
-      return state.setIn(['photoData', 'photo', 'tags'], action.payload.tags);
+      return state.set('photoData', fromJS(action.payload));
     }
 
     case REMOVETAG_PHOTO_SUCCESS: {
-      return state.setIn(['photoData', 'photo', 'tags'], action.payload.tags);
+      return state.set('photoData', fromJS(action.payload));
     }
 
-    case bucketActions.TOGGLE_PHOTOS_BUCKET_SUCCESS: {
-      const indexOfListToUpdate = state.get('photos').findIndex(listItem =>
-        listItem.get('id') === parseInt(action.payload.photo_id)
-      );
-      const flag = state.getIn(['photos', indexOfListToUpdate, 'bucket']);
-      const photos = state.setIn(['photos', indexOfListToUpdate, 'bucket'], !flag);
-      return state.set('photos', photos.get('photos'));
+    case GET_TAGLIST_PHOTO_SUCCESS: {
+      return state.set('taglist', fromJS(action.payload));
+    }
+
+    case FETCH_BUCKET_SUCCESS: {
+      return state.set('bucket', fromJS(action.payload));
+    }
+
+    case TOGGLE_PHOTOS_BUCKET_SUCCESS: {
+      const photos = state.get('photos').map(photo => {
+        if (photo.get('id') === action.payload.id) {
+          return fromJS(action.payload);
+        } else {
+          return photo;
+        }
+      });
+
+      var bucket = [];
+      if (action.payload.bucket) {
+        bucket = state.get('bucket').push(fromJS(action.payload));
+      } else {
+        bucket = state.get('bucket').filter(
+          photo => photo.get('id') !== action.payload.id
+        );
+      }
+
+      return state.set('bucket', bucket).set('photos', photos);
     }
   }
   return state;
@@ -216,14 +243,48 @@ function removeTagPhotoSuccess(data) {
   return { type: REMOVETAG_PHOTO_SUCCESS, payload: data };
 }
 
+function fetchTaglistPending() {
+  return { type: GET_TAGLIST_PHOTO_REQUEST };
+}
+
+function fetchTaglistSuccess(data) {
+  return { type: GET_TAGLIST_PHOTO_SUCCESS, payload: data };
+}
+
+function togglePhotosBucketPending() {
+  return { type: TOGGLE_PHOTOS_BUCKET_REQUEST };
+}
+
+function togglePhotosBucketSuccess(data) {
+  return { type: TOGGLE_PHOTOS_BUCKET_SUCCESS, payload: data };
+}
+
+function fetchBucketPending() {
+  return { type: FETCH_BUCKET_REQUEST };
+}
+
+function fetchBucketSuccess(data) {
+  return { type: FETCH_BUCKET_SUCCESS, payload: data };
+}
+
 //API
 export function fetchPhoto(photoId) {
-  const url = '/api/photos/'.concat(photoId, '.json');
+  const url = '/api/photos/'.concat(photoId);
   const requestType = requestTypes.GET;
   const params = null;
   const request = createRequest(requestType, url, params);
   return dispatch => {
     apiHandler(fetchPhotoPending, fetchPhotoSuccess, request, dispatch);
+  };
+}
+
+export function fetchBucket() {
+  const url = '/api/photos/bucket';
+  const requestType = requestTypes.GET;
+  const params = null;
+  const request = createRequest(requestType, url, params);
+  return dispatch => {
+    apiHandler(fetchBucketPending, fetchBucketSuccess, request, dispatch);
   };
 }
 
@@ -237,10 +298,20 @@ export function rotatePhoto(payload) {
   };
 }
 
-export function addTagPhoto(payload) {
-  const url = '/api/photos/'.concat(payload.photoId, '/addtag?name=', payload.name);
-  const requestType = requestTypes.GET;
+export function togglePhotosBucket(photoId) {
+  const url = '/api/photos/'.concat(photoId, '/bucket/toggle');
+  const requestType = requestTypes.POST;
   const params = null;
+  const request = createRequest(requestType, url, params);
+  return dispatch => {
+    apiHandler(togglePhotosBucketPending, togglePhotosBucketSuccess, request, dispatch);
+  };
+}
+
+export function addTagPhoto(payload) {
+  const url = '/api/photos/'.concat(payload.photoId, '/tag/add');
+  const requestType = requestTypes.POST;
+  const params = { tag: payload.name };
   const request = createRequest(requestType, url, params);
   return dispatch => {
     apiHandler(addTagPhotoPending, addTagPhotoSuccess, request, dispatch);
@@ -248,17 +319,28 @@ export function addTagPhoto(payload) {
 }
 
 export function removeTagPhoto(payload) {
-  const url = '/api/photos/'.concat(payload.photoId, '/removetag?name=', payload.name);
-  const requestType = requestTypes.GET;
-  const params = null;
+  console.log(payload);
+  const url = '/api/photos/'.concat(payload.photoId, '/tag/delete');
+  const requestType = requestTypes.DELETE;
+  const params = { tag_id: payload.tagId }; //TODO change to tag_id
   const request = createRequest(requestType, url, params);
   return dispatch => {
     apiHandler(removeTagPhotoPending, removeTagPhotoSuccess, request, dispatch);
   };
 }
 
+export function fetchTaglist() {
+  const url = '/api/photos/taglist';
+  const requestType = requestTypes.GET;
+  const params = null;
+  const request = createRequest(requestType, url, params);
+  return dispatch => {
+    apiHandler(fetchTaglistPending, fetchTaglistSuccess, request, dispatch);
+  };
+}
+
 export function commentPhoto(payload) {
-  const url = '/api/photos/'.concat(payload.photoId, '/add_comment');
+  const url = '/api/photos/'.concat(payload.photoId, '/comment/add');
   const requestType = requestTypes.POST;
   const params = { comment: payload.comment };
   const request = createRequest(requestType, url, params);
@@ -267,9 +349,19 @@ export function commentPhoto(payload) {
   };
 }
 
+export function uncommentPhoto(payload) {
+  const url = '/api/photos/'.concat(payload.photoId, '/comment/delete');
+  const requestType = requestTypes.DELETE;
+  const params = { comment: payload.comment }; //TODO chenge to comment_id
+  const request = createRequest(requestType, url, params);
+  return dispatch => {
+    apiHandler(commentPhotoPending, commentPhotoSuccess, request, dispatch);
+  };
+}
+
 export function likePhoto(photoId) {
-  const url = '/api/photos/'.concat(photoId, '/like');
-  const requestType = requestTypes.GET;
+  const url = '/api/photos/'.concat(photoId, '/like/toggle');
+  const requestType = requestTypes.POST;
   const params = null;
   const request = createRequest(requestType, url, params);
   return dispatch => {

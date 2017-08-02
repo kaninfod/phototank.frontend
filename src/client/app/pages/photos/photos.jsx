@@ -6,8 +6,8 @@ import Bucket from '../../components/card/bucket';
 import BottomPanel from '../../components/bottom-panel';
 import Zoombox from '../../components/photogrid/zoombox';
 import { fetchCities, fetchCountries } from '../../redux/location'
-import { fetchPhotos, clickPhoto, deletePhoto } from '../../redux/photo';
-import { togglePhotosBucket } from '../../redux/bucket';
+import { fetchPhotos, clickPhoto, deletePhoto, fetchBucket } from '../../redux/photo';
+import { togglePhotosBucket } from '../../redux/photo';
 
 
 @connect((store) => {
@@ -17,7 +17,7 @@ import { togglePhotosBucket } from '../../redux/bucket';
     page:          store.nPhoto.getIn(['pagination', 'next_page']),
     photos:        store.nPhoto.get('photos'),
     countries:     store.nLocation.get('countries').toJS(),
-    photosBucket:  store.nBucket.getIn(['bucket', 'bucket']).toJS(),
+    bucket:        store.nPhoto.get('bucket'),
     loading:       store.app.getIn(['loadingStates', 'photoGrid']),
   };
 })
@@ -50,6 +50,7 @@ class Photos extends React.Component {
 
   componentWillMount() {
     this.props.dispatch(fetchCountries());
+    this.props.dispatch(fetchBucket());
     this.props.dispatch(fetchPhotos({
       context: this.props.context,
       contextId: this.props.contextId,
@@ -61,6 +62,7 @@ class Photos extends React.Component {
   componentWillUpdate(nextProps, nextState) {
     if (this.updateGrid) {
       this.updateGrid = false;
+      this.props.dispatch(fetchBucket());
       this.props.dispatch(fetchPhotos({
         context: this.props.context,
         contextId: this.props.contextId,
@@ -141,7 +143,7 @@ class Photos extends React.Component {
             onRemovePhoto={this.removeBucketPhoto}
           />
           <BottomPanel
-            photos={this.props.photosBucket}
+            photos={this.props.bucket}
             countries={this.props.countries}
             searchParams={searchParams}
             changeSearchParams={this.changeSearchParams}

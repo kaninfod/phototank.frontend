@@ -20,14 +20,14 @@ export default class Tag extends React.Component {
     if (typeof (tag) == 'string') {
       this.props.widgetHandlers.ADDTAG(tag);
     } else {
-      this.props.widgetHandlers.ADDTAG(tag.text);
+      this.props.widgetHandlers.ADDTAG(tag.name);
     }
 
     this.setState({ searchText: '' });
   }
 
   removeTag(tag) {
-    this.props.widgetHandlers.REMOVETAG(tag.label);
+    this.props.widgetHandlers.REMOVETAG(tag.key);
   }
 
   handleSearchText(searchText) {
@@ -52,9 +52,11 @@ export default class Tag extends React.Component {
       var photoId = this.props.data.photo.id;
     }
 
-    const taglist = this.props.data.taglist.map(tag =>  ({ text: tag.name, value: tag.id }));
-    const tags = this.props.data.photo.tags.map(tag =>  (this.renderChip({ label: tag.name, key: tag.id })));
+    const taglist = this.props.taglist.toJS();
+    const dataSourceConfig = { text: 'name', value: 'id' };
 
+    const tags = this.props.data.tags.map(tag => (this.renderChip({ label: tag.name, key: tag.id })));
+    console.log(this.props.data.tags);
     return (
       <div className="pt-widget">
         <Header handleClose={this.props.widgetHandlers.HIDE} title="Add tag to photo"/>
@@ -64,6 +66,7 @@ export default class Tag extends React.Component {
                  hintText="Add tag"
                  filter={(searchText, key) => (key.indexOf(searchText) !== -1)}
                  dataSource={taglist}
+                 dataSourceConfig={dataSourceConfig}
                  onNewRequest={this.addTag}
                  searchText={this.state.searchText}
                  onUpdateInput={this.handleSearchText}
@@ -75,4 +78,3 @@ export default class Tag extends React.Component {
     );
   }
 }
-// <PhotoTagger photoId={photoId} tags={this.props.data.tags}/>

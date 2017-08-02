@@ -5,7 +5,7 @@ import Draggable, {DraggableCore} from 'react-draggable';
 import {getButtons} from './button.props.js'
 import { Buttons, Info, Rotate, Albums, Comments, Tag, Map } from '../widgets'
 import '../styles/card.scss'
-import { addPhotoAlbum } from '../../../redux/album'
+import { addPhotoAlbum, fetchAlbums } from '../../../redux/album'
 import {
   fetchPhoto,
   rotatePhoto,
@@ -13,8 +13,9 @@ import {
   likePhoto,
   addTagPhoto,
   removeTagPhoto,
-  deletePhoto } from '../../../redux/photo'
-import { setWidget } from '../../../redux/appState'
+  deletePhoto,
+  fetchTaglist } from '../../../redux/photo';
+import { setWidget } from '../../../redux/appState';
 
 const components = {
   INFO:     Info,
@@ -32,6 +33,8 @@ const components = {
     selectedWidget: store.app.get('selectedWidget'),
     photoId: store.app.get('selectedPhoto'),
     photoData: store.nPhoto.get('photoData').toJS(),
+    albums: store.nAlbum.get('albums'),
+    taglist: store.nPhoto.get('taglist'),
   };
 })
 export default class PhotoCard extends React.Component {
@@ -64,17 +67,18 @@ export default class PhotoCard extends React.Component {
     if (this.props.photoId != nextProps.photoId) {
       this.setState({ hidden: false });
       this.props.dispatch(fetchPhoto(nextProps.photoId))
+      this.props.dispatch(fetchAlbums())
+      this.props.dispatch(fetchTaglist())
     }
   }
 
   setWidget(widget) {
-    console.log('howdy', widget.target.dataset.widget);
     this.props.dispatch(setWidget(widget.target.dataset.widget))
   }
 
   addToAlbum(albumId) {
     var payload = {
-      photoId: this.props.photoData.photo.id,
+      photoId: this.props.photoData.id,
       albumId: albumId
     }
     this.props.dispatch(addPhotoAlbum(payload))
@@ -82,7 +86,7 @@ export default class PhotoCard extends React.Component {
 
   rotatePhoto(rotation) {
     var payload = {
-      photoId: this.props.photoData.photo.id,
+      photoId: this.props.photoData.id,
       rotation: rotation
     }
     this.props.dispatch(rotatePhoto(payload))
@@ -90,22 +94,22 @@ export default class PhotoCard extends React.Component {
 
   addComment(comment) {
     var payload = {
-      photoId: this.props.photoData.photo.id,
+      photoId: this.props.photoData.id,
       comment: comment
     }
     this.props.dispatch(commentPhoto(payload))
   }
 
   addTag(tag) {
-    this.props.dispatch(addTagPhoto({photoId: this.props.photoData.photo.id, name: tag}))
+    this.props.dispatch(addTagPhoto({photoId: this.props.photoData.id, name: tag}))
   }
 
-  removeTag(tag) {
-    this.props.dispatch(removeTagPhoto({photoId: this.props.photoData.photo.id, name: tag}))
+  removeTag(tagId) {
+    this.props.dispatch(removeTagPhoto({photoId: this.props.photoData.id, tagId: tagId}))
   }
 
   deletePhoto() {
-    this.props.dispatch(deletePhoto(this.props.photoData.photo.id))
+    this.props.dispatch(deletePhoto(this.props.photoData.id))
     this.hide()
   }
 
@@ -114,14 +118,15 @@ export default class PhotoCard extends React.Component {
   }
 
   likePhoto() {
-    this.props.dispatch(likePhoto(this.props.photoData.photo.id))
+    this.props.dispatch(likePhoto(this.props.photoData.id))
   }
 
   likeState() {
-    if (this.props.photoData.photo.like) { return "green" } else {return "blue-grey lighten-2"}
+    if (this.props.photoData.like) { return "green" } else {return "blue-grey lighten-2"}
   }
 
   render() {
+
     if (!Object.keys(this.props.photoData).length || this.state.hidden) {
       return null
     }
@@ -150,11 +155,16 @@ export default class PhotoCard extends React.Component {
     return (
       <Draggable handle=".header">
         <div className="pt-card upper-right show">
-          <WidgetType data={props.photoData} widgetHandlers={widgetHandlers}/>
+          <WidgetType
+            data={props.photoData}
+            albums={props.albums}
+            taglist={props.taglist}
+            widgetHandlers={widgetHandlers}
+          />
           <Buttons buttons={buttons}
             widget={props.selectedWidget}
             widgetHandlers={this.widgetHandlers}
-            />
+          />
         </div>
      </Draggable>
     )

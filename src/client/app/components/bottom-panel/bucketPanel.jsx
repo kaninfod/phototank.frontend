@@ -1,10 +1,10 @@
-import React from 'react'
+import React from 'react';
 import BucketThumb from '../card/widgets/bucket-thumb';
 
 const BucketPanel = (props) => {
-  var photos = props.photos.map(bucketPhoto => {
-    return BucketThumb({ bucketPhoto: bucketPhoto, onRemovePhoto: props.onRemovePhoto });
-  });
+  var photos = props.photos.map(bucketPhoto =>
+     BucketThumb({ bucketPhoto: bucketPhoto, onRemovePhoto: props.onRemovePhoto })
+  );
 
   return (
     <div>
@@ -24,7 +24,7 @@ const BucketPanel = (props) => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default BucketPanel
+export default BucketPanel;

@@ -37,9 +37,6 @@ export function reducer(state=init, action={}) {
 
       return state;
     }
-
-
-
   }
   return state;
 }
@@ -55,7 +52,7 @@ export function loginSuccess(response) {
   return {
     type: LOGIN_SUCCESS,
     payload: {
-      token: response.data.auth_token,
+      token: response.data.remember_token,
       user: response.data.user,
     },
   };
@@ -75,7 +72,7 @@ export function logout() {
 
 //API
 export function login(payload) {
-  const url = '/api/authenticate';
+  const url = '/api/users/login';
 
   return dispatch => {
     dispatch(loginPending());

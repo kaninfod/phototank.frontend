@@ -49,12 +49,12 @@ export default class Grid extends React.Component {
     return (
       <div className="photos-component">
         <div className="row photogrid" onScroll={this.handleScroll}>
-          {props.photos.map(photo => {
-            return <Widget
-              key={photo.get('id')}
-              photo={photo}
-              actions={props.photoActions}/>;
-              }
+          {props.photos.map(photo =>
+             <Widget
+                key={photo.get('id')}
+                photo={photo}
+                actions={props.photoActions}
+             />
             )
           }
         </div>

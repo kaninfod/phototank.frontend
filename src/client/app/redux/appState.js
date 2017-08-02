@@ -86,7 +86,6 @@ export function reducer(state=init, action={}) {
 
 //Action Creators
 export function setWidget(widget) {
-  console.log('doI', widget);
   return {
     type: SET_WIDGET,
     payload: { widget: widget },

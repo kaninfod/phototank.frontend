@@ -25,7 +25,7 @@ export function createRequest(type, url, params) {
     method: type,
   };
 
-  if ([requestTypes.POST, requestTypes.PUT].includes(type)) {
+  if ([requestTypes.POST, requestTypes.PUT, requestTypes.DELETE].includes(type)) {
     init.body = JSON.stringify(params);
   }
 
@@ -45,10 +45,7 @@ export function responseHandler(response, dispatch) {
   if (response.status >= 200 && response.status < 300) {
     return response.json();
   } else if (response.status == 401) {
-    // const error = new Error(response.statusText);
-    // error.response = response;
     dispatch(notAuthorized());
-    // throw error;
   } else {
     const error = new Error(response.statusText);
     error.response = response;

@@ -16,7 +16,7 @@ import {
   likePhotosBucket,
   tagPhotosBucket,
 } from '../../../redux/bucket';
-
+import { fetchBucket } from '../../../redux/photo';
 const components = {
   INFO:   Bucketgrid,
   ROTATE:   Rotate,
@@ -30,11 +30,12 @@ const components = {
 @connect((store) => {
   return {
     selectedWidget: store.app.get('selectedWidget'),//store.bucket.get('selectedWidget'),
-    bucketData: store.nBucket.get('bucket').toJS(),
-    bucket: store.nBucket.getIn(['bucket', 'bucket']),
-    albums: store.nBucket.getIn(['bucket', 'albums']),
-    current_user: store.nBucket.getIn(['bucket', 'current_user']),
-    taglist: store.nBucket.getIn(['bucket', 'taglist']),
+    // bucketData: store.nBucket.get('bucket').toJS(),
+    bucket: store.nPhoto.get('bucket'),
+    // albums: store.nAlbum.getIn(['bucket', 'albums']),
+    albums: store.nAlbum.get('albums'),
+    current_user: store.nAuth.get('user'),
+    taglist: store.nPhoto.get('taglist'),
   };
 })
 export default class Bucket extends React.Component {
@@ -61,7 +62,7 @@ export default class Bucket extends React.Component {
   }
 
   componentWillMount() {
-    this.props.dispatch(getPhotosBucket());
+    this.props.dispatch(fetchBucket());
   }
 
   removePhoto(id) {
