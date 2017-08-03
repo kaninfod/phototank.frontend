@@ -1,15 +1,31 @@
 import { applyMiddleware, createStore, compose } from 'redux';
-import logger from 'redux-logger';
+import { createLogger } from 'redux-logger';
 import thunk from 'redux-thunk';
 import promise from 'redux-promise-middleware';
 import combinedReducer from './combinedReducer';
+import Immutable from 'immutable';
 
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const logger = createLogger({
+  collapsed: (getState, action, logEntry) => !logEntry.error,
+
+  stateTransformer: (state) => {
+    let newState = {};
+
+    for (var i of Object.keys(state)) {
+      if (Immutable.Iterable.isIterable(state[i])) {
+        newState[i] = state[i].toJS();
+      } else {
+        newState[i] = state[i];
+      }
+    }
+
+    return newState;
+  },
+});
 
 const store = createStore(
   combinedReducer,
-  composeEnhancers(
-    applyMiddleware(promise(), thunk, logger())
-  )
-);
+
+  applyMiddleware(promise(), thunk, logger)
+)
 export default store;

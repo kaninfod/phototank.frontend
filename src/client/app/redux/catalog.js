@@ -27,18 +27,17 @@ export function reducer(state=init, action={}) {
   switch (action.type) {
 
     case FETCH_CATALOGS_SUCCESS: {
-      console.log(action.payload);
       state = state.set('catalogs', fromJS(action.payload));
       return state;
     }
 
     case FETCH_CATALOG_SUCCESS: {
-      state = state.set('catalog', fromJS(action.payload.catalogs));
+      state = state.set('catalog', fromJS(action.payload));
       return state;
     }
 
     case CREATE_CATALOG_SUCCESS: {
-      state = state.set('catalog', fromJS(action.payload.catalog));
+      state = state.set('catalog', fromJS(action.payload));
       return state;
     }
 

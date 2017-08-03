@@ -33,8 +33,8 @@
 
       // Finds right attribute for indicator based on active tab.
       // el: jQuery Object
-      var calcRightPos = function(el) {
-        return Math.ceil($tabs_width - el.position().left - el.outerWidth() - $this.scrollLeft());
+        var calcRightPos = function(el) {
+          return Math.ceil($tabs_width - el.position().left - el[0].getBoundingClientRect().width - $this.scrollLeft());
       };
 
       // Finds left attribute for indicator based on active tab.
@@ -88,7 +88,7 @@
 
       // append indicator then set indicator width to tab width
       if (!$this.find('.indicator').length) {
-        $this.append('<div class="indicator"></div>');
+        $this.append('<li class="indicator"></li>');
       }
       $indicator = $this.find('.indicator');
 
@@ -132,8 +132,13 @@
             if (!clicked) {
               var prev_index = index;
               index = $tabs_wrapper.index(item);
+              $active.removeClass('active');
               $active = $links.eq(index);
+              $active.addClass('active');
               animateIndicator(prev_index);
+              if (typeof(options.onShow) === "function") {
+                options.onShow.call($this[0], $content);
+              }
             }
           },
         });
@@ -184,7 +189,11 @@
         // Swap content
         if (options.swipeable) {
           if ($tabs_content.length) {
-            $tabs_content.carousel('set', index);
+            $tabs_content.carousel('set', index, function() {
+              if (typeof(options.onShow) === "function") {
+                options.onShow.call($this[0], $content);
+              }
+            });
           }
         } else {
           if ($content !== undefined) {

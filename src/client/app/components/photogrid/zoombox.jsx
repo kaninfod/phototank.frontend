@@ -1,5 +1,5 @@
-import Lightbox from 'react-image-lightbox-universal';
-import 'react-image-lightbox-universal/dist/umd/bundle.min.css';
+import Lightbox from 'react-image-lightbox';
+// import 'react-image-lightbox /dist/umd/bundle.min.css';
 import React from 'react';
 
 export default class Zoombox extends React.Component {
@@ -43,8 +43,8 @@ export default class Zoombox extends React.Component {
           mainSrc={currentPhoto.get('url_lg').concat('?token=', sessionStorage.jwt)}
           nextSrc={nextPhoto.get('url_lg').concat('?token=', sessionStorage.jwt)}
           prevSrc={prevPhoto.get('url_lg').concat('?token=', sessionStorage.jwt)}
-          nextSrcThumbnail={nextPhoto.get('url').concat('?token=', sessionStorage.jwt)}
-          prevSrcThumbnail={prevPhoto.get('url').concat('?token=', sessionStorage.jwt)}
+          nextSrcThumbnail={nextPhoto.get('url_tm').concat('?token=', sessionStorage.jwt)}
+          prevSrcThumbnail={prevPhoto.get('url_tm').concat('?token=', sessionStorage.jwt)}
 
           onCloseRequest={this.props.hideZoombox}
           onMovePrevRequest={this.movePrev}

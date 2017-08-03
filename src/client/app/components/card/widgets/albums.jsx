@@ -22,7 +22,6 @@ export default class Albums extends React.Component {
   }
 
   render() {
-    console.log(this.props);
     var albums = this.props.albums.map(a =>  album(a, this.handleChange));
     return (
       <div className="pt-widget">
@@ -42,7 +41,6 @@ export default class Albums extends React.Component {
 };
 
 var album = function (album, handleChange) {
-  console.log(album);
   return (
     <li key={album.get('id')}>
       <input id={album.get('id')} value={album.get('id')} name="album" type="radio"></input>
