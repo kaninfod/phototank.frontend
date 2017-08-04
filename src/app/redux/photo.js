@@ -150,7 +150,7 @@ function limitPhotoArray(state) {
 }
 
 function unionPhotos(state, action) {
-  const newPhotos = fromJS(action.payload.photos);
+  const newPhotos = fromJS(action.payload);
   return state.concat(newPhotos);
 }
 
@@ -177,11 +177,11 @@ function fetchPhotosSuccess(data) {
   return { type: FETCH_PHOTOS_SUCCESS, payload: data };
 }
 
-function setHeader(data) {
+export function setHeader(data) {
   return { type: SET_HEADER, payload: data };
 }
 
-function clickPhoto(photoId) {
+export function clickPhoto(photoId) {
   return { type: CLICK_PHOTO, payload: { selectedPhoto: photoId, } };
 }
 
@@ -408,7 +408,8 @@ export function fetchPhotos(payload) {
 
 //Utility functions, mainly for fetchPhotos
 function photosResponseHandler(response, dispatch) {
-  if (response.status >= 200 && response.status < 300) {
+  if (response.
+    status >= 200 && response.status < 300) {
     dispatch(setHeader(response.headers));
     return response.json();
   } else if (response.status == 401) {
