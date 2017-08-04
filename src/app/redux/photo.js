@@ -9,29 +9,31 @@ import { List, Map, fromJS, Set } from 'immutable';
 import * as bucketActions from './bucket';
 
 //Actions
-export const FETCH_PHOTOS_SUCCESS       = 'FETCH_PHOTOS_SUCCESS';
-export const FETCH_PHOTOS_REQUEST       = 'FETCH_PHOTOS_REQUEST';
-export const FETCH_BUCKET_SUCCESS       = 'FETCH_BUCKET_SUCCESS';
-export const FETCH_BUCKET_REQUEST       = 'FETCH_BUCKET_REQUEST';
-export const SET_HEADER                 = 'SET_HEADER';
-export const CLICK_PHOTO                = 'CLICK_PHOTO';
-export const SELECT_PHOTO_FULFILLED     = 'SELECT_PHOTO_FULFILLED';
-export const DELETE_PHOTO_REQUEST       = 'DELETE_PHOTO_REQUEST';
-export const DELETE_PHOTO_FULFILLED     = 'DELETE_PHOTO_FULFILLED';
-export const FETCH_PHOTO_REQUEST        = 'FETCH_PHOTO_REQUEST';
-export const FETCH_PHOTO_SUCCESS        = 'FETCH_PHOTO_SUCCESS';
-export const ROTATE_PHOTO_REQUEST       = 'ROTATE_PHOTO_REQUEST';
-export const ROTATE_PHOTO_SUCCESS       = 'ROTATE_PHOTO_SUCCESS';
-export const COMMENT_PHOTO_REQUEST      = 'COMMENT_PHOTO_REQUEST';
-export const COMMENT_PHOTO_SUCCESS      = 'COMMENT_PHOTO_SUCCESS';
-export const LIKE_PHOTO_REQUEST         = 'LIKE_PHOTO_REQUEST';
-export const LIKE_PHOTO_SUCCESS         = 'LIKE_PHOTO_SUCCESS';
-export const ADDTAG_PHOTO_REQUEST       = 'ADDTAG_PHOTO_REQUEST';
-export const ADDTAG_PHOTO_SUCCESS       = 'ADDTAG_PHOTO_SUCCESS';
-export const REMOVETAG_PHOTO_REQUEST    = 'REMOVETAG_PHOTO_REQUEST';
-export const REMOVETAG_PHOTO_SUCCESS    = 'REMOVETAG_PHOTO_SUCCESS';
-export const GET_TAGLIST_PHOTO_REQUEST  = 'GET_TAGLIST_PHOTO_REQUEST';
-export const GET_TAGLIST_PHOTO_SUCCESS  = 'GET_TAGLIST_PHOTO_SUCCESS';
+export const ADDTAG_PHOTO_REQUEST         = 'ADDTAG_PHOTO_REQUEST';
+export const ADDTAG_PHOTO_SUCCESS         = 'ADDTAG_PHOTO_SUCCESS';
+export const CLICK_PHOTO                  = 'CLICK_PHOTO';
+export const COMMENT_PHOTO_REQUEST        = 'COMMENT_PHOTO_REQUEST';
+export const COMMENT_PHOTO_SUCCESS        = 'COMMENT_PHOTO_SUCCESS';
+export const DELETE_PHOTO_FULFILLED       = 'DELETE_PHOTO_FULFILLED';
+export const DELETE_PHOTO_REQUEST         = 'DELETE_PHOTO_REQUEST';
+export const FETCH_BUCKET_REQUEST         = 'FETCH_BUCKET_REQUEST';
+export const FETCH_BUCKET_SUCCESS         = 'FETCH_BUCKET_SUCCESS';
+export const FETCH_PHOTO_REQUEST          = 'FETCH_PHOTO_REQUEST';
+export const FETCH_PHOTO_SUCCESS          = 'FETCH_PHOTO_SUCCESS';
+export const FETCH_PHOTOS_REQUEST         = 'FETCH_PHOTOS_REQUEST';
+export const FETCH_PHOTOS_SUCCESS         = 'FETCH_PHOTOS_SUCCESS';
+export const GET_TAGLIST_PHOTO_REQUEST    = 'GET_TAGLIST_PHOTO_REQUEST';
+export const GET_TAGLIST_PHOTO_SUCCESS    = 'GET_TAGLIST_PHOTO_SUCCESS';
+export const LIKE_PHOTO_REQUEST           = 'LIKE_PHOTO_REQUEST';
+export const LIKE_PHOTO_SUCCESS           = 'LIKE_PHOTO_SUCCESS';
+export const REMOVETAG_PHOTO_REQUEST      = 'REMOVETAG_PHOTO_REQUEST';
+export const REMOVETAG_PHOTO_SUCCESS      = 'REMOVETAG_PHOTO_SUCCESS';
+export const ROTATE_BUCKET_PHOTO_REQUEST  = 'ROTATE_BUCKET_PHOTO_REQUEST';
+export const ROTATE_BUCKET_PHOTO_SUCCESS  = 'ROTATE_BUCKET_PHOTO_SUCCESS';
+export const ROTATE_PHOTO_REQUEST         = 'ROTATE_PHOTO_REQUEST';
+export const ROTATE_PHOTO_SUCCESS         = 'ROTATE_PHOTO_SUCCESS';
+export const SELECT_PHOTO_FULFILLED       = 'SELECT_PHOTO_FULFILLED';
+export const SET_HEADER                   = 'SET_HEADER';
 export const TOGGLE_PHOTOS_BUCKET_REQUEST = 'TOGGLE_PHOTOS_BUCKET_REQUEST';
 export const TOGGLE_PHOTOS_BUCKET_SUCCESS = 'TOGGLE_PHOTOS_BUCKET_SUCCESS';
 
@@ -91,7 +93,7 @@ export function reducer(state=init, action={}) {
     }
 
     case COMMENT_PHOTO_SUCCESS: {
-      return state.setIn(['photoData', 'photo', 'comments'], fromJS(action.payload.comments));
+      return state.set('photoData', fromJS(action.payload));
     }
 
     case LIKE_PHOTO_SUCCESS: {
@@ -168,26 +170,22 @@ function setPagination(state, action) {
 
 // Action Creators
 function requestPhotos() {
-  return {
-    type: FETCH_PHOTOS_REQUEST,
-  };
+  return { type: FETCH_PHOTOS_REQUEST };
 }
 
 function fetchPhotosSuccess(data) {
-  return {
-    type: FETCH_PHOTOS_SUCCESS, payload: data,
-  };
+  return { type: FETCH_PHOTOS_SUCCESS, payload: data };
 }
 
 function setHeader(data) {
   return { type: SET_HEADER, payload: data };
 }
 
-export function clickPhoto(photoId) {
+function clickPhoto(photoId) {
   return { type: CLICK_PHOTO, payload: { selectedPhoto: photoId, } };
 }
 
-export function deletePhotoPending() {
+function deletePhotoPending() {
   return { type: DELETE_PHOTO_REQUEST, };
 }
 
@@ -195,7 +193,7 @@ function deletePhotoSuccess(data) {
   return { type: DELETE_PHOTO_FULFILLED, payload: data };
 }
 
-export function fetchPhotoPending() {
+function fetchPhotoPending() {
   return { type: FETCH_PHOTO_REQUEST, };
 }
 
@@ -203,7 +201,7 @@ function fetchPhotoSuccess(data) {
   return { type: FETCH_PHOTO_SUCCESS, payload: data };
 }
 
-export function rotatePhotoPending() {
+function rotatePhotoPending() {
   return { type: ROTATE_PHOTO_REQUEST, };
 }
 
@@ -211,7 +209,15 @@ function rotatePhotoSuccess(data) {
   return { type: ROTATE_PHOTO_SUCCESS, payload: data };
 }
 
-export function commentPhotoPending() {
+function rotateBucketPhotoPending() {
+  return { type: ROTATE_BUCKET_PHOTO_REQUEST, };
+}
+
+function rotateBucketPhotoSuccess(data) {
+  return { type: ROTATE_BUCKET_PHOTO_SUCCESS, payload: data };
+}
+
+function commentPhotoPending() {
   return { type: COMMENT_PHOTO_REQUEST, };
 }
 
@@ -219,7 +225,7 @@ function commentPhotoSuccess(data) {
   return { type: COMMENT_PHOTO_SUCCESS, payload: data };
 }
 
-export function likePhotoPending() {
+function likePhotoPending() {
   return { type: LIKE_PHOTO_REQUEST, };
 }
 
@@ -227,7 +233,7 @@ function likePhotoSuccess(data) {
   return { type: LIKE_PHOTO_SUCCESS, payload: data };
 }
 
-export function addTagPhotoPending() {
+function addTagPhotoPending() {
   return { type: ADDTAG_PHOTO_REQUEST, };
 }
 
@@ -235,7 +241,7 @@ function addTagPhotoSuccess(data) {
   return { type: ADDTAG_PHOTO_SUCCESS, payload: data };
 }
 
-export function removeTagPhotoPending() {
+function removeTagPhotoPending() {
   return { type: REMOVETAG_PHOTO_REQUEST, };
 }
 
@@ -298,6 +304,16 @@ export function rotatePhoto(payload) {
   };
 }
 
+export function rotateBucketPhotos(payload) {
+  const url = '/api/photos/bucket/rotate/'.concat(payload.rotation);
+  const requestType = requestTypes.POST;
+  const params = payload;
+  const request = createRequest(requestType, url, params);
+  return dispatch => {
+    apiHandler(rotateBucketPhotoPending, rotateBucketPhotoSuccess, request, dispatch);
+  };
+}
+
 export function togglePhotosBucket(photoId) {
   const url = '/api/photos/'.concat(photoId, '/bucket/toggle');
   const requestType = requestTypes.POST;
@@ -319,7 +335,6 @@ export function addTagPhoto(payload) {
 }
 
 export function removeTagPhoto(payload) {
-  console.log(payload);
   const url = '/api/photos/'.concat(payload.photoId, '/tag/delete');
   const requestType = requestTypes.DELETE;
   const params = { tag_id: payload.tagId }; //TODO change to tag_id

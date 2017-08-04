@@ -4,7 +4,7 @@ var HtmlWebpackPlugin = require('html-webpack-plugin');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 var BUILD_DIR = path.resolve(__dirname, 'public');
-var APP_DIR = path.resolve(__dirname, 'src/client/app');
+var APP_DIR = path.resolve(__dirname, 'src/app');
 
 var config = {
   resolve: {
@@ -45,8 +45,8 @@ var config = {
 
   plugins: [
     new webpack.ProvidePlugin({
-      'Promise': 'es6-promise',
-      'fetch': 'imports-loader?this=>global!exports-loader?global.fetch!whatwg-fetch'
+      Promise: 'es6-promise',
+      fetch: 'imports-loader?this=>global!exports-loader?global.fetch!whatwg-fetch',
     }),
     new ExtractTextPlugin('[name].css'),
     new webpack.ProvidePlugin({
@@ -55,13 +55,13 @@ var config = {
       }),
     new HtmlWebpackPlugin({
       title: 'PhotoTank',
-      template: 'src/client/app/html-template.ejs',
+      template: 'src/app/html-template.ejs',
       filename: 'index.html',
     }),
   ],
 
   devServer: {
-    contentBase: path.resolve(__dirname, 'src/client'),
+    contentBase: path.resolve(__dirname, 'src'),
     proxy: {
       '/api': {
           target: 'http://localhost:3000',

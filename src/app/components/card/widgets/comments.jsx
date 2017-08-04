@@ -19,7 +19,7 @@ export default class Comment extends React.Component {
 
   render() {
     const comments = this.props.data.comments;
-    const avatar = this.props.data.current_user.avatar.concat('?token=', sessionStorage.jwt);
+    const avatar = this.props.data.currentUser.get('avatar').concat('?token=', sessionStorage.jwt);
     return (
       <div className="pt-widget">
         <Header handleClose={this.props.widgetHandlers.HIDE} title="Add comments to Photo"/>
@@ -47,13 +47,13 @@ export default class Comment extends React.Component {
 }
 
 var comment = function (comment) {
-  const avatar = comment.user_avatar.concat('?token=', sessionStorage.jwt);
+  const avatar = comment.getIn(['user', 'avatar']).concat('?token=', sessionStorage.jwt);
   return (
-    <div className="comment" key={comment.id}>
+    <div className="comment" key={comment.get('id')}>
       <div className="comment-container">
         <div className="card">
-          <p className="comment-date">{comment.created_at}</p>
-          <p>{comment.comment}</p>
+          <p className="comment-date">{comment.get('created')}</p>
+          <p>{comment.get('name')}</p>
         </div>
         <img className="circle responsive-img" src={avatar}/>
       </div>

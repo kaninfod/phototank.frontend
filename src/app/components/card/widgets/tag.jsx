@@ -46,17 +46,11 @@ export default class Tag extends React.Component {
   }
 
   render() {
-    if ('bucket' in this.props.data) {
-      var photoId = 0;
-    } else {
-      var photoId = this.props.data.photo.id;
-    }
-
-    const taglist = this.props.taglist.toJS();
+    const taglist = this.props.data.taglist.toJS();
     const dataSourceConfig = { text: 'name', value: 'id' };
 
-    const tags = this.props.data.tags.map(tag => (this.renderChip({ label: tag.name, key: tag.id })));
-    console.log(this.props.data.tags);
+    const tags = this.props.data.tags.map(tag => (this.renderChip({ label: tag.get('name'), key: tag.get('id') })));
+
     return (
       <div className="pt-widget">
         <Header handleClose={this.props.widgetHandlers.HIDE} title="Add tag to photo"/>

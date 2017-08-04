@@ -32,9 +32,10 @@ const components = {
   return {
     selectedWidget: store.app.get('selectedWidget'),
     photoId: store.app.get('selectedPhoto'),
-    photoData: store.nPhoto.get('photoData').toJS(),
+    photoData: store.nPhoto.get('photoData'),
     albums: store.nAlbum.get('albums'),
     taglist: store.nPhoto.get('taglist'),
+    currentUser: store.nAuth.get('user'),
   };
 })
 export default class PhotoCard extends React.Component {
@@ -56,13 +57,6 @@ export default class PhotoCard extends React.Component {
     };
   }
 
-  // componentWillMount() {
-  //   if (this.props.photoId) {
-  //     console.log('I DID FIRE!!!');
-  //     this.props.dispatch(fetchPhoto(this.props.photoId))
-  //   }
-  // }
-
   componentWillReceiveProps(nextProps){
     if (this.props.photoId != nextProps.photoId) {
       this.setState({ hidden: false });
@@ -78,7 +72,7 @@ export default class PhotoCard extends React.Component {
 
   addToAlbum(albumId) {
     var payload = {
-      photoId: this.props.photoData.id,
+      photoId: this.props.photoData.get('id'),
       albumId: albumId
     }
     this.props.dispatch(addPhotoAlbum(payload))
@@ -86,7 +80,7 @@ export default class PhotoCard extends React.Component {
 
   rotatePhoto(rotation) {
     var payload = {
-      photoId: this.props.photoData.id,
+      photoId: this.props.photoData.get('id'),
       rotation: rotation
     }
     this.props.dispatch(rotatePhoto(payload))
@@ -94,22 +88,22 @@ export default class PhotoCard extends React.Component {
 
   addComment(comment) {
     var payload = {
-      photoId: this.props.photoData.id,
+      photoId: this.props.photoData.get('id'),
       comment: comment
     }
     this.props.dispatch(commentPhoto(payload))
   }
 
   addTag(tag) {
-    this.props.dispatch(addTagPhoto({photoId: this.props.photoData.id, name: tag}))
+    this.props.dispatch(addTagPhoto({photoId: this.props.photoData.get('id'), name: tag}))
   }
 
   removeTag(tagId) {
-    this.props.dispatch(removeTagPhoto({photoId: this.props.photoData.id, tagId: tagId}))
+    this.props.dispatch(removeTagPhoto({photoId: this.props.photoData.get('id'), tagId: tagId}))
   }
 
   deletePhoto() {
-    this.props.dispatch(deletePhoto(this.props.photoData.id))
+    this.props.dispatch(deletePhoto(this.props.photoData.get('id')))
     this.hide()
   }
 
@@ -118,16 +112,44 @@ export default class PhotoCard extends React.Component {
   }
 
   likePhoto() {
-    this.props.dispatch(likePhoto(this.props.photoData.id))
+    this.props.dispatch(likePhoto(this.props.photoData.get('id')))
   }
 
   likeState() {
     if (this.props.photoData.like) { return "green" } else {return "blue-grey lighten-2"}
   }
 
-  render() {
+  dataProvider() {
+    switch (this.props.selectedWidget) {
+      case 'INFO': {
+        return {
+          photo: this.props.photoData
+        }
+      }
 
-    if (!Object.keys(this.props.photoData).length || this.state.hidden) {
+      case 'ALBUMS': {
+        return {
+          albums: this.props.albums
+        }
+      }
+
+      case 'COMMENTS': {
+        return {
+          comments: this.props.photoData.get('comments'),
+          currentUser: this.props.currentUser,
+        }
+      }
+      case 'TAG': {
+        return {
+          tags: this.props.photoData.get('tags'),
+          taglist: this.props.taglist,
+        }
+      }
+    }
+  }
+
+  render() {
+    if (!this.props.photoData.size || this.state.hidden) {
       return null
     }
 
@@ -156,9 +178,7 @@ export default class PhotoCard extends React.Component {
       <Draggable handle=".header">
         <div className="pt-card upper-right show">
           <WidgetType
-            data={props.photoData}
-            albums={props.albums}
-            taglist={props.taglist}
+            data={this.dataProvider()}
             widgetHandlers={widgetHandlers}
           />
           <Buttons buttons={buttons}

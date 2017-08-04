@@ -7,16 +7,19 @@ import Draggable, { DraggableCore } from 'react-draggable';
 import { getButtons } from './bucket-button.props';
 import { Buttons, Bucketgrid, Rotate, Albums, Comments, Tag } from '../widgets';
 import { setWidget } from '../../../redux/appState'
-import {
-  getPhotosBucket,
-  togglePhotosBucket,
-  addPhotoAlbumBucket,
-  commentPhotosBucket,
-  rotatePhotosBucket,
-  likePhotosBucket,
-  tagPhotosBucket,
-} from '../../../redux/bucket';
-import { fetchBucket } from '../../../redux/photo';
+// import {
+//   getPhotosBucket,
+//   togglePhotosBucket,
+//   addPhotoAlbumBucket,
+//   commentPhotosBucket,
+//   rotatePhotosBucket,
+//   likePhotosBucket,
+//   tagPhotosBucket,
+// } from '../../../redux/bucket';
+import { addBucketAlbum } from '../../../redux/album';
+import { fetchBucket, fetchTaglist, rotateBucketPhotos } from '../../../redux/photo';
+import { fetchAlbums } from '../../../redux/album';
+
 const components = {
   INFO:   Bucketgrid,
   ROTATE:   Rotate,
@@ -30,11 +33,9 @@ const components = {
 @connect((store) => {
   return {
     selectedWidget: store.app.get('selectedWidget'),//store.bucket.get('selectedWidget'),
-    // bucketData: store.nBucket.get('bucket').toJS(),
     bucket: store.nPhoto.get('bucket'),
-    // albums: store.nAlbum.getIn(['bucket', 'albums']),
     albums: store.nAlbum.get('albums'),
-    current_user: store.nAuth.get('user'),
+    currentUser: store.nAuth.get('user'),
     taglist: store.nPhoto.get('taglist'),
   };
 })
@@ -63,6 +64,8 @@ export default class Bucket extends React.Component {
 
   componentWillMount() {
     this.props.dispatch(fetchBucket());
+    this.props.dispatch(fetchTaglist())
+    this.props.dispatch(fetchAlbums())
   }
 
   removePhoto(id) {
@@ -86,11 +89,11 @@ export default class Bucket extends React.Component {
   }
 
   rotatePhotos(degrees) {
-    this.props.dispatch(rotatePhotosBucket(degrees))
+    this.props.dispatch(rotateBucketPhotos(degrees))
   }
 
   addToAlbum(albumId) {
-    this.props.dispatch(addPhotoAlbumBucket(albumId));
+    this.props.dispatch(addBucketAlbum(albumId));
   }
 
   addComment(comment) {
@@ -101,26 +104,26 @@ export default class Bucket extends React.Component {
     switch (this.props.selectedWidget) {
       case 'INFO': {
         return {
-          bucket: this.props.bucket.toJS()
+          bucket: this.props.bucket
         }
       }
 
       case 'ALBUMS': {
         return {
-          albums: this.props.albums.toJS()
+          albums: this.props.albums
         }
       }
 
       case 'COMMENTS': {
         return {
-          photo: { comments: [] },
-          current_user: this.props.current_user.toJS(),
+          comments: [],
+          currentUser: this.props.currentUser,
         }
       }
       case 'TAG': {
         return {
-          photo: { tags: [] },
-          taglist: this.props.taglist.toJS(),
+          tags: [],
+          taglist: this.props.taglist,
         }
       }
     }

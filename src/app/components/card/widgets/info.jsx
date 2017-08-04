@@ -10,7 +10,7 @@ export default class Info extends React.Component {
   }
 
   render() {
-    const info = infoItemProps(this.props.data);
+    const info = infoItemProps(this.props.data.photo);
     return (
       <div className="pt-widget">
         <Header handleClose={this.props.widgetHandlers.HIDE} title="Photo Information"/>
@@ -25,14 +25,15 @@ export default class Info extends React.Component {
 }
 
 var infoItemProps = function (props) {
+
   return (
     [
-      { key: 1, label: 'IDis',     info: props.id },
-      { key: 2, label: 'Date',     info: props.date_taken_formatted },
-      { key: 3, label: 'Address',  info: props.location.address },
-      { key: 4, label: 'Country',  info: props.location.country_name },
-      { key: 5, label: 'Model',    info: props.model },
-      { key: 6, label: 'Make',     info: props.make, },
+      { key: 1, label: 'IDis',     info: props.get('id') },
+      { key: 2, label: 'Date',     info: props.get('date_taken_formatted') },
+      { key: 3, label: 'Address',  info: props.getIn(['location', 'address']) },
+      { key: 4, label: 'Country',  info: props.getIn(['location', 'country_name']) },
+      { key: 5, label: 'Model',    info: props.get('model') },
+      { key: 6, label: 'Make',     info: props.get('make'), },
   ]);
 };
 

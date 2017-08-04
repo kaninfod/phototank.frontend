@@ -12,6 +12,8 @@ export const UPDATE_ALBUM = 'UPDATE_ALBUM';
 export const UPDATE_ALBUM_SUCCESS = 'UPDATE_ALBUM_SUCCESS';
 export const ADDPHOTO_ALBUM_REQUEST = 'ADDPHOTO_ALBUM_REQUEST';
 export const ADDPHOTO_ALBUM_SUCCESS = 'ADDPHOTO_ALBUM_SUCCESS';
+export const ADDBUCKET_ALBUM_REQUEST = 'ADDBUCKET_ALBUM_REQUEST';
+export const ADDBUCKET_ALBUM_SUCCESS = 'ADDBUCKET_ALBUM_SUCCESS';
 export const DELETE_ALBUM_REQUEST = 'DELETE_ALBUM_REQUEST';
 export const DELETE_ALBUM_SUCCESS = 'DELETE_ALBUM_SUCCESS';
 
@@ -59,81 +61,59 @@ export function reducer(state=init, action={}) {
 
 // Action Creators
 export function getAlbumsPending(respose) {
-  return {
-    type: FETCH_ALBUMS_REQUEST,
-  };
+  return { type: FETCH_ALBUMS_REQUEST, };
 }
 
 export function getAlbumsSuccess(response) {
-  return {
-    type: FETCH_ALBUMS_SUCCESS,
-    payload: response,
-  };
+  return { type: FETCH_ALBUMS_SUCCESS, payload: response, };
 }
 
 export function getAlbumPending() {
-  return {
-    type: REQUEST_ALBUM,
-  };
+  return { type: REQUEST_ALBUM, };
 }
 
 export function getAlbumSuccess(response) {
-  return {
-    type: FETCH_ALBUM_SUCCESS,
-    payload: response,
-  };
+  return { type: FETCH_ALBUM_SUCCESS, payload: response, };
 }
 
 function createAlbumPending() {
-  return {
-    type: CREATE_ALBUM,
-  };
+  return { type: CREATE_ALBUM, };
 }
 
 function createAlbumSuccess(response) {
-  return {
-    type: CREATE_ALBUM_SUCCESS,
-    payload: response,
-  };
+  return { type: CREATE_ALBUM_SUCCESS, payload: response, };
 }
 
 export function updateAlbumPending() {
-  return {
-    type: UPDATE_ALBUM,
-  };
+  return { type: UPDATE_ALBUM, };
 }
 
 export function updateAlbumSuccess(response) {
-  return {
-    type: UPDATE_ALBUM_SUCCESS,
-    payload: response,
-  };
+  return { type: UPDATE_ALBUM_SUCCESS, payload: response, };
 }
 
 export function addPhotoAlbumPending() {
-  return {
-    type: ADDPHOTO_ALBUM_REQUEST,
-  };
+  return { type: ADDPHOTO_ALBUM_REQUEST, };
 }
 
 export function addPhotoAlbumSuccess(response) {
-  return {
-    type: ADDPHOTO_ALBUM_SUCCESS,
-    payload: response,
-  };
+  return { type: ADDPHOTO_ALBUM_SUCCESS, payload: response, };
+}
+
+export function addBucketAlbumPending() {
+  return { type: ADDBUCKET_ALBUM_REQUEST, };
+}
+
+export function addBucketAlbumSuccess(response) {
+  return { type: ADDBUCKET_ALBUM_SUCCESS, payload: response, };
 }
 
 export function deleteAlbumPending() {
-  return {
-    type: DELETE_ALBUM_REQUEST,
-  };
+  return { type: DELETE_ALBUM_REQUEST, };
 }
 
 export function deleteAlbumSuccess(response) {
-  return {
-    type: DELETE_ALBUM_SUCCESS,
-    payload: response,
-  };
+  return { type: DELETE_ALBUM_SUCCESS, payload: response, };
 }
 
 //API
@@ -184,6 +164,16 @@ export function addPhotoAlbum(payload) {
   const request = createRequest(requestType, url, params);
   return dispatch => {
     apiHandler(addPhotoAlbumPending, addPhotoAlbumSuccess, request, dispatch);
+  };
+}
+
+export function addBucketAlbum(albumId) {
+  const url = '/api/albums/'.concat(albumId, '/bucket');
+  const requestType = requestTypes.PUT;
+  const params = null;
+  const request = createRequest(requestType, url, params);
+  return dispatch => {
+    apiHandler(addBucketAlbumPending, addBucketAlbumSuccess, request, dispatch);
   };
 }
 
