@@ -5,14 +5,22 @@ export const requestTypes = {
   PUT:    'PUT',
 };
 
-export function toQueryString(paramsObject) {
-  if (!paramsObject) return '';
-  return Object
-    .keys(paramsObject)
-    .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(paramsObject[key])}`)
-    .join('&')
-  ;
-}
+export const apiService = store => next => action => {
+  next(action);
+  if (action.isAPI) {
+    const _actionTypeSuccess = action.type.concat('_SUCCESS');
+    const _actionTypeError = action.type.concat('_ERROR');
+    const request = createRequest(action.httpVerb, action.url, action.params);
+    fetch(request)
+    .then(response => responseHandler(response))
+    .then(data =>
+      store.dispatch({ type: _actionTypeSuccess, payload: data })
+    )
+    .catch(error =>
+      next({ type: _actionTypeError, payload: error })
+    );
+  }
+};
 
 export function createRequest(type, url, params) {
   const token = sessionStorage.jwt;
@@ -33,24 +41,28 @@ export function createRequest(type, url, params) {
   return request;
 }
 
-export function apiHandler(funcPending, funcSuccess, request, dispatch) {
-  dispatch(funcPending());
-  fetch(request)
-  .then(response => responseHandler(response, dispatch))
-  .then(data => dispatch(funcSuccess(data)))
-  .catch(error => console.log('request failed', error));
-}
-
 export function responseHandler(response, dispatch) {
   if (response.status >= 200 && response.status < 300) {
     return response.json();
   } else if (response.status == 401) {
-    dispatch(notAuthorized());
+    // dispatch(notAuthorized());
+    const error = new Error(response.statusText);
+    error.response = response;
+    throw error;
   } else {
     const error = new Error(response.statusText);
     error.response = response;
     throw error;
   }
+}
+
+export function toQueryString(paramsObject) {
+  if (!paramsObject) return '';
+  return Object
+    .keys(paramsObject)
+    .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(paramsObject[key])}`)
+    .join('&')
+  ;
 }
 
 // Action Creators

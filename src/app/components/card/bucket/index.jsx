@@ -7,15 +7,6 @@ import Draggable, { DraggableCore } from 'react-draggable';
 import { getButtons } from './bucket-button.props';
 import { Buttons, Bucketgrid, Rotate, Albums, Comments, Tag } from '../widgets';
 import { setWidget } from '../../../redux/appState'
-// import {
-//   getPhotosBucket,
-//   togglePhotosBucket,
-//   addPhotoAlbumBucket,
-//   commentPhotosBucket,
-//   rotatePhotosBucket,
-//   likePhotosBucket,
-//   tagPhotosBucket,
-// } from '../../../redux/bucket';
 import { addBucketAlbum } from '../../../redux/album';
 import { fetchBucket, fetchTaglist, rotateBucketPhotos } from '../../../redux/photo';
 import { fetchAlbums } from '../../../redux/album';

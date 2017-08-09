@@ -6,13 +6,13 @@ import Bucket from '../../components/card/bucket';
 import BottomPanel from '../../components/bottom-panel';
 import Zoombox from '../../components/photogrid/zoombox';
 import { fetchCities, fetchCountries } from '../../redux/location'
-import { fetchPhotos, clickPhoto, deletePhoto, fetchBucket } from '../../redux/photo';
+import { fetchPhotos, deletePhoto, fetchBucket } from '../../redux/photo';
 import { togglePhotosBucket } from '../../redux/photo';
 
 
 @connect((store) => {
   return {
-    selectedPhoto: store.nPhoto.get('selectedPhoto'),
+    // selectedPhoto: store.nPhoto.get('selectedPhoto'),
     lastPage:      store.nPhoto.getIn(['pagination', 'last_page']),
     page:          store.nPhoto.getIn(['pagination', 'next_page']),
     photos:        store.nPhoto.get('photos'),
@@ -25,12 +25,11 @@ class Photos extends React.Component {
   constructor(props) {
     super(props);
     this.hideBucket           = this.hideBucket.bind(this);
-    this.removeBucketPhoto    = this.removeBucketPhoto.bind(this);
+    this.toggleBucketPhoto    = this.toggleBucketPhoto.bind(this);
     this.changeSearchParams   = this.changeSearchParams.bind(this)
     this.handleInfiniteScroll = this.handleInfiniteScroll.bind(this);
     this.handleClick          = this.handleClick.bind(this);
     this.handleDelete         = this.handleDelete.bind(this);
-    this.handleSelect         = this.handleSelect.bind(this);
     this.showZoombox          = this.showZoombox.bind(this);
     this.hideZoombox          = this.hideZoombox.bind(this);
     this.updateGrid = false;
@@ -44,6 +43,7 @@ class Photos extends React.Component {
         direction: false,
         like: false,
         tags: [],
+        photosPerPage:50,
       },
     };
   };
@@ -76,7 +76,7 @@ class Photos extends React.Component {
     this.setState({ hidden: !this.state.hidden });
   }
 
-  removeBucketPhoto(photoId) {
+  toggleBucketPhoto(photoId) {
       this.props.dispatch(togglePhotosBucket(photoId))
   }
 
@@ -96,16 +96,12 @@ class Photos extends React.Component {
     this.setState(state)
   }
 
-  handleSelect(photoId) {
-    this.props.dispatch(togglePhotosBucket(photoId))
-  }
-
   handleDelete(photoId) {
     this.props.dispatch(deletePhoto(photoId))
   }
 
-  handleClick(photoId) {
-    this.props.dispatch(clickPhoto(photoId))
+  handleClick(photo) {
+    this.props.dispatch( { type: 'CLICK_PHOTO', payload: photo } )
   }
 
   showZoombox(photoId) {
@@ -121,7 +117,7 @@ class Photos extends React.Component {
 
     const photoActions = {
       DELETE: this.handleDelete,
-      SELECT: this.removeBucketPhoto,
+      TOGGLE: this.toggleBucketPhoto,
       CLICK:  this.handleClick ,
       ZOOM:   this.showZoombox,
       SCROLL: this.handleInfiniteScroll,

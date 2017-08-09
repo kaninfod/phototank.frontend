@@ -1,4 +1,4 @@
-import { apiHandler, createRequest, requestTypes } from './apiUtils';
+import { requestTypes } from './apiUtils';
 import { List, Map, fromJS } from 'immutable';
 // import { withRouter } from 'react-router-dom';
 import createHistory from 'history/createBrowserHistory';
@@ -43,24 +43,6 @@ export function reducer(state=init, action={}) {
 }
 
 // Action Creators
-export function loginPending() {
-  return { type: LOGIN_REQUEST };
-}
-
-export function loginSuccess(response) {
-  return {
-    type: LOGIN_SUCCESS, payload: response, };
-}
-
-export function validateTokenPending() {
-  return { type: VALIDATE_TOKEN_REQUEST };
-}
-
-export function validateTokenSuccess(response) {
-  return {
-    type: VALIDATE_TOKEN_SUCCESS, payload: response, };
-}
-
 export function logoutPending() {
   return { type: LOGOUT_REQUEST };
 }
@@ -71,21 +53,29 @@ export function logout() {
 
 //API
 export function login(payload) {
-  const url = '/api/users/login';
-  const requestType = requestTypes.POST;
-  const params = payload;
-  const request = createRequest(requestType, url, params);
+  const apiPayload = {
+    isAPI: true,
+    type: 'LOGIN',
+    url: '/api/users/login',
+    httpVerb: requestTypes.POST,
+    params: payload,
+  };
+
   return dispatch => {
-    apiHandler(loginPending, loginSuccess, request, dispatch);
+    dispatch(apiPayload);
   };
 }
 
 export function validateToken(payload) {
-  const url = '/api/users/from_token';
-  const requestType = requestTypes.GET;
-  const params = payload;
-  const request = createRequest(requestType, url, params);
+  const apiPayload = {
+    isAPI: true,
+    type: 'VALIDATE_TOKEN',
+    url: '/api/users/from_token',
+    httpVerb: requestTypes.GET,
+    params: payload,
+  };
+
   return dispatch => {
-    apiHandler(validateTokenPending, validateTokenSuccess, request, dispatch);
+    dispatch(apiPayload);
   };
 }

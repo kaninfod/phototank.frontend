@@ -25,7 +25,7 @@ import CatalogPhotos        from './pages/photos/catalog';
 
 import Albums               from './pages/albums';
 import AlbumList            from './components/albums/albumlist';
-import NewAlbum             from './components/albums/new';
+import NewAlbum             from './components/albums/newAlbum';
 import AlbumPhotos          from './pages/photos/album';
 
 import Photos               from './pages/photos';

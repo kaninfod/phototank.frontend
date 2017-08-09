@@ -58,8 +58,8 @@ class NewAlbum extends React.Component {
     if (nextProps.album != this.props.album) {
       const album = nextProps.album
       this.setState({
-          start_date: new Date(album.get('start_date')),
-          end_date: new Date(album.get('end_date')),
+          start_date: album.get('start_date') == null ? null : new Date(album.get('start_date')),
+          end_date: album.get('end_date') == null ? null : new Date(album.get('end_date')),
           id: album.get('id'),
           name: album.get('name'),
           make: null,
@@ -122,18 +122,23 @@ class NewAlbum extends React.Component {
     } else {
       this.props.dispatch(createAlbum(album));
     }
+    this.props.history.push('/albums/list');
+  }
 
+  _cities() {
+    return this.props.cities.map(city => {
+      return (<MenuItem value={city.get('id')} key={city.get('id')} primaryText={city.get('name')} />);
+    });
+  }
+
+  _countries() {
+    return this.props.countries.map(country => {
+      return (<MenuItem value={country.get('id')} key={country.get('id')} primaryText={country.get('name')} />);
+    });
   }
 
   render() {
-    const countries = this.props.countries.map(country => {
-      return (<MenuItem value={country.get('id')} key={country.get('id')} primaryText={country.get('name')} />);
-    });
-    const cities = this.props.cities.map(city => {
-      return (<MenuItem value={city.get('id')} key={city.get('id')} primaryText={city.get('name')} />);
-    });
     return (
-
       <div>
         <Paper zDepth={3} className="dialogue">
           <TextField
@@ -143,13 +148,13 @@ class NewAlbum extends React.Component {
             errorText={this.state.errorName}
           />
           <DatePicker
-            floatingLabelText="Ranged Date Picker"
+            floatingLabelText="Start date"
             hintText="Start date"
             onChange={this.handleChangeStartdate}
             value={this.state.start_date}
           />
           <DatePicker
-            floatingLabelText="Ranged Date Picker"
+            floatingLabelText="End date"
             hintText="End date"
             onChange={this.handleChangeEnddate}
             value={this.state.end_date}
@@ -159,14 +164,14 @@ class NewAlbum extends React.Component {
           value={this.state.country}
           floatingLabelText="Country"
           onChange={this.handleChangeCountry} >
-            {countries}
+            {this._countries()}
           </SelectField>
 
           <SelectField
             value={this.state.city}
             floatingLabelText="City"
             onChange={this.handleChangeCity} >
-              {cities}
+              {this._cities()}
           </SelectField>
 
           <SelectField floatingLabelText="Camera">
@@ -186,7 +191,10 @@ class NewAlbum extends React.Component {
             label="Save"
             onClick={this.handleClickSave}
             />
-          <RaisedButton label="Cancel"/>
+          <RaisedButton
+            label="Cancel"
+            onClick={() => this.props.history.push('/albums/list')}
+          />
         </div>
         </Paper>
 

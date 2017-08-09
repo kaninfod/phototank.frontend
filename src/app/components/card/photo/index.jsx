@@ -5,9 +5,12 @@ import Draggable, {DraggableCore} from 'react-draggable';
 import {getButtons} from './button.props.js'
 import { Buttons, Info, Rotate, Albums, Comments, Tag, Map } from '../widgets'
 import '../styles/card.scss'
-import { addPhotoAlbum, fetchAlbums } from '../../../redux/album'
 import {
-  fetchPhoto,
+  addPhotoAlbum,
+  // fetchAlbums,
+} from '../../../redux/album'
+import {
+  // fetchPhoto,
   rotatePhoto,
   commentPhoto,
   likePhoto,
@@ -31,7 +34,7 @@ const components = {
 @connect((store) => {
   return {
     selectedWidget: store.app.get('selectedWidget'),
-    photoId: store.app.get('selectedPhoto'),
+    photo: store.nPhoto.get('photo'),
     photoData: store.nPhoto.get('photoData'),
     albums: store.nAlbum.get('albums'),
     taglist: store.nPhoto.get('taglist'),
@@ -58,11 +61,8 @@ export default class PhotoCard extends React.Component {
   }
 
   componentWillReceiveProps(nextProps){
-    if (this.props.photoId != nextProps.photoId) {
+    if (this.props.photo !== nextProps.photo) {
       this.setState({ hidden: false });
-      this.props.dispatch(fetchPhoto(nextProps.photoId))
-      this.props.dispatch(fetchAlbums())
-      this.props.dispatch(fetchTaglist())
     }
   }
 
@@ -72,7 +72,7 @@ export default class PhotoCard extends React.Component {
 
   addToAlbum(albumId) {
     var payload = {
-      photoId: this.props.photoData.get('id'),
+      photoId: this.props.photo.get('id'),
       albumId: albumId
     }
     this.props.dispatch(addPhotoAlbum(payload))
@@ -80,7 +80,7 @@ export default class PhotoCard extends React.Component {
 
   rotatePhoto(rotation) {
     var payload = {
-      photoId: this.props.photoData.get('id'),
+      photoId: this.props.photo.get('id'),
       rotation: rotation
     }
     this.props.dispatch(rotatePhoto(payload))
@@ -88,22 +88,22 @@ export default class PhotoCard extends React.Component {
 
   addComment(comment) {
     var payload = {
-      photoId: this.props.photoData.get('id'),
+      photoId: this.props.photo.get('id'),
       comment: comment
     }
     this.props.dispatch(commentPhoto(payload))
   }
 
   addTag(tag) {
-    this.props.dispatch(addTagPhoto({photoId: this.props.photoData.get('id'), name: tag}))
+    this.props.dispatch(addTagPhoto({photoId: this.props.photo.get('id'), name: tag}))
   }
 
   removeTag(tagId) {
-    this.props.dispatch(removeTagPhoto({photoId: this.props.photoData.get('id'), tagId: tagId}))
+    this.props.dispatch(removeTagPhoto({photoId: this.props.photo.get('id'), tagId: tagId}))
   }
 
   deletePhoto() {
-    this.props.dispatch(deletePhoto(this.props.photoData.get('id')))
+    this.props.dispatch(deletePhoto(this.props.photo.get('id')))
     this.hide()
   }
 
@@ -112,18 +112,18 @@ export default class PhotoCard extends React.Component {
   }
 
   likePhoto() {
-    this.props.dispatch(likePhoto(this.props.photoData.get('id')))
+    this.props.dispatch(likePhoto(this.props.photo.get('id')))
   }
 
   likeState() {
-    if (this.props.photoData.like) { return "green" } else {return "blue-grey lighten-2"}
+    if (this.props.photo.get('like')) { return "green" } else {return "blue-grey lighten-2"}
   }
 
   dataProvider() {
     switch (this.props.selectedWidget) {
       case 'INFO': {
         return {
-          photo: this.props.photoData
+          photo: this.props.photo
         }
       }
 
@@ -135,21 +135,26 @@ export default class PhotoCard extends React.Component {
 
       case 'COMMENTS': {
         return {
-          comments: this.props.photoData.get('comments'),
+          comments: this.props.photo.get('comments'),
           currentUser: this.props.currentUser,
         }
       }
       case 'TAG': {
         return {
-          tags: this.props.photoData.get('tags'),
+          tags: this.props.photo.get('tags'),
           taglist: this.props.taglist,
+        }
+      }
+      case 'MAP': {
+        return {
+          url: this.props.photo.getIn(['location', 'map_url'])
         }
       }
     }
   }
 
   render() {
-    if (!this.props.photoData.size || this.state.hidden) {
+    if (!this.props.photo.size || this.state.hidden) {
       return null
     }
 

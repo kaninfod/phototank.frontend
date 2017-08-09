@@ -5,9 +5,9 @@ import Widget from './widget';
 import lazyload from 'jquery-lazyload';
 
 export default class Grid extends React.Component {
-  componentDidUpdate(prevProps, prevState) {
-    $('.lazy').lazyload();
-  }
+  // componentDidUpdate(prevProps, prevState) {
+  //   $('.lazy').lazyload();
+  // }
 
   _renderPhotos() {
     return this.props.photos.map(photo =>

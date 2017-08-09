@@ -15,7 +15,7 @@ var init = Map(fromJS({
     fetchCatelogs: false,
     albumsFetch: false,
   },
-  selectedPhoto: null,
+  selectedPhoto: [],
   selectedWidget: 'INFO',
 }));
 
@@ -28,9 +28,9 @@ export function reducer(state=init, action={}) {
       return state.set('selectedWidget', action.payload.widget);
     }
 
-    case photoActions.CLICK_PHOTO: {
-      return state.set('selectedPhoto', action.payload.selectedPhoto);
-    }
+    // case photoActions.CLICK_PHOTO: {
+    //   return state.set('selectedPhoto', action.payload);
+    // }
 
     case catalogActions.VERIFY_CATALOG_REQUEST: {
       return state.setIn(['loadingStates', 'verifyCatalog'], true);

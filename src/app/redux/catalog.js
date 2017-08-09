@@ -1,4 +1,4 @@
-import { createRequest, responseHandler, notAuthorized } from './apiUtils';
+import { requestTypes, notAuthorized } from './apiUtils';
 import { List, Map, fromJS } from 'immutable';
 
 //actions
@@ -31,14 +31,21 @@ export function reducer(state=init, action={}) {
       return state;
     }
 
-    case FETCH_CATALOG_SUCCESS: {
+    case 'FETCH_CATALOG_SUCCESS': {
       state = state.set('catalog', fromJS(action.payload));
       return state;
     }
 
-    case CREATE_CATALOG_SUCCESS: {
+    case 'CREATE_CATALOG_SUCCESS': {
       state = state.set('catalog', fromJS(action.payload));
       return state;
+    }
+
+    case 'DELETE_CATALOG_SUCCESS': {
+      const catalogs = state.get('catalogs').filter(obj =>
+         obj.get('id') != action.payload.id
+      );
+      return state.set('catalogs', catalogs);
     }
 
     case VERIFY_CATALOG_SUCCESS: {
@@ -56,131 +63,102 @@ export function reducer(state=init, action={}) {
   return state;
 }
 
-// Action Creators
-export function getCatalogsPending(response) {
-  return { type: FETCH_CATALOGS_REQUEST, };
-}
-
-export function getCatalogsSuccess(response) {
-  return { type: FETCH_CATALOGS_SUCCESS, payload: response, };
-}
-
-export function getCatalogPending(response) {
-  return { type: FETCH_CATALOG_REQUEST, };
-}
-
-export function getCatalogSuccess(response) {
-  return { type: FETCH_CATALOG_SUCCESS, payload: response, };
-}
-
-export function createCatalogSuccess(response) {
-  return { type: CREATE_CATALOG_SUCCESS, payload: response, };
-}
-
-export function createCatalogPending(response) {
-  return { type: CREATE_CATALOG_REQUEST, };
-}
-
-export function verifyCatalogSuccess(response) {
-  return { type: VERIFY_CATALOG_SUCCESS, payload: response, };
-}
-
-export function verifyCatalogPending(response) {
-  return { type: VERIFY_CATALOG_REQUEST, };
-}
-
-export function importCatalogSuccess(response) {
-  return { type: IMPORT_CATALOG_SUCCESS, payload: response, };
-}
-
-export function importCatalogPending(response) {
-  return { type: IMPORT_CATALOG_REQUEST, };
-}
-
-export function updateCatalogSuccess(response) {
-  return { type: UPDATE_CATALOG_SUCCESS, payload: response, };
-}
-
-export function updateCatalogPending(response) {
-  return { type: UPDATE_CATALOG_REQUEST, };
-}
-
 //API
 export function fetchCatalogs() {
-  const url = '/api/catalogs';
+  const apiPayload = {
+    isAPI: true,
+    type: 'FETCH_CATALOGS',
+    url: '/api/catalogs',
+    httpVerb: requestTypes.GET,
+    params: null,
+  };
+
   return dispatch => {
-
-    dispatch(getCatalogsPending());
-
-    fetch(createRequest('GET', url, null))
-    .then(response => responseHandler(response, dispatch))
-    .then(data => dispatch(getCatalogsSuccess(data)))
-    .catch(error => console.log('request failed', error));
+    dispatch(apiPayload);
   };
 }
 
-export function fetchCatalog(payload) {
-  var url = '/api/catalogs/'.concat(payload.id, '.json');
+export function fetchCatalog(catalogId) {
+  const apiPayload = {
+    isAPI: true,
+    type: 'FETCH_CATALOG',
+    url: '/api/catalogs/'.concat(catalogId, '.json'),
+    httpVerb: requestTypes.GET,
+    params: null,
+  };
+
   return dispatch => {
-
-    dispatch(getCatalogPending());
-
-    fetch(createRequest('GET', url, null))
-    .then(response => responseHandler(response, dispatch))
-    .then(data => dispatch(getCatalogSuccess(data)))
-    .catch(error => console.log('request failed', error));
+    dispatch(apiPayload);
   };
 }
 
-export function createCatalog(params) {
-  const url = '/api/catalogs/create.json';
+export function createCatalog(payload) {
+  const apiPayload = {
+    isAPI: true,
+    type: 'CREATE_CATALOG',
+    url: '/api/catalogs',
+    httpVerb: requestTypes.POST,
+    params: payload,
+  };
+
   return dispatch => {
-
-    dispatch(createCatalogPending());
-
-    fetch(createRequest('POST', url, params))
-    .then(response => responseHandler(response, dispatch))
-    .then(data => dispatch(createCatalogSuccess(data)))
-    .catch(error => console.log('request failed', error));
+    dispatch(apiPayload);
   };
 }
 
 export function verifyCatalog(payload) {
-  const params = ''.concat('?id=', payload.id, '&oauth_verifier=', payload.verifier);
-  const url = '/api/catalogs/oauth_verify'.concat(params);
+  const urlString = ''.concat('?id=', payload.id, '&oauth_verifier=', payload.verifier);
+  const apiPayload = {
+    isAPI: true,
+    type: 'VERIFY_CATALOG',
+    url: '/api/catalogs/oauth_verify'.concat(params),
+    httpVerb: requestTypes.GET,
+    params: null,
+  };
+
   return dispatch => {
-
-    dispatch(verifyCatalogPending());
-
-    fetch(createRequest('GET', url, null))
-    .then(response => responseHandler(response, dispatch))
-    .then(data => dispatch(verifyCatalogSuccess(data)))
-    .catch(error => console.log('request failed', error));
+    dispatch(apiPayload);
   };
 }
 
 export function importCatalog(catalogId) {
-  const url = '/api/catalogs/'.concat(catalogId, '/import');
+  const apiPayload = {
+    isAPI: true,
+    type: 'IMPORT_CATALOG',
+    url: '/api/catalogs/'.concat(catalogId, '/import'),
+    httpVerb: requestTypes.GET,
+    params: null,
+  };
+
   return dispatch => {
-
-    dispatch(importCatalogPending());
-
-    fetch(createRequest('GET', url, null))
-    .then(response => responseHandler(response, dispatch))
-    .then(data => dispatch(importCatalogSuccess(data)))
-    .catch(error => console.log('request failed', error));
+    dispatch(apiPayload);
   };
 }
 
 export function updateCatalog(payload) {
-  const url = '/api/catalogs/'.concat(payload.id);
+  const apiPayload = {
+    isAPI: true,
+    type: 'UPDATE_CATALOG',
+    url: '/api/catalogs/'.concat(payload.id),
+    httpVerb: requestTypes.PUT,
+    params: payload,
+  };
+
   return dispatch => {
+    dispatch(apiPayload);
+  };
+}
 
-    dispatch(updateCatalogPending());
+export function deleteCatalog(catalogId) {
+  const apiPayload = {
+    isAPI: true,
+    type: 'DELETE_CATALOG',
+    url: '/api/catalogs/'.concat(catalogId),
+    httpVerb: requestTypes.DELETE,
+    params: null,
+  };
 
-    fetch(createRequest('PUT', url, payload))
-    .then(response => responseHandler(response, dispatch))
-    .then(data => dispatch(updateCatalogSuccess(data)))
-    .catch(error => console.log('request failed', error));
+  return dispatch => {
+    dispatch(apiPayload);
   };
 }

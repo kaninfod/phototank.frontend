@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from "react-redux";
 import { Link } from 'react-router-dom';
-import { fetchCatalogs, importCatalog } from '../../redux/catalog';
+import { fetchCatalogs, importCatalog, deleteCatalog } from '../../redux/catalog';
 import './card';
 import Catalog from './catalog';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
@@ -14,7 +14,9 @@ import ContentAdd from 'material-ui/svg-icons/content/add';
 })
 class CatalogList extends React.Component {
   constructor(props) {
+
     super(props);
+    this.deleteCatalog = this.deleteCatalog.bind(this);
     this.importToCatalog = this.importToCatalog.bind(this);
     this.getCatalogs = this.getCatalogs.bind(this);
     this.state = {
@@ -34,10 +36,14 @@ class CatalogList extends React.Component {
     this.props.dispatch(fetchCatalogs())
   }
 
-  render() {
+  deleteCatalog(catalogId) {
+    this.props.dispatch(deleteCatalog(catalogId));
+  }
 
+  render() {
     const menuActions = {
       importToCatalog: this.importToCatalog,
+      deleteCatalog: this.deleteCatalog,
     }
 
     return (
@@ -64,6 +70,7 @@ function List(props) {
           key={catalog.get('id')}
           catalog={catalog}
           importToCatalog={props.menuActions.importToCatalog}
+          delete={props.menuActions.deleteCatalog}
           />
           }
         )

@@ -1,4 +1,4 @@
-import { apiHandler, createRequest, requestTypes } from './apiUtils';
+import { requestTypes } from './apiUtils';
 import { List, Map, fromJS } from 'immutable';
 
 //actions
@@ -59,130 +59,101 @@ export function reducer(state=init, action={}) {
   return state;
 }
 
-// Action Creators
-export function getAlbumsPending(respose) {
-  return { type: FETCH_ALBUMS_REQUEST, };
-}
-
-export function getAlbumsSuccess(response) {
-  return { type: FETCH_ALBUMS_SUCCESS, payload: response, };
-}
-
-export function getAlbumPending() {
-  return { type: REQUEST_ALBUM, };
-}
-
-export function getAlbumSuccess(response) {
-  return { type: FETCH_ALBUM_SUCCESS, payload: response, };
-}
-
-function createAlbumPending() {
-  return { type: CREATE_ALBUM, };
-}
-
-function createAlbumSuccess(response) {
-  return { type: CREATE_ALBUM_SUCCESS, payload: response, };
-}
-
-export function updateAlbumPending() {
-  return { type: UPDATE_ALBUM, };
-}
-
-export function updateAlbumSuccess(response) {
-  return { type: UPDATE_ALBUM_SUCCESS, payload: response, };
-}
-
-export function addPhotoAlbumPending() {
-  return { type: ADDPHOTO_ALBUM_REQUEST, };
-}
-
-export function addPhotoAlbumSuccess(response) {
-  return { type: ADDPHOTO_ALBUM_SUCCESS, payload: response, };
-}
-
-export function addBucketAlbumPending() {
-  return { type: ADDBUCKET_ALBUM_REQUEST, };
-}
-
-export function addBucketAlbumSuccess(response) {
-  return { type: ADDBUCKET_ALBUM_SUCCESS, payload: response, };
-}
-
-export function deleteAlbumPending() {
-  return { type: DELETE_ALBUM_REQUEST, };
-}
-
-export function deleteAlbumSuccess(response) {
-  return { type: DELETE_ALBUM_SUCCESS, payload: response, };
-}
-
 //API
 export function fetchAlbums() {
-  const url = '/api/albums';
-  const requestType = requestTypes.GET;
-  const params = null;
-  const request = createRequest(requestType, url, params);
+  const apiPayload = {
+    isAPI: true,
+    type: 'FETCH_ALBUMS',
+    url: '/api/albums',
+    httpVerb: requestTypes.GET,
+    params: null,
+  };
+
   return dispatch => {
-    apiHandler(getAlbumsPending, getAlbumsSuccess, request, dispatch);
+    dispatch(apiPayload);
   };
 }
 
 export function fetchAlbum(id) {
-  const url = '/api/albums/'.concat(id);
-  const requestType = requestTypes.GET;
-  const params = null;
-  const request = createRequest(requestType, url, params);
+  const apiPayload = {
+    isAPI: true,
+    type: 'FETCH_ALBUM',
+    url: '/api/albums/'.concat(id),
+    httpVerb: requestTypes.GET,
+    params: null,
+  };
+
   return dispatch => {
-    apiHandler(getAlbumPending, getAlbumSuccess, request, dispatch);
+    dispatch(apiPayload);
   };
 }
 
 export function createAlbum(payload) {
-  const url = '/api/albums/';
-  const requestType = requestTypes.POST;
-  const params = payload;
-  const request = createRequest(requestType, url, params);
+  const apiPayload = {
+    isAPI: true,
+    type: 'CREATE_ALBUM',
+    url: '/api/albums/',
+    httpVerb: requestTypes.POST,
+    params: payload,
+  };
+
   return dispatch => {
-    apiHandler(createAlbumPending, createAlbumSuccess, request, dispatch);
+    dispatch(apiPayload);
   };
 }
 
 export function updateAlbum(payload) {
-  const url = '/api/albums/'.concat(payload.id);
-  const requestType = requestTypes.PUT;
-  const params = payload;
-  const request = createRequest(requestType, url, params);
+  const apiPayload = {
+    isAPI: true,
+    type: 'UPDATE_ALBUM',
+    url: '/api/albums/'.concat(payload.id),
+    httpVerb: requestTypes.PUT,
+    params: payload,
+  };
+
   return dispatch => {
-    apiHandler(updateAlbumPending, updateAlbumSuccess, request, dispatch);
+    dispatch(apiPayload);
   };
 }
 
 export function addPhotoAlbum(payload) {
-  const url = '/api/albums/'.concat(payload.albumId, '/photo/', payload.photoId);
-  const requestType = requestTypes.PUT;
-  const params = null;
-  const request = createRequest(requestType, url, params);
+  const apiPayload = {
+    isAPI: true,
+    type: 'ADDPHOTO_ALBUM',
+    url: '/api/albums/'.concat(payload.albumId, '/photo/', payload.photoId),
+    httpVerb: requestTypes.PUT,
+    params: null,
+  };
+
   return dispatch => {
-    apiHandler(addPhotoAlbumPending, addPhotoAlbumSuccess, request, dispatch);
+    dispatch(apiPayload);
   };
 }
 
 export function addBucketAlbum(albumId) {
-  const url = '/api/albums/'.concat(albumId, '/bucket');
-  const requestType = requestTypes.PUT;
-  const params = null;
-  const request = createRequest(requestType, url, params);
+  const apiPayload = {
+    isAPI: true,
+    type: 'UNCOMMENT_PHOTO',
+    url: '/api/albums/'.concat(albumId, '/bucket'),
+    httpVerb: requestTypes.PUT,
+    params: null,
+  };
+
   return dispatch => {
-    apiHandler(addBucketAlbumPending, addBucketAlbumSuccess, request, dispatch);
+    dispatch(apiPayload);
   };
 }
 
 export function deleteAlbum(albumId) {
-  const url = '/api/albums/'.concat(albumId);
-  const requestType = requestTypes.DELETE;
-  const params = null;
-  const request = createRequest(requestType, url, params);
+  const apiPayload = {
+    isAPI: true,
+    type: 'DELETE_ALBUM',
+    url: '/api/photos/'.concat(albumId, '/comment/delete'),
+    httpVerb: requestTypes.DELETE,
+    params: null,
+  };
+
   return dispatch => {
-    apiHandler(deleteAlbumPending, deleteAlbumSuccess, request, dispatch);
+    dispatch(apiPayload);
   };
 }

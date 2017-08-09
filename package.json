@@ -30,6 +30,7 @@
     "react-draggable": "^2.2.3",
     "react-image-lightbox": "^4.1.0",
     "react-image-lightbox-universal": "^0.0.2",
+    "react-lazy-load": "^3.0.12",
     "react-redux": "^5.0.5",
     "react-router-dom": "",
     "react-router-redux": "next",

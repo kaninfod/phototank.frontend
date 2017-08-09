@@ -1,4 +1,5 @@
 import React from 'react';
+import LazyLoad from 'react-lazy-load';
 
 export default class Widget extends React.Component {
   constructor(props) {
@@ -19,7 +20,7 @@ export default class Widget extends React.Component {
   }
 
   handleSelect(e) {
-    this.props.actions.SELECT(this.props.photo.get('id'));
+    this.props.actions.TOGGLE(this.props.photo.get('id'));
   }
 
   handleZoom(e) {
@@ -31,8 +32,7 @@ export default class Widget extends React.Component {
   }
 
   handleClick(e) {
-
-    this.props.actions.CLICK(this.props.photo.get('id'));
+    this.props.actions.CLICK(this.props.photo);
   }
 
   render() {
@@ -46,9 +46,12 @@ export default class Widget extends React.Component {
           <div className="photo-widget-content"></div>
             <div className="photo-widget-header">
 
-              <img
-                className="lazy" id={photo.get('id')} onClick={this.handleClick}
-                data-original={photo.get('url_tm').concat('?token=', sessionStorage.jwt)}/>
+              <LazyLoad offsetVertical={300}>
+                <img
+                  id={photo.get('id')}
+                  onClick={this.handleClick}
+                  src= {photo.get('url_tm').concat('?token=', sessionStorage.jwt)} />
+              </LazyLoad>
 
               <div className={'overlay-button overlay-select ' +
                 (photo.get('bucket') ? 'selected' : '')}

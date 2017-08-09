@@ -10,6 +10,7 @@ var init = Map(fromJS({
 var newState = null;
 
 export function reducer(state=init, action={}) {
+  state = state.setIn(['stale', action.type], new Date());
   switch (action.type) {
 
     // case photoActions.CLICK_PHOTO: {

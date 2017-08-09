@@ -1,4 +1,4 @@
-import { createRequest, responseHandler, notAuthorized } from './apiUtils';
+import { requestTypes } from './apiUtils';
 import { List, Map, fromJS } from 'immutable';
 
 //actions
@@ -34,58 +34,32 @@ export function reducer(state=init, action={}) {
   return state;
 }
 
-// Action Creators
-function requestCities() {
-  return {
-    type: REQUEST_CITIES,
-  };
-}
-
-function fetchCitiesSuccess(data) {
-  return {
-    type: FETCH_CITIES_SUCCESS,
-    payload: data,
-  };
-}
-
-function requestCountries() {
-  return {
-    type: REQUEST_COUNTRIES,
-  };
-}
-
-function fetchCountriesSuccess(data) {
-  return {
-    type: FETCH_COUNTRIES_SUCCESS,
-    payload: data,
-  };
-}
 
 //API
 export function fetchCities() {
-  var url = '/api/locations/cities';
+  const apiPayload = {
+    isAPI: true,
+    type: 'FETCH_CITIES',
+    url: '/api/locations/cities',
+    httpVerb: requestTypes.GET,
+    params: null,
+  };
 
   return dispatch => {
-
-    dispatch(requestCities());
-
-    return fetch(createRequest('GET', url, null))
-    .then(response => responseHandler(response))
-    .then(data => dispatch(fetchCitiesSuccess(data)))
-    .catch(error => console.log('request failed', error));
+    dispatch(apiPayload);
   };
 }
 
 export function fetchCountries() {
-  var url = '/api/locations/countries';
+  const apiPayload = {
+    isAPI: true,
+    type: 'FETCH_COUNTRIES',
+    url: '/api/locations/countries',
+    httpVerb: requestTypes.GET,
+    params: null,
+  };
 
   return dispatch => {
-
-    dispatch(requestCountries());
-
-    return fetch(createRequest('GET', url, null))
-    .then(response => responseHandler(response))
-    .then(data => dispatch(fetchCountriesSuccess(data)))
-    .catch(error => console.log('request failed', error));
+    dispatch(apiPayload);
   };
 }

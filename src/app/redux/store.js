@@ -4,6 +4,7 @@ import thunk from 'redux-thunk';
 import promise from 'redux-promise-middleware';
 import combinedReducer from './combinedReducer';
 import Immutable from 'immutable';
+import { apiService } from './apiUtils';
 
 const logger = createLogger({
   collapsed: (getState, action, logEntry) => !logEntry.error,
@@ -23,9 +24,15 @@ const logger = createLogger({
   },
 });
 
+
+
 const store = createStore(
   combinedReducer,
-
-  applyMiddleware(promise(), thunk, logger)
-)
+  applyMiddleware(
+    promise(),
+    thunk,
+    logger,
+    apiService
+  )
+);
 export default store;

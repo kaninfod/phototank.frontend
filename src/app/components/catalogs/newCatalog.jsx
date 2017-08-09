@@ -11,14 +11,12 @@ import { connect } from "react-redux";
 
 import { fetchCatalogs, fetchCatalog, createCatalog, verifyCatalog } from '../../redux/catalog';
 
-
-
 @connect((store) => {
   return {
-    albums: store.catalog.get('albums'),
+    albums: store.nAlbum.get('albums'),
     catalog: store.nCatalog.get('catalog'),
     catalogs: store.nCatalog.get('catalogs'),
-    loading: store.catalog.get('loading'),
+    // loading: store.catalog.get('loading'),
   };
 })
 export default class NewCatalog extends React.Component {
@@ -60,7 +58,6 @@ export default class NewCatalog extends React.Component {
   };
 
   handleCatalogChange(event, index, value) {
-
     this.setState({
       catalog: value,
       actionButtonState: !(this.state.name && this.state.catalogType && value),
@@ -75,13 +72,22 @@ export default class NewCatalog extends React.Component {
     });
   }
 
+  actionButtonLabel(catalogType) {
+    if (this.authorize.includes(catalogType)) {
+      return {label: 'Next' }
+    } else {
+      return {label: 'Save' }
+    }
+  }
+
   handleVerifier(verifier) {
     this.setState({ verifier: verifier });
   }
 
   handleClickProgress() {
+    // Step 1 form is correct and next/ok is pressed
     if (!this.state.progressToStepTwo) {
-      console.log('me savy now');
+      console.log('createCatalog');
 
       this.props.dispatch(createCatalog({
         name: this.state.name,
@@ -95,32 +101,15 @@ export default class NewCatalog extends React.Component {
       })
 
     } else if (this.authorize.includes(this.state.catalogType)) {
-      console.log('me closy now');
-      if (this.state.catalogType == 'DropboxCatalog') {
-        this.props.dispatch(verifyCatalog({
-          id: this.props.catalog.get('id'),
-          verifier: this.state.verifier,
-        }))
-      }
+
+      console.log('This is where I check if user went to service and OK.ed', this.props.catalog.get('id'));
+      this.props.dispatch(fetchCatalog(this.props.catalog.get('id')))
+
     } else if (!this.authorize.includes(this.state.catalogType)) {
-      console.log('me savy now');
-      // const verified = this.props.catalog.getIn(['ext_store_data', 'access_token'], false)
-      // if (!!verified) {
-      //   console.log('This should delete the catalog');
-      // }
-      // this.props.dispatch(fetchCatalogs())
-      // this.props.history.push('/catalogs/list');
+      console.log('local');
 
     }
 
-  }
-
-  actionButtonLabel(catalogType) {
-    if (this.authorize.includes(catalogType)) {
-      return {label: 'Next' }
-    } else {
-      return {label: 'Save' }
-    }
   }
 
   render() {
@@ -138,19 +127,13 @@ export default class NewCatalog extends React.Component {
           show={!this.state.progressToStepTwo}
           />
 
-        <StepTwoFlicker
+        <StepTwo
           catalogType={this.state.catalogType}
           catalog={this.props.catalog}
           show={this.state.progressToStepTwo}
           />
 
-        <StepTwoDropbox
-          catalogType={this.state.catalogType}
-          catalog={this.props.catalog}
-          show={this.state.progressToStepTwo}
-          verifier={this.state.verifier}
-          verifierHandler={this.handleVerifier}
-          />
+
 
         <div className="actions">
           <RaisedButton
@@ -167,6 +150,13 @@ export default class NewCatalog extends React.Component {
   }
 }
 
+// <StepTwoDropbox
+//   catalogType={this.state.catalogType}
+//   catalog={this.props.catalog}
+//   show={this.state.progressToStepTwo}
+//   verifier={this.state.verifier}
+//   verifierHandler={this.handleVerifier}
+//   />
 const StepOne = createReactClass({
   render () {
     if (!this.props.show) { return null }
@@ -202,9 +192,9 @@ const StepOne = createReactClass({
   }
 })
 
-const StepTwoFlicker = createReactClass({
+const StepTwo = createReactClass({
   render () {
-    if (!(this.props.show && this.props.catalogType == 'FlickrCatalog')) { return null }
+    if (!(this.props.show )) { return null }
     return (
       <div>
         <p>
@@ -217,28 +207,27 @@ const StepTwoFlicker = createReactClass({
   }
 })
 
-const StepTwoDropbox = createReactClass({
-
-  handleVerifier(e) {
-    this.props.verifierHandler(e.target.value);
-  },
-
-  render () {
-    if (!(this.props.show && this.props.catalogType == 'DropboxCatalog')) { return null }
-    return (
-      <div>
-        <p>
-          Goto <a target="_blank" href={this.props.catalog.get('auth_url')}>Dropbox</a> to
-          authorize access to your Dropbox account.
-          Enter the verifier code below:
-        </p>
-        <TextField
-          key="1"
-          onChange={this.handleVerifier}
-          defaultValue={this.props.verifier}
-          floatingLabelText="Dropbox verifier code"
-         />
-      </div>
-    )
-  }
-})
+// const StepTwoDropbox = createReactClass({
+//   handleVerifier(e) {
+//     this.props.verifierHandler(e.target.value);
+//   },
+//
+//   render () {
+//     if (!(this.props.show && this.props.catalogType == 'DropboxCatalog')) { return null }
+//     return (
+//       <div>
+//         <p>
+//           Goto <a target="_blank" href={this.props.catalog.get('auth_url')}>Dropbox</a> to
+//           authorize access to your Dropbox account.
+//           Enter the verifier code below:
+//         </p>
+//         <TextField
+//           key="1"
+//           onChange={this.handleVerifier}
+//           defaultValue={this.props.verifier}
+//           floatingLabelText="Dropbox verifier code"
+//          />
+//       </div>
+//     )
+//   }
+// })

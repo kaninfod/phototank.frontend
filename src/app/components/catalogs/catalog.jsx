@@ -10,6 +10,7 @@ class Catalog extends React.Component {
     super(props);
     this.edit = this.edit.bind(this);
     this.importToCatalog = this.importToCatalog.bind(this);
+    this.delete = this.delete.bind(this);
     this.state = {
       showEdit: false,
     };
@@ -17,6 +18,10 @@ class Catalog extends React.Component {
 
   edit() {
     this.props.openEdit(this.props.catalog);
+  }
+
+  delete() {
+    this.props.delete(this.props.catalog.get('id'));
   }
 
   importToCatalog() {
@@ -42,6 +47,7 @@ class Catalog extends React.Component {
                   primaryText="View photos" />
 
                 <MenuItem primaryText="Edit" onClick={this.edit}/>
+                <MenuItem primaryText="Delete" onClick={this.delete}/>
                 <MenuItem primaryText="Jobs" />
                 <MenuItem primaryText="Update" onClick={this.importToCatalog}/>
                 <MenuItem primaryText="Stats" />
