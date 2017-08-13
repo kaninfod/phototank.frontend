@@ -44,7 +44,7 @@ export function getButtons(modifiers) {
       ],
       vert: [
         {
-          color: modifiers.LIKESTATE,
+          color: modifiers.LIKESTATE(),
           widgetContent: 'LIKE',
           icon: 'thumb_up', key: 3,
           handler: modifiers.LIKE,

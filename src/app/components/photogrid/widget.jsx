@@ -13,10 +13,11 @@ export default class Widget extends React.Component {
 
   handleHover(e) {
     var overlayButton = $(this.refs.widget).find('.overlay-button:not(.overlay-processing)');
-    if (e.type == 'mouseenter')
+    if (e.type == 'mouseenter') {
       overlayButton.addClass('overlay-show');
-    else
+    } else {
       overlayButton.removeClass('overlay-show');
+    }
   }
 
   handleSelect(e) {
@@ -32,7 +33,7 @@ export default class Widget extends React.Component {
   }
 
   handleClick(e) {
-    this.props.actions.CLICK(this.props.photo);
+    this.props.actions.CLICK(this.props.photo.get('id'));
   }
 
   render() {
@@ -54,7 +55,7 @@ export default class Widget extends React.Component {
               </LazyLoad>
 
               <div className={'overlay-button overlay-select ' +
-                (photo.get('bucket') ? 'selected' : '')}
+                (this.props.actions.FACETS('Bucket', this.props.photo.get('id')) ? 'selected' : '')}
                 onClick={this.handleSelect} ref="select" >
                     <i className="material-icons">check</i>
               </div>

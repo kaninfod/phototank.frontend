@@ -8,7 +8,6 @@ class Bucketgrid extends React.Component {
   }
 
   handleRemovePhoto(id) {
-    console.log(id);
     this.props.widgetHandlers.REMOVE_FROM_BUCKET(id);
   }
 

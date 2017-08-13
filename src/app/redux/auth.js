@@ -27,7 +27,7 @@ export function reducer(state=init, action={}) {
     case VALIDATE_TOKEN_SUCCESS:
 
     case LOGIN_SUCCESS: {
-      sessionStorage.setItem('jwt', action.payload.remember_token);
+      sessionStorage.setItem('jwt', action.payload.token);
       state = state
         .set('user', fromJS(action.payload))
         .set('loggedIn', true);

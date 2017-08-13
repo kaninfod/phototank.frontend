@@ -26,10 +26,7 @@ export const TOGGLE_PHOTOS_BUCKET = 'TOGGLE_PHOTOS_BUCKET';
 // Reducer
 var init = Map(fromJS({
   stale: {},
-  // photoData: [],
   bucket: [],
-  // hidden: false,
-  // photoId: null,
   photos: [],
   photo: [],
   pagination: {

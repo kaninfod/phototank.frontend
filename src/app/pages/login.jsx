@@ -22,7 +22,7 @@ export default class Login extends React.Component {
   }
 
   componentWillUpdate(nextProps, nextState) {
-    if (nextProps.remember_token) {
+    if (nextProps.token) {
       this.props.history.push('/albums/list');
     }
   }

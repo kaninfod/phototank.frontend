@@ -24,8 +24,6 @@ const logger = createLogger({
   },
 });
 
-
-
 const store = createStore(
   combinedReducer,
   applyMiddleware(

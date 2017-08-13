@@ -133,7 +133,7 @@ export function addPhotoAlbum(payload) {
 export function addBucketAlbum(albumId) {
   const apiPayload = {
     isAPI: true,
-    type: 'UNCOMMENT_PHOTO',
+    type: 'ADDBUCKET_ALBUM',
     url: '/api/albums/'.concat(albumId, '/bucket'),
     httpVerb: requestTypes.PUT,
     params: null,
