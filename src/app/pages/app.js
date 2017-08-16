@@ -11,7 +11,7 @@ import Menu from 'material-ui/Menu';
 import MenuItem from 'material-ui/MenuItem';
 import { Link } from 'react-router-dom';
 
-const styles = { example: { position: 'fixed', top: 0, }, };
+const styles = { example: { position: 'fixed', }, };
 
 @connect((store) => {
   return {
@@ -61,44 +61,46 @@ class App extends React.Component {
     }
 
     return (
-      <div>
-        <div className="pt-appbar">
-          <AppBar
-            title="Phototank"
-            iconClassNameRight="muidocs-icon-navigation-expand-more"
-            onTouchTap={this.handleTouchTap}
-          >
-          <Popover
-            open={this.state.open}
-            anchorEl={this.state.anchorEl}
-            anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
-            targetOrigin={{ horizontal: 'left', vertical: 'top' }}
-            onRequestClose={this.handleRequestClose}
-          >
-            <Menu width={200}>
-              <MenuItem
-                containerElement={<Link to={'/photos'}/>}
-                primaryText="Photos"
-                onTouchTap={this.handleRequestClose} />
-              <MenuItem
-                containerElement={<Link to={'/catalogs/list'}/>}
-                primaryText="Catalogs"
-                onTouchTap={this.handleRequestClose} />
-              <MenuItem
-                containerElement={<Link to={'/albums/list'}/>}
-                primaryText="Albums"
-                onTouchTap={this.handleRequestClose} />
-              <MenuItem
-                primaryText="Logout"
-                onTouchTap={this.handleLogout} />
-            </Menu>
-          </Popover>
+      <div id='app'>
+
+        <AppBar
+          style={ styles.example }
+          title="Phototank"
+          iconClassNameRight="muidocs-icon-navigation-expand-more"
+          onTouchTap={this.handleTouchTap}
+        >
+            <Popover
+              open={this.state.open}
+              anchorEl={this.state.anchorEl}
+              anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
+              targetOrigin={{ horizontal: 'left', vertical: 'top' }}
+              onRequestClose={this.handleRequestClose}
+            >
+              <Menu width={200}>
+                <MenuItem
+                  containerElement={<Link to={'/photos'}/>}
+                  primaryText="Photos"
+                  onTouchTap={this.handleRequestClose} />
+                <MenuItem
+                  containerElement={<Link to={'/catalogs/list'}/>}
+                  primaryText="Catalogs"
+                  onTouchTap={this.handleRequestClose} />
+                <MenuItem
+                  containerElement={<Link to={'/albums/list'}/>}
+                  primaryText="Albums"
+                  onTouchTap={this.handleRequestClose} />
+                <MenuItem
+                  primaryText="Logout"
+                  onTouchTap={this.handleLogout} />
+              </Menu>
+            </Popover>
 
 
           </AppBar>
-        </div>
 
-        {children}
+        <div className="pt-contents">
+          {children}
+        </div>
       </div>
     );
   }

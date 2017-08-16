@@ -29,8 +29,6 @@ import NewAlbum             from './components/albums/newAlbum';
 import AlbumPhotos          from './pages/photos/album';
 
 import Photos               from './pages/photos';
-import PhotoCard            from './components/card/photo';
-import Bucket               from './components/card/bucket';
 import Login                from './pages/login';
 
 injectTapEventPlugin();
@@ -63,7 +61,6 @@ render(
               <Route path="/catalogs/list" component={CatalogList}/>
               <Route path="/catalogs/new" component={NewCatalog}/>
               <Route path="/catalogs/:id/photos/" component={CatalogPhotos}/>
-              <Route path="/catalogs/:id/photos/:photoId/card" component={PhotoCard}/>
             </Catalogs>
 
           </App>

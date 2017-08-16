@@ -1,0 +1,84 @@
+$background: #d0f1f4;
+$active: #00BCD4;
+
+.upper-right {
+  display: none;
+  position: fixed;
+  z-index: 5;
+  right: 15px;
+  bottom: 25px;
+}
+
+.fixed-action-button {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+}
+
+.pt-card {
+  max-width: 300px;
+  display: inline-block;
+  background-color: $background;
+
+  @import 'widget';
+  @import 'buttons';
+}
+
+
+
+
+.pt-comments {
+  position: relative;
+
+  .comment {
+    position: static;
+  }
+
+  .comment-container {
+    position: relative;
+  }
+
+  img {
+    position: absolute;
+    height: 46px;
+    top:0px;
+    width:46px;
+    border-radius: 50%;
+    z-index: auto;
+  }
+
+  .card {
+    background-color: #eeeeee;
+    position: relative;
+    min-height: 46px;
+    width: 240px;
+    left:23px;
+    top:12px;
+  }
+
+  .comment-date {
+    position: absolute;
+    right:0px;
+    padding: 4px;
+    font-size: 10px;
+  }
+
+  p {
+    padding: 25px 0 0 0;
+    margin: 0px 0 0 30px;
+    font-size: 12px;
+    color: #757575;
+  }
+  input {
+    margin-left: 30px;
+    width: 200px;
+    font-size: 12px;
+    color: #757575;
+  }
+}
+
+.container-cards {
+  float:none;
+  display: inline-block;
+  text-align: initial;
+}

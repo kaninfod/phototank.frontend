@@ -8,7 +8,7 @@ import { List, Map, fromJS, Set } from 'immutable';
 
 //Actions
 export const ADDTAG_PHOTO         = 'ADDTAG_PHOTO';
-export const CLICK_PHOTO          = 'CLICK_PHOTO';
+// export const CLICK_PHOTO          = 'CLICK_PHOTO';
 export const COMMENT_PHOTO        = 'COMMENT_PHOTO';
 export const DELETE_PHOTO         = 'DELETE_PHOTO';
 export const FETCH_BUCKET         = 'FETCH_BUCKET';
@@ -25,10 +25,8 @@ export const TOGGLE_PHOTOS_BUCKET = 'TOGGLE_PHOTOS_BUCKET';
 
 // Reducer
 var init = Map(fromJS({
-  stale: {},
   bucket: [],
   photos: [],
-  photo: [],
   pagination: {
     total: 0,
     total_pages: 0,
@@ -45,13 +43,6 @@ var newState = null;
 
 export function reducer(state=init, action={}) {
   switch (action.type) {
-
-    // case 'FETCH_PHOTO_SUCCESS': {
-    //
-    //   return state
-    //       .set('photoId', action.payload.id)
-    //       .set('photoData', fromJS(action.payload));
-    // }
 
     case 'SET_HEADER':  return setPagination(state, action);
 
@@ -71,40 +62,19 @@ export function reducer(state=init, action={}) {
       return state;
     }
 
-    case 'CLICK_PHOTO': {
-      return state.set('photo', action.payload);
-    }
-
     case 'DELETE_PHOTO_SUCCESS': {
-      const photos = state.get('photos').filter(obj =>
-         obj.get('id') != action.payload.photo_id
-      );
-      return state.set('photos', photos);
+      return deletePhotoInPhotos(state, fromJS(action));
     }
-
-    // case 'COMMENT_PHOTO_SUCCESS': {
-    //   return state.set('photoData', fromJS(action.payload));
-    // }
 
     case 'ADDTAG_PHOTO_SUCCESS':
     case 'REMOVETAG_PHOTO_SUCCESS':
     case 'COMMENT_PHOTO_SUCCESS':
     case 'LIKE_PHOTO_SUCCESS': {
-      return setPhoto(state, action);
+      return updatePhotoInPhotos(state, fromJS(action));
     }
 
-    // case 'ADDTAG_PHOTO_SUCCESS': {
-    //   return state.set('photoData', fromJS(action.payload));
-    // }
-
-    // case 'REMOVETAG_PHOTO_SUCCESS': {
-    //   return state.set('photoData', fromJS(action.payload));
-    // }
-
     case 'GET_TAGLIST_PHOTO_SUCCESS': {
-      return state
-        .set('taglist', fromJS(action.payload));
-
+      return state.set('taglist', fromJS(action.payload));
     }
 
     case 'FETCH_BUCKET_SUCCESS': {
@@ -112,38 +82,75 @@ export function reducer(state=init, action={}) {
     }
 
     case 'TOGGLE_PHOTOS_BUCKET_SUCCESS': {
-      const photos = state.get('photos').map(photo => {
-        if (photo.get('id') === action.payload.id) {
-          return fromJS(action.payload);
-        } else {
-          return photo;
-        }
+      state = updatePhotoInPhotos(state, fromJS(action));
+      return updateBucket(state, fromJS(action));
+    }
+
+    case 'LIKE_PHOTOS_BUCKET_SUCCESS': {
+      action.payload.forEach(item => {
+        const _action = fromJS({ payload: item });
+        state = updatePhotoInPhotos(state, _action);
       });
-
-      var bucket = [];
-      if (action.payload.bucket) {
-        bucket = state.get('bucket').push(fromJS(action.payload));
-      } else {
-        bucket = state.get('bucket').filter(
-          photo => photo.get('id') !== action.payload.id
-        );
-      }
-
-      return state.set('bucket', bucket).set('photos', photos);
+      return state;
     }
   }
   return state;
 }
 
 // Utility functions for reducer
-function setPhoto(state, action) {
-  const indexOfListToUpdate = state.get('photos').findIndex(photo =>
-    photo.get('id') === action.payload.id
-  );
 
-  return state
-    .set('photo', fromJS(action.payload))
-    .setIn(['photos', indexOfListToUpdate], fromJS(action.payload));
+/**
+ * updatePhotoInPhotos() updates / replaces a single photo within
+ * the photos array in state
+ */
+function updatePhotoInPhotos(state, action) {
+  const _photos = state.get('photos').map(photo =>
+    photo.get('id') === action.getIn(['payload', 'id']) ? action.get('payload') : photo
+  );
+  return state.set('photos', _photos);
+}
+
+/**
+ * deletePhotoInPhotos() removes a single photo within
+ * the photos array in state
+ */
+function deletePhotoInPhotos(state, action) {
+  const photos = state.get('photos').filter(obj =>
+     obj.get('id') != action.getIn(['payload', 'id']) //action.payload.photo_id
+  );
+  return state.set('photos', photos);
+}
+
+/**
+ * updatePhotoInPhotos() updates/replaces a single photo within
+ * the photos array in state
+ */
+function updatePhotoInPhotos(state, action) {
+  const _photos = state.get('photos').map(photo =>
+    photo.get('id') === action.getIn(['payload', 'id']) ? action.get('payload') : photo
+  );
+  return state.set('photos', _photos);
+}
+
+/**
+ * updateBucket() updates a single photo within
+ * the bucket array in state.
+ */
+function updateBucket(state, action) {
+  const facet = action.getIn(['payload', 'facets'], []).filter(f =>
+    f.get('type') == 'Bucket'
+  ).get(0);
+
+  let bucket = [];
+  if (!!facet) {
+    bucket = state.get('bucket').push(action.get('payload'));
+  } else {
+    bucket = state.get('bucket').filter(
+      photo => photo.get('id') !== action.getIn(['payload', 'id'])
+    );
+  }
+
+  return state.set('bucket', bucket);
 }
 
 function limitPhotoArray(state) {
@@ -192,172 +199,138 @@ export function setHeader(data) {
 // }
 
 //API
+
+// Single photo actions
 export function fetchPhoto(photoId) {
-  const apiPayload = {
+  return {
     isAPI: true,
     type: 'FETCH_PHOTO',
     url: '/api/photos/'.concat(photoId),
     httpVerb: requestTypes.GET,
     params: null,
   };
-
-  return dispatch => {
-    dispatch(apiPayload);
-  };
-}
-
-export function fetchBucket() {
-  const apiPayload = {
-    isAPI: true,
-    type: 'FETCH_BUCKET',
-    url: '/api/photos/bucket',
-    httpVerb: requestTypes.GET,
-    params: null,
-  };
-
-  return dispatch => {
-    dispatch(apiPayload);
-  };
 }
 
 export function rotatePhoto(payload) {
-  const apiPayload = {
+  return {
     isAPI: true,
     type: 'ROTATE_PHOTO',
     url: '/api/photos/'.concat(payload.photoId, '/rotate/', payload.rotation),
     httpVerb: requestTypes.GET,
     params: null,
   };
-
-  return dispatch => {
-    dispatch(apiPayload);
-  };
-}
-
-export function rotateBucketPhotos(payload) {
-  const apiPayload = {
-    isAPI: true,
-    type: 'ROTATE_BUCKET_PHOTO',
-    url: '/api/photos/bucket/rotate/'.concat(payload.rotation),
-    httpVerb: requestTypes.POST,
-    params: payload,
-  };
-
-  return dispatch => {
-    dispatch(apiPayload);
-    apiActionHandler(apiPayload);
-  };
-}
-
-export function togglePhotosBucket(photoId) {
-  const apiPayload = {
-    isAPI: true,
-    type: 'TOGGLE_PHOTOS_BUCKET',
-    url: '/api/photos/'.concat(photoId, '/bucket/toggle'),
-    httpVerb: requestTypes.POST,
-    params: null,
-  };
-
-  return dispatch => {
-    dispatch(apiPayload);
-  };
 }
 
 export function addTagPhoto(payload) {
-  const apiPayload = {
+  return {
     isAPI: true,
     type: 'ADDTAG_PHOTO',
     url: '/api/photos/'.concat(payload.photoId, '/tag/add'),
     httpVerb: requestTypes.POST,
     params: { tag: payload.name },
   };
-
-  return dispatch => {
-    dispatch(apiPayload);
-  };
 }
 
 export function removeTagPhoto(payload) {
-  const apiPayload = {
+  return {
     isAPI: true,
     type: 'REMOVETAG_PHOTO',
     url: '/api/photos/'.concat(payload.photoId, '/tag/delete'),
     httpVerb: requestTypes.DELETE,
     params: { tag_id: payload.tagId },
   };
-
-  return dispatch => {
-    dispatch(apiPayload);
-  };
 }
 
 export function fetchTaglist() {
-  const apiPayload = {
+  return {
     isAPI: true,
     type: 'GET_TAGLIST_PHOTO',
     url: '/api/photos/taglist',
     httpVerb: requestTypes.GET,
     params: null,
   };
-
-  return dispatch => {
-    dispatch(apiPayload);
-  };
 }
 
 export function commentPhoto(payload) {
-  const apiPayload = {
+  return {
     isAPI: true,
     type: 'COMMENT_PHOTO',
     url: '/api/photos/'.concat(payload.photoId, '/comment/add'),
     httpVerb: requestTypes.POST,
     params: { comment: payload.comment },
   };
-
-  return dispatch => {
-    dispatch(apiPayload);
-  };
 }
 
 export function uncommentPhoto(payload) {
-  const apiPayload = {
+  return {
     isAPI: true,
     type: 'UNCOMMENT_PHOTO',
     url: '/api/photos/'.concat(payload.photoId, '/comment/delete'),
     httpVerb: requestTypes.DELETE,
     params: { comment: payload.comment },
   };
-
-  return dispatch => {
-    dispatch(apiPayload);
-  };
 }
 
 export function likePhoto(photoId) {
-  const apiPayload = {
+  return {
     isAPI: true,
     type: 'LIKE_PHOTO',
     url: '/api/photos/'.concat(photoId, '/like/toggle'),
     httpVerb: requestTypes.POST,
     params: null,
   };
-
-  return dispatch => {
-    dispatch(apiPayload);
-  };
 }
 
 export function deletePhoto(photoId) {
-  const apiPayload = {
+  return {
     isAPI: true,
     type: 'DELETE_PHOTO',
     url: '/api/photos/'.concat(photoId),
     httpVerb: requestTypes.DELETE,
     params: null,
   };
+}
 
-  return dispatch => {
-    dispatch(apiPayload);
+// Bucket actions
+
+export function fetchBucket() {
+  return {
+    isAPI: true,
+    type: 'FETCH_BUCKET',
+    url: '/api/photos/bucket',
+    httpVerb: requestTypes.GET,
+    params: null,
+  };
+}
+
+
+export function rotateBucketPhotos(payload) {
+  return {
+    isAPI: true,
+    type: 'ROTATE_BUCKET_PHOTO',
+    url: '/api/photos/bucket/rotate/'.concat(payload.rotation),
+    httpVerb: requestTypes.POST,
+    params: payload,
+  };
+}
+
+export function togglePhotosBucket(photoId) {
+  return {
+    isAPI: true,
+    type: 'TOGGLE_PHOTOS_BUCKET',
+    url: '/api/photos/'.concat(photoId, '/bucket/toggle'),
+    httpVerb: requestTypes.POST,
+    params: null,
+  };
+}
+
+export function likePhotosBucket(photoIds) {
+  return {
+    isAPI: true,
+    type: 'LIKE_PHOTOS_BUCKET',
+    url: '/api/photos/bucket/like',
+    httpVerb: requestTypes.POST,
+    params: { photoIds: photoIds, },
   };
 }
 

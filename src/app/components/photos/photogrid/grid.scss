@@ -1,0 +1,12 @@
+@import '../../../stylesheets/material-icons';
+@import './widget';
+
+.outer.outer_rilu.outerAnimating_rilu {
+  z-index:2000;
+}
+
+.photogrid {
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+}
