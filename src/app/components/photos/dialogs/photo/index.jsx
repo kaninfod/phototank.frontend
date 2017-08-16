@@ -71,7 +71,7 @@ class PhotoDialog extends React.Component {
 
     return (
 
-      <Draggable handle=".header">
+      <Draggable handle=".header" bounds='.photogrid'>
         <div className="pt-card upper-right show">
           <WidgetType
             data={dataProvider(this.state)}

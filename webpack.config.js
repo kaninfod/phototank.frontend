@@ -22,7 +22,6 @@ var config = {
     filename: '[name].js',
   },
   module: {
-
     loaders: [
       {
         test: /\.jsx?/,
@@ -58,6 +57,13 @@ var config = {
       template: 'src/app/html-template.ejs',
       filename: 'index.html',
     }),
+    new webpack.DefinePlugin({ 
+      'process.env': {
+        'NODE_ENV': JSON.stringify('production'),
+      },
+    }),
+    new webpack.optimize.UglifyJsPlugin(),
+    new webpack.optimize.AggressiveMergingPlugin(),
   ],
 
   devServer: {

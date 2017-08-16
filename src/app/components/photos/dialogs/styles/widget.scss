@@ -9,7 +9,14 @@ $header: #00BCD4;
     background-color: $header;
     color: white;
     padding: 10px;
+
+    .close-button {
+      cursor: pointer;
+    }
+
   }
+
+
   .pt-widget.content {
     padding: 10px;
     height: 280px;

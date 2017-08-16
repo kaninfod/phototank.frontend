@@ -70,7 +70,6 @@ class Photos extends React.Component {
     this.updateGrid            = false;
     this.state = {
       showBucket: false,
-
       selectedPhoto: null,
       showDetails: false,
       selectedWidget: 'INFO',
@@ -101,13 +100,7 @@ class Photos extends React.Component {
     this.props.dispatch(fetchCountries());
   }
 
-  componentWillReceiveProps(nextProps, nextContext) {
-    if (this.state.selectedPhoto) {
-      this.setState({
-        selectedPhoto: this._getPhoto(this.state.selectedPhoto.get('id'), nextProps),
-      })
-    }
-
+  componentWillUpdate(nextProps, nextState){
     if (this.updateGrid) {
       this.updateGrid = false;
       this.props.dispatch(fetchBucket());
@@ -120,10 +113,20 @@ class Photos extends React.Component {
     }
   }
 
+  componentWillReceiveProps(nextProps, nextContext) {
+    if (this.state.selectedPhoto) {
+      this.setState({
+        selectedPhoto: this._getPhoto(this.state.selectedPhoto.get('id'), nextProps),
+      })
+    }
+
+  }
+
   handleClick(photoId) {
     this.setState({
       selectedPhoto: this._getPhoto(photoId),
       showDetails: true,
+      showBucket: false
     })
   }
 
@@ -168,15 +171,24 @@ class Photos extends React.Component {
   }
 
   hideZoombox() {
+    this.props.dispatch({ type: 'HIDE_APPBAR', status: false });
     this.setState({ zoomboxOpen: false });
   }
 
   toggleDetailsDialogue() {
-    this.setState({ showDetails: !this.state.showDetails });
+    if (!this.state.showDetails) {
+      this.setState({ showDetails: true, showBucket: false });
+    } else {
+      this.setState({ showDetails: false });
+    }
   }
 
   toggleBucketDialogue() {
-    this.setState({ showBucket: !this.state.showBucket });
+    if (!this.state.showBucket) {
+      this.setState({ showDetails: false, showBucket: true });
+    } else {
+      this.setState({ showBucket: false });
+    }
   }
 
   //Dispatch functions
@@ -232,7 +244,6 @@ class Photos extends React.Component {
 
   deletePhoto(photo) {
     const id = typeof photo == 'number' ? photo : this.state.selectedPhoto.get('id')
-    console.log(photo, id);
     this.props.dispatch(deletePhoto(id))
   }
 
@@ -343,6 +354,7 @@ class Photos extends React.Component {
           />
 
           <Zoombox
+            {...this.props}
             photoId={this.state.zoomPhotoId}
             isOpen={this.state.zoomboxOpen}
             index={this.state.zoomboxIndex}

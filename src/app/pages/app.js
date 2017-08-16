@@ -15,7 +15,8 @@ const styles = { example: { position: 'fixed', }, };
 
 @connect((store) => {
   return {
-    user:     store.nAuth.get('user'),
+    user:       store.nAuth.get('user'),
+    hideAppbar: store.ui.get('hideAppbar'),
   };
 })
 class App extends React.Component {
@@ -48,6 +49,41 @@ class App extends React.Component {
     this.setState({ open: false });
   }
 
+  _renderAppbar() {
+    return (
+      <AppBar
+        style={ styles.example }
+        title="Phototank"
+        iconClassNameRight="muidocs-icon-navigation-expand-more"
+        onTouchTap={this.handleTouchTap}>
+        <Popover
+          open={this.state.open}
+          anchorEl={this.state.anchorEl}
+          anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
+          targetOrigin={{ horizontal: 'left', vertical: 'top' }}
+          onRequestClose={this.handleRequestClose}>
+          <Menu width={200}>
+            <MenuItem
+              containerElement={<Link to={'/photos'}/>}
+              primaryText="Photos"
+              onTouchTap={this.handleRequestClose} />
+            <MenuItem
+              containerElement={<Link to={'/catalogs/list'}/>}
+              primaryText="Catalogs"
+              onTouchTap={this.handleRequestClose} />
+            <MenuItem
+              containerElement={<Link to={'/albums/list'}/>}
+              primaryText="Albums"
+              onTouchTap={this.handleRequestClose} />
+            <MenuItem
+              primaryText="Logout"
+              onTouchTap={this.handleLogout} />
+          </Menu>
+        </Popover>
+      </AppBar>
+    )
+  }
+
   render() {
     const redirectURL = this.props.history.location.pathname;
     let children = null;
@@ -62,42 +98,7 @@ class App extends React.Component {
 
     return (
       <div id='app'>
-
-        <AppBar
-          style={ styles.example }
-          title="Phototank"
-          iconClassNameRight="muidocs-icon-navigation-expand-more"
-          onTouchTap={this.handleTouchTap}
-        >
-            <Popover
-              open={this.state.open}
-              anchorEl={this.state.anchorEl}
-              anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
-              targetOrigin={{ horizontal: 'left', vertical: 'top' }}
-              onRequestClose={this.handleRequestClose}
-            >
-              <Menu width={200}>
-                <MenuItem
-                  containerElement={<Link to={'/photos'}/>}
-                  primaryText="Photos"
-                  onTouchTap={this.handleRequestClose} />
-                <MenuItem
-                  containerElement={<Link to={'/catalogs/list'}/>}
-                  primaryText="Catalogs"
-                  onTouchTap={this.handleRequestClose} />
-                <MenuItem
-                  containerElement={<Link to={'/albums/list'}/>}
-                  primaryText="Albums"
-                  onTouchTap={this.handleRequestClose} />
-                <MenuItem
-                  primaryText="Logout"
-                  onTouchTap={this.handleLogout} />
-              </Menu>
-            </Popover>
-
-
-          </AppBar>
-
+        { this.props.hideAppbar ? null : this._renderAppbar() }
         <div className="pt-contents">
           {children}
         </div>
