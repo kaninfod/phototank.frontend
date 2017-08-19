@@ -40,38 +40,38 @@ class Photos extends React.Component {
   constructor(props) {
     super(props);
 
-    this.toggleBucketPhoto     = this.toggleBucketPhoto.bind(this);
     this.changeSearchParams    = this.changeSearchParams.bind(this)
-    this.handleInfiniteScroll  = this.handleInfiniteScroll.bind(this);
-    this.handleClick           = this.handleClick.bind(this);
-    this.deletePhoto           = this.deletePhoto.bind(this);
-    this.showZoombox           = this.showZoombox.bind(this);
     this.hideZoombox           = this.hideZoombox.bind(this);
-    this.likePhoto             = this.likePhoto.bind(this);
-    this.addToAlbum            = this.addToAlbum.bind(this);
-    this.addTag                = this.addTag.bind(this);
-    this.removeTag             = this.removeTag.bind(this);
-    this.rotatePhoto           = this.rotatePhoto.bind(this);
-    this.addComment            = this.addComment.bind(this);
-    this.toggleDetailsDialogue = this.toggleDetailsDialogue.bind(this)
+    // this.toggleBucketPhoto     = this.toggleBucketPhoto.bind(this);
+    // this.handleInfiniteScroll  = this.handleInfiniteScroll.bind(this);
+    // this.handleClick           = this.handleClick.bind(this);
+    // this.deletePhoto           = this.deletePhoto.bind(this);
+    // this.showZoombox           = this.showZoombox.bind(this);
+    // this.likePhoto             = this.likePhoto.bind(this);
+    // this.addToAlbum            = this.addToAlbum.bind(this);
+    // this.addTag                = this.addTag.bind(this);
+    // this.removeTag             = this.removeTag.bind(this);
+    // this.rotatePhoto           = this.rotatePhoto.bind(this);
+    // this.addComment            = this.addComment.bind(this);
+    // this.toggleDetailsDialogue = this.toggleDetailsDialogue.bind(this)
 
     this.toggleBucketDialogue  = this.toggleBucketDialogue.bind(this)
-    this.bucketRemovePhoto     = this.bucketRemovePhoto.bind(this)
-    this.bucketDeletePhotos    = this.bucketDeletePhotos.bind(this)
-    this.bucketAddTag          = this.bucketAddTag.bind(this)
-    this.bucketRemoveTag       = this.bucketRemoveTag.bind(this)
-    this.bucketLikePhotos      = this.bucketLikePhotos.bind(this)
-    this.bucketRotatePhotos    = this.bucketRotatePhotos.bind(this)
-    this.bucketAddToAlbum      = this.bucketAddToAlbum.bind(this)
-    this.bucketAddComment      = this.bucketAddComment.bind(this)
+    // this.bucketRemovePhoto     = this.bucketRemovePhoto.bind(this)
+    // this.bucketDeletePhotos    = this.bucketDeletePhotos.bind(this)
+    // this.bucketAddTag          = this.bucketAddTag.bind(this)
+    // this.bucketRemoveTag       = this.bucketRemoveTag.bind(this)
+    // this.bucketLikePhotos      = this.bucketLikePhotos.bind(this)
+    // this.bucketRotatePhotos    = this.bucketRotatePhotos.bind(this)
+    // this.bucketAddToAlbum      = this.bucketAddToAlbum.bind(this)
+    // this.bucketAddComment      = this.bucketAddComment.bind(this)
 
-    this._getFacet      = this._getFacet.bind(this)
+    this._getFacet             = this._getFacet.bind(this)
 
     this.updateGrid            = false;
     this.state = {
       showBucket: false,
-      selectedPhoto: null,
       showDetails: false,
+      selectedPhoto: null,
       selectedWidget: 'INFO',
 
       zoomboxOpen: false,
@@ -119,7 +119,6 @@ class Photos extends React.Component {
         selectedPhoto: this._getPhoto(this.state.selectedPhoto.get('id'), nextProps),
       })
     }
-
   }
 
   handleClick(photoId) {
@@ -191,128 +190,37 @@ class Photos extends React.Component {
     }
   }
 
-  //Dispatch functions
-
-  //Photo
-  toggleBucketPhoto(photoId) {
-      this.props.dispatch(togglePhotosBucket(photoId))
-  }
-
-  addToAlbum(albumId) {
-    const payload = {
-      photoId: this.state.selectedPhoto.get('id'),
-      albumId: albumId
-    }
-    this.props.dispatch(addPhotoAlbum(payload))
-  }
-
-  rotatePhoto(rotation) {
-    const payload = {
-      photoId: this.state.selectedPhoto.get('id'),
-      rotation: rotation
-    }
-    this.props.dispatch(rotatePhoto(payload))
-  }
-
-  addComment(comment) {
-    const payload = {
-      photoId: this.state.selectedPhoto.get('id'),
-      comment: comment
-    }
-    this.props.dispatch(commentPhoto(payload))
-  }
-
-  addTag(tag) {
-    const payload = {
-      photoId: this.state.selectedPhoto.get('id'),
-      name: tag,
-    }
-    this.props.dispatch(addTagPhoto(payload))
-  }
-
-  removeTag(tagId) {
-    const payload = {
-      photoId: this.state.selectedPhoto.get('id'),
-      tagId: tagId,
-    }
-    this.props.dispatch(removeTagPhoto(payload))
-  }
-
-  likePhoto() {
-    this.props.dispatch(likePhoto(this.state.selectedPhoto.get('id')))
-  }
-
-  deletePhoto(photo) {
-    const id = typeof photo == 'number' ? photo : this.state.selectedPhoto.get('id')
-    this.props.dispatch(deletePhoto(id))
-  }
-
-  //Bucket
-  bucketRemovePhoto(id) {
-    this.props.dispatch(togglePhotosBucket(id));
-  }
-
-  bucketDeletePhotos() {
-    console.log('delete photos');
-  }
-
-  bucketAddTag(tag) {
-    this.props.dispatch(tagPhotosBucket(tag));
-  }
-
-  bucketRemoveTag() {
-    console.log('remove photos');
-  }
-
-  bucketLikePhotos() {
-    const photoIds = this.props.bucket.map(p => p.get('id')).toJS()
-    this.props.dispatch(likePhotosBucket(photoIds));
-  }
-
-  bucketRotatePhotos(degrees) {
-    this.props.dispatch(rotateBucketPhotos(degrees))
-  }
-
-  bucketAddToAlbum(albumId) {
-    this.props.dispatch(addBucketAlbum(albumId));
-  }
-
-  bucketAddComment(comment) {
-    this.props.dispatch(commentPhotosBucket(comment));
-  }
-
-//end dispatch functions
 
 
   render () {
     var searchParams = this.state.searchParams
 
     const photoActions = {
-      DELETE:     this.deletePhoto,
-      TOGGLE:     this.toggleBucketPhoto,
-      CLICK:      this.handleClick ,
-      ZOOM:       this.showZoombox,
-      SCROLL:     this.handleInfiniteScroll,
-      ROTATE:     this.rotatePhoto,
-      ALBUMS:     this.addToAlbum,
-      COMMENTS:   this.addComment,
-      ADDTAG:     this.addTag,
-      REMOVETAG:  this.removeTag,
-      LIKE:       this.likePhoto,
-      HIDE:       this.toggleDetailsDialogue,
-      FACETS:     this._getFacet
+      DELETE:     this.deletePhoto.bind(this),
+      TOGGLE:     this.toggleBucketPhoto.bind(this),
+      CLICK:      this.handleClick.bind(this),
+      ZOOM:       this.showZoombox.bind(this),
+      SCROLL:     this.handleInfiniteScroll.bind(this),
+      ROTATE:     this.rotatePhoto.bind(this),
+      ALBUMS:     this.addToAlbum.bind(this),
+      COMMENTS:   this.addComment.bind(this),
+      ADDTAG:     this.addTag.bind(this),
+      REMOVETAG:  this.removeTag.bind(this),
+      LIKE:       this.likePhoto.bind(this),
+      HIDE:       this.toggleDetailsDialogue.bind(this),
+      FACETS:     this._getFacet.bind(this),
     }
 
     const bucketActions = {
-      REMOVE:     this.bucketRemovePhoto,
-      DELETE:     this.bucketDeletePhotos,
-      ADDTAG:     this.bucketAddTag,
-      REMOVETAG:  this.bucketRemoveTag,
-      LIKE:       this.bucketLikePhotos,
-      ROTATE:     this.bucketRotatePhotos,
-      ALBUMS:     this.bucketAddToAlbum,
-      ADDCOMMENT: this.bucketAddComment,
-      HIDE:       this.toggleBucketDialogue,
+      REMOVE:     this.bucketRemovePhoto.bind(this),
+      DELETE:     this.bucketDeletePhotos.bind(this),
+      ADDTAG:     this.bucketAddTag.bind(this),
+      REMOVETAG:  this.bucketRemoveTag.bind(this),
+      LIKE:       this.bucketLikePhotos.bind(this),
+      ROTATE:     this.bucketRotatePhotos.bind(this),
+      ALBUMS:     this.bucketAddToAlbum.bind(this),
+      ADDCOMMENT: this.bucketAddComment.bind(this),
+      HIDE:       this.toggleBucketDialogue.bind(this),
     }
 
     return (
@@ -367,6 +275,101 @@ class Photos extends React.Component {
       </div>
     );
   }
+
+  /**
+   *        DISPATCH FUNCTIONS
+   *
+   *  Dispatch functions for single photos
+   **/
+    //Photo
+    toggleBucketPhoto(photoId) {
+        this.props.dispatch(togglePhotosBucket(photoId))
+    }
+
+    addToAlbum(albumId) {
+      const payload = {
+        photoId: this.state.selectedPhoto.get('id'),
+        albumId: albumId
+      }
+      this.props.dispatch(addPhotoAlbum(payload))
+    }
+
+    rotatePhoto(rotation) {
+      const payload = {
+        photoId: this.state.selectedPhoto.get('id'),
+        rotation: rotation
+      }
+      this.props.dispatch(rotatePhoto(payload))
+    }
+
+    addComment(comment) {
+      const payload = {
+        photoId: this.state.selectedPhoto.get('id'),
+        comment: comment
+      }
+      this.props.dispatch(commentPhoto(payload))
+    }
+
+    addTag(tag) {
+      const payload = {
+        photoId: this.state.selectedPhoto.get('id'),
+        name: tag,
+      }
+      this.props.dispatch(addTagPhoto(payload))
+    }
+
+    removeTag(tagId) {
+      const payload = {
+        photoId: this.state.selectedPhoto.get('id'),
+        tagId: tagId,
+      }
+      this.props.dispatch(removeTagPhoto(payload))
+    }
+
+    likePhoto() {
+      this.props.dispatch(likePhoto(this.state.selectedPhoto.get('id')))
+    }
+
+    deletePhoto(photo) {
+      const id = typeof photo == 'number' ? photo : this.state.selectedPhoto.get('id')
+      this.props.dispatch(deletePhoto(id))
+    }
+
+  /**
+   *  Dispatch functions for entire bucket
+   **/
+    bucketRemovePhoto(id) {
+      this.props.dispatch(togglePhotosBucket(id));
+    }
+
+    bucketDeletePhotos() {
+      console.log('delete photos');
+    }
+
+    bucketAddTag(tag) {
+      this.props.dispatch(tagPhotosBucket(tag));
+    }
+
+    bucketRemoveTag() {
+      console.log('remove photos');
+    }
+
+    bucketLikePhotos() {
+      const photoIds = this.props.bucket.map(p => p.get('id')).toJS()
+      this.props.dispatch(likePhotosBucket(photoIds));
+    }
+
+    bucketRotatePhotos(degrees) {
+      this.props.dispatch(rotateBucketPhotos(degrees))
+    }
+
+    bucketAddToAlbum(albumId) {
+      this.props.dispatch(addBucketAlbum(albumId));
+    }
+
+    bucketAddComment(comment) {
+      this.props.dispatch(commentPhotosBucket(comment));
+    }
 }
 
 Photos.defaultProps = {

@@ -20,7 +20,7 @@ class Album extends React.Component {
           <div class="title">
             <div class="alignleft">
               <p>{this.props.album.get('name')}</p>
-              <p>{this.props.album.get('count')}</p>
+              <p>{this.props.album.get('size')}</p>
             </div>
             <div class="alignright">
               <IconMenu

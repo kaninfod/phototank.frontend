@@ -364,17 +364,16 @@ function photosGetRequest(payload) {
   var url;
   switch (payload.context) {
     case 'catalog':
-      url = '/api/catalogs/'.concat(payload.contextId, '/photos.json?page=', payload.page);
+      url = '/api/catalogs/'.concat(payload.contextId, '/photos?page=', payload.page);
       break;
     case 'album':
       url = '/api/albums/'.concat(payload.contextId, '/photos?page=', payload.page);
       break;
     default:
-      url = '/api/photos.json';
+      url = '/api/photos';
       var params = toQueryString(payload.searchParams);
       url = url.concat('?', params, '&page=', payload.page);
       break;
   }
-
   return createRequest('GET', url, null);
 }

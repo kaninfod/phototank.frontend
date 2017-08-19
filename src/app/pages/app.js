@@ -51,8 +51,8 @@ class App extends React.Component {
 
   _renderAppbar() {
     return (
+    <div className='pt-appbar'>
       <AppBar
-        style={ styles.example }
         title="Phototank"
         iconClassNameRight="muidocs-icon-navigation-expand-more"
         onTouchTap={this.handleTouchTap}>
@@ -81,6 +81,7 @@ class App extends React.Component {
           </Menu>
         </Popover>
       </AppBar>
+    </div>
     )
   }
 

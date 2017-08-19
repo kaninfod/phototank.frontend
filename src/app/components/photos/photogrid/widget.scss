@@ -1,28 +1,32 @@
 @import '../../../stylesheets/material-icons';
 
 .photo-widget {
-  float: left;
-  border: none;
   position: relative;
-  width:125px;
+  border: none;
   margin-bottom: 6px;
   margin-left:1px;
   margin-right:1px;
+}
+
+.photo-widget.large {
+  width:250px;
+}
+@media (max-width: 480px) {
+  .photo-widget.small {
+    width:125px;
+  }
+}
+
+.photo-widget img {
+  min-height: 125px;
+  min-width: 125px;
 }
 
 .photo-widget:focus {
   opacity:0.5;
 }
 
-.photo-widget-header {
-  height: 125px;
-}
-
-.photo-widget-header img {
-  position: absolute;
-}
-
-.photo-widget-date {
+.photo-widget > .date {
   background-color: #6E7C84;
   color: white;
   text-align: center;
@@ -35,11 +39,21 @@
   font-size: 16px;
 }
 
-.overlay-button {
-  display: none;
+.photo-widget > .button-container {
   position: absolute;
+  top: 5px;
+  right: 5px;
+  display: flex;
+  flex-direction: column;
+
+}
+
+.button-container > .overlay-button {
+  align-self:auto;
+  display: none;
   height: 20px;
   width: 20px;
+  margin-bottom: 4px;
   text-align: center;
   color: #ffffff;
   opacity: 0.7;
@@ -50,28 +64,11 @@
   color: #ffffff;
   z-index: 5;
 }
-.overlay-show {
+
+.button-container > .overlay-show {
   display: inline-block;
 }
-.overlay-select {
-  left: 100px;
-  top: 10px;
-}
 
-.overlay-select.selected {
+.button-container > .overlay-select.selected {
   display:inline-block;
-}
-.overlay-zoom {
-  left: 100px;
-  top: 35px;
-}
-
-.overlay-delete {
-  left: 100px;
-  top: 60px;
-}
-
-.overlay-processing {
-  left: 100px;
-  top: 85px;
 }

@@ -1,6 +1,7 @@
 import React from 'react';
 import LazyLoad from 'react-lazy-load';
 
+
 export default class Widget extends React.Component {
   constructor(props) {
     super(props);
@@ -39,39 +40,41 @@ export default class Widget extends React.Component {
   render() {
     const props = this.props;
     const photo = props.photo;
+    const bucketState = props.actions.FACETS('Bucket', photo.get('id')) ? 'selected' : '';
     return (
 
         <div
-          id={photo.get('id')} className="hoverable photo-widget z-depth-1" ref="widget"
+          className={'hoverable photo-widget z-depth-1 '}
+          id={photo.get('id')} ref="widget"
           onMouseEnter={this.handleHover} onMouseLeave={this.handleHover}>
-          <div className="photo-widget-content"></div>
-            <div className="photo-widget-header">
 
-              <LazyLoad offsetVertical={300}>
+              <LazyLoad offsetVertical={300} height={125}>
                 <img
                   id={photo.get('id')}
                   onClick={this.handleClick}
                   src= {photo.get('url_tm').concat('?token=', sessionStorage.jwt)} />
               </LazyLoad>
+              <div className="date">{photo.get('date_taken_formatted')}</div>
 
-              <div className={'overlay-button overlay-select ' +
-                (this.props.actions.FACETS('Bucket', this.props.photo.get('id')) ? 'selected' : '')}
-                onClick={this.handleSelect} ref="select" >
+              <div className='button-container'>
+                <div className={'overlay-button overlay-select'.concat(' ', bucketState)}
+                  onClick={this.handleSelect} ref="select" >
                     <i className="material-icons">check</i>
-              </div>
+                </div>
 
-              <div className="overlay-button overlay-zoom selected"
-                onClick={this.handleZoom} >
+                <div className="overlay-button overlay-zoom selected"
+                  onClick={this.handleZoom} >
                     <i className="material-icons">zoom_out_map</i>
-              </div>
+                </div>
 
-              <div className="overlay-button overlay-delete selected"
-                onClick={this.handleDelete} ref="delete" >
+                <div className="overlay-button overlay-delete selected"
+                  onClick={this.handleDelete} ref="delete" >
                     <i className="material-icons">delete_forever</i>
-              </div>
-
+                </div>
             </div>
-            <div className="photo-widget-date">{photo.get('date_taken_formatted')}</div>
+
+
+
         </div>
 
       );

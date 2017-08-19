@@ -1,6 +1,6 @@
 import React from 'react';
-
-var canTrigger = false;
+import { throttle } from 'lodash';
+let canTrigger = false;
 
 export default class Waypoint extends React.Component {
   propTypes: {
@@ -8,7 +8,8 @@ export default class Waypoint extends React.Component {
   }
 
   componentDidMount() {
-    if (this.props.onWindowScroll) window.addEventListener("scroll", this.handleScroll.bind(this));
+    const callback = _.throttle(this.handleScroll.bind(this), 500);
+    if (this.props.onWindowScroll) window.addEventListener("scroll", callback);
   }
 
   componentWillUnmount() {
@@ -16,6 +17,7 @@ export default class Waypoint extends React.Component {
   }
 
   handleScroll(event) {
+
     if (this._waypointPos() < 0 && this.props.loadMore && !canTrigger) {
       if (this.props.onWindowScroll) this.props.onWindowScroll(event);
       canTrigger = true
@@ -23,18 +25,23 @@ export default class Waypoint extends React.Component {
   }
 
   _waypointPos() {
+
     if (this.refs.waypoint) {
       var rec = this.refs.waypoint.getBoundingClientRect();
-      return  rec.bottom - window.scrollY - this.props.offset;
+      return  rec.bottom - window.outerHeight - this.props.offset;
+
     }
   }
 
   render() {
     return (
-      <div className={this.props.className} ref="waypoint">
-        { this.props.children }
-        {canTrigger = this.props.loading}
-      </div>
+
+        <div className={this.props.className} ref="waypoint">
+          { this.props.children }
+          {canTrigger = this.props.loading}
+        </div>
+
+
     );
   }
 }

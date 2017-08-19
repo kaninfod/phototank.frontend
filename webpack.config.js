@@ -57,7 +57,7 @@ var config = {
       template: 'src/app/html-template.ejs',
       filename: 'index.html',
     }),
-    new webpack.DefinePlugin({ 
+    new webpack.DefinePlugin({
       'process.env': {
         'NODE_ENV': JSON.stringify('production'),
       },
