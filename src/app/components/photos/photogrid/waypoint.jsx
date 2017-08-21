@@ -17,7 +17,6 @@ export default class Waypoint extends React.Component {
   }
 
   handleScroll(event) {
-
     if (this._waypointPos() < 0 && this.props.loadMore && !canTrigger) {
       if (this.props.onWindowScroll) this.props.onWindowScroll(event);
       canTrigger = true

@@ -42,29 +42,7 @@ class Photos extends React.Component {
 
     this.changeSearchParams    = this.changeSearchParams.bind(this)
     this.hideZoombox           = this.hideZoombox.bind(this);
-    // this.toggleBucketPhoto     = this.toggleBucketPhoto.bind(this);
-    // this.handleInfiniteScroll  = this.handleInfiniteScroll.bind(this);
-    // this.handleClick           = this.handleClick.bind(this);
-    // this.deletePhoto           = this.deletePhoto.bind(this);
-    // this.showZoombox           = this.showZoombox.bind(this);
-    // this.likePhoto             = this.likePhoto.bind(this);
-    // this.addToAlbum            = this.addToAlbum.bind(this);
-    // this.addTag                = this.addTag.bind(this);
-    // this.removeTag             = this.removeTag.bind(this);
-    // this.rotatePhoto           = this.rotatePhoto.bind(this);
-    // this.addComment            = this.addComment.bind(this);
-    // this.toggleDetailsDialogue = this.toggleDetailsDialogue.bind(this)
-
     this.toggleBucketDialogue  = this.toggleBucketDialogue.bind(this)
-    // this.bucketRemovePhoto     = this.bucketRemovePhoto.bind(this)
-    // this.bucketDeletePhotos    = this.bucketDeletePhotos.bind(this)
-    // this.bucketAddTag          = this.bucketAddTag.bind(this)
-    // this.bucketRemoveTag       = this.bucketRemoveTag.bind(this)
-    // this.bucketLikePhotos      = this.bucketLikePhotos.bind(this)
-    // this.bucketRotatePhotos    = this.bucketRotatePhotos.bind(this)
-    // this.bucketAddToAlbum      = this.bucketAddToAlbum.bind(this)
-    // this.bucketAddComment      = this.bucketAddComment.bind(this)
-
     this._getFacet             = this._getFacet.bind(this)
 
     this.updateGrid            = false;
@@ -122,6 +100,17 @@ class Photos extends React.Component {
   }
 
   handleClick(photoId) {
+    this.props.dispatch({
+      type: 'SHOW_PANEL',
+      payload: {
+        open: true,
+        size: 'large',
+        title: 'Photo'.concat(photoId),
+        widget: 'BUCKET_INFO',
+        widgetData: this._getPhoto(photoId),
+        photoId: photoId,
+      }
+    })
     this.setState({
       selectedPhoto: this._getPhoto(photoId),
       showDetails: true,

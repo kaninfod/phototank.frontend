@@ -52,7 +52,6 @@ render(
               <Route path="/albums/:id/photos/" component={AlbumPhotos}/>
             </Albums>
 
-
             <Photos>
               <Route path="/photos" component={SearchPhotos}/>
             </Photos>

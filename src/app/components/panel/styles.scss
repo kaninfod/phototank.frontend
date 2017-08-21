@@ -1,0 +1,52 @@
+.panel {
+  background-color: white;
+  z-index: 5;
+  position:fixed;
+  box-shadow: -2px 0px 5px 2px grey;
+  .title {
+    width: 100%;
+    height: 30px;
+    background-color: darkturquoise;
+    display:table;
+    p {
+      padding-left: 15px;
+      display: table-cell;
+      vertical-align: middle;
+    }
+    span {
+      display: table-cell;
+      vertical-align: middle;
+      cursor: default;
+      font-size: large;
+    }
+  }
+}
+
+.panel.small {
+  bottom: -45%;
+  right: -25%;
+  width: 30%;
+  height: 50%;
+  transition:  bottom 0.5s, right 0.5s;
+}
+
+.panel.medium {
+  bottom: -45%;
+  right: -45%;
+  width: 50%;
+  height: 50%;
+  transition:  bottom 0.5s, right 0.5s;
+}
+
+.panel.large {
+  bottom: 0;
+  right: -95%;
+  width: 50%;
+  height: 65%;
+  transition: right 0.5s;
+}
+
+.panel.open {
+  bottom: 1%;
+  right: 1%;
+}

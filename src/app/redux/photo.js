@@ -93,11 +93,37 @@ export function reducer(state=init, action={}) {
       });
       return state;
     }
+
+    case 'SHOW_PANEL': {
+      return panelDataprovider(state, action);
+    }
   }
   return state;
 }
 
 // Utility functions for reducer
+
+/**
+ * panelDataprovider() provides data for widgets in the slide in panel
+ *
+ */
+function panelDataprovider(state, action) {
+  switch (action.payload.widget) {
+    case 'PHOTO_INFO': {
+      const index = state.get('photos').findIndex(p => p.get('id') == action.payload.photoId);
+      return state.setIn(['photo'], state.getIn(['photos', index]));
+    }
+
+    default: {
+      return state;
+    }
+
+    // case 'BUCKET_INFO': {
+    //   const index = state.get('photos').findIndex(p => p.get('id') == action.payload.photoId);
+    //   return state.setIn(['photo'], state.getIn(['photos', index]));
+    // }
+  }
+}
 
 /**
  * updatePhotoInPhotos() updates / replaces a single photo within
@@ -125,12 +151,12 @@ function deletePhotoInPhotos(state, action) {
  * updatePhotoInPhotos() updates/replaces a single photo within
  * the photos array in state
  */
-function updatePhotoInPhotos(state, action) {
-  const _photos = state.get('photos').map(photo =>
-    photo.get('id') === action.getIn(['payload', 'id']) ? action.get('payload') : photo
-  );
-  return state.set('photos', _photos);
-}
+// function updatePhotoInPhotos(state, action) {
+//   const _photos = state.get('photos').map(photo =>
+//     photo.get('id') === action.getIn(['payload', 'id']) ? action.get('payload') : photo
+//   );
+//   return state.set('photos', _photos);
+// }
 
 /**
  * updateBucket() updates a single photo within
@@ -182,8 +208,8 @@ function setPagination(state, action) {
 }
 
 // Action Creators
-function requestPhotos() {
-  return { type: FETCH_PHOTOS_REQUEST };
+function requestPhotos(payload) {
+  return { type: FETCH_PHOTOS_REQUEST, payload };
 }
 
 function fetchPhotosSuccess(data) {
@@ -336,7 +362,7 @@ export function likePhotosBucket(photoIds) {
 
 export function fetchPhotos(payload) {
   return dispatch => {
-    dispatch(requestPhotos());
+    dispatch(requestPhotos(payload));
 
     const request = photosGetRequest(payload, dispatch);
     fetch(request)

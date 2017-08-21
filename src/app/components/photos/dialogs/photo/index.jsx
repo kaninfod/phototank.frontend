@@ -105,14 +105,14 @@ function dataProvider(state) {
 
     case 'COMMENTS': {
       return {
-        comments: state.photoActions.FACETS('Comment'), //state.photo.get('comments', []),
+        comments: state.photoActions.FACETS('Comment'),
         currentUser: state.currentUser,
       };
     }
 
     case 'TAG': {
       return {
-        tags: state.photoActions.FACETS('Tag'), //state.photo.get('tags'),
+        tags: state.photoActions.FACETS('Tag'),
         taglist: state.taglist,
       };
     }

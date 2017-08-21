@@ -1,7 +1,6 @@
 import React from 'react';
 import { Header } from './header';
 
-
 export default class Info extends React.Component {
   constructor(props) {
     super(props);

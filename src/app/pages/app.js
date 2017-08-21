@@ -10,13 +10,16 @@ import Popover from 'material-ui/Popover';
 import Menu from 'material-ui/Menu';
 import MenuItem from 'material-ui/MenuItem';
 import { Link } from 'react-router-dom';
+import Panel from '../components/panel/panel';
 
 const styles = { example: { position: 'fixed', }, };
+
 
 @connect((store) => {
   return {
     user:       store.nAuth.get('user'),
     hideAppbar: store.ui.get('hideAppbar'),
+    panel:  store.ui.get('panelProps'),
   };
 })
 class App extends React.Component {
@@ -27,6 +30,7 @@ class App extends React.Component {
     this.handleLogout = this.handleLogout.bind(this);
     this.state = {
       open: false,
+      panelOpen:false,
     };
   }
 
@@ -49,12 +53,27 @@ class App extends React.Component {
     this.setState({ open: false });
   }
 
+  togglePanel() {
+    this.props.dispatch({
+      type: 'SHOW_PANEL',
+      payload: {
+        open: !this.props.panel.get('open'),
+        size: 'small',
+        title: 'from reducer',
+        widget: 'PHOTO_INFO',
+        widgetData: 'Martin',
+      }
+    })
+  }
+
   _renderAppbar() {
+    return null;
     return (
     <div className='pt-appbar'>
       <AppBar
         title="Phototank"
         iconClassNameRight="muidocs-icon-navigation-expand-more"
+
         onTouchTap={this.handleTouchTap}>
         <Popover
           open={this.state.open}
@@ -103,6 +122,13 @@ class App extends React.Component {
         <div className="pt-contents">
           {children}
         </div>
+        <div onClick={this.togglePanel.bind(this)}>kaj</div>
+
+        <Panel {...this.props} >
+
+          {null}
+        </Panel>
+
       </div>
     );
   }

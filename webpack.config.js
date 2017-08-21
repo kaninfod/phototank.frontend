@@ -19,7 +19,8 @@ var config = {
   output: {
     publicPath: '/',
     path: BUILD_DIR,
-    filename: '[name].js',
+    filename: '[name].[chunkhash].js',
+    // filename: '[name].js',
   },
   module: {
     loaders: [
@@ -47,7 +48,7 @@ var config = {
       Promise: 'es6-promise',
       fetch: 'imports-loader?this=>global!exports-loader?global.fetch!whatwg-fetch',
     }),
-    new ExtractTextPlugin('[name].css'),
+    new ExtractTextPlugin('[name].[chunkhash].css'),
     new webpack.ProvidePlugin({
         $: 'jquery',
         jQuery: 'jquery',
@@ -57,13 +58,13 @@ var config = {
       template: 'src/app/html-template.ejs',
       filename: 'index.html',
     }),
-    new webpack.DefinePlugin({
-      'process.env': {
-        'NODE_ENV': JSON.stringify('production'),
-      },
-    }),
-    new webpack.optimize.UglifyJsPlugin(),
-    new webpack.optimize.AggressiveMergingPlugin(),
+    // new webpack.DefinePlugin({
+    //   'process.env': {
+    //     'NODE_ENV': JSON.stringify('production'),
+    //   },
+    // }),
+    // new webpack.optimize.UglifyJsPlugin(),
+    // new webpack.optimize.AggressiveMergingPlugin(),
   ],
 
   devServer: {

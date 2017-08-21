@@ -1,5 +1,4 @@
 import Lightbox from 'react-image-lightbox';
-// import 'react-image-lightbox /dist/umd/bundle.min.css';
 import React from 'react';
 
 export default class Zoombox extends React.Component {
