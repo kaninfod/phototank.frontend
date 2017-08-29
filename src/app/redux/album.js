@@ -24,6 +24,9 @@ var init = Map(fromJS({
     start: null,
     end: null,
   },
+  loadedAt: {
+    albums: false,
+  },
 }));
 
 var newState = null;
@@ -32,12 +35,12 @@ export function reducer(state=init, action={}) {
   switch (action.type) {
 
     case FETCH_ALBUMS_SUCCESS: {
-      newState = state.set('albums', fromJS(action.payload));
-      return newState;
+      state = state.set('albums', fromJS(action.payload.albums));
+      return state.setIn(['loadedAt', 'albums'], Date());;
     }
 
     case FETCH_ALBUM_SUCCESS: {
-      newState = state.set('album', fromJS(action.payload));
+      newState = state.set('album', fromJS(action.payload.album));
       return newState;
     }
 
@@ -47,7 +50,7 @@ export function reducer(state=init, action={}) {
     }
 
     case UPDATE_ALBUM_SUCCESS: {
-      return state.set('album', fromJS(action.payload));
+      return state.set('album', fromJS(action.payload.album));
     }
 
     case DELETE_ALBUM_SUCCESS: {
@@ -67,6 +70,7 @@ export function fetchAlbums() {
     url: '/api/albums',
     httpVerb: requestTypes.GET,
     params: null,
+    loadedAtIdentifier: ['nAlbum', 'loadedAt', 'albums'],
   };
 
   return dispatch => {

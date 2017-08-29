@@ -8,10 +8,11 @@ var APP_DIR = path.resolve(__dirname, 'src/app');
 
 var config = {
   resolve: {
+    // root: path.resolve('./src)'),
     extensions: ['.js', '.jsx', '.scss'],
-    alias: {
-      jquery: 'jquery/src/jquery',
-    },
+    // alias: {
+    //   jquery: 'jquery/src/jquery',
+    // },
   },
   entry: {
     main: APP_DIR + '/index.jsx',
@@ -20,7 +21,6 @@ var config = {
     publicPath: '/',
     path: BUILD_DIR,
     filename: '[name].[chunkhash].js',
-    // filename: '[name].js',
   },
   module: {
     loaders: [
@@ -36,6 +36,10 @@ var config = {
             'transform-decorators-legacy',
           ],
         },
+      },
+      {
+        test: /\.svg$/,
+        loader: 'babel-loader!svg-react-loader',
       },
       { test: /.(woff|woff2|eot|ttf)$/, loader: 'url-loader?prefix=font/&limit=5000', },
       { test: /\.(scss|css|sass)$/, loader: ExtractTextPlugin.extract(['css-loader', 'sass-loader']), },

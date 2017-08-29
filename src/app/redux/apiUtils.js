@@ -7,10 +7,23 @@ export const requestTypes = {
 
 export const apiService = store => next => action => {
   next(action);
+
   if (action.isAPI) {
+
+    if (action.loadedAtIdentifier) {
+      const _storeBranch = action.loadedAtIdentifier[0];
+      const _identifier = action.loadedAtIdentifier.slice(1);
+      const _loadedAt = store.getState()[_storeBranch].getIn(_identifier);
+      if (new Date() - new Date(_loadedAt) < 300000 && _loadedAt) {
+        console.log('no load for you');
+        return;
+      }
+    }
+
     const _actionTypeSuccess = action.type.concat('_SUCCESS');
     const _actionTypeError = action.type.concat('_ERROR');
     const request = createRequest(action.httpVerb, action.url, action.params);
+
     fetch(request)
     .then(response => responseHandler(response))
     .then(data =>
@@ -21,6 +34,10 @@ export const apiService = store => next => action => {
     );
   }
 };
+
+function shouldLoad(state, action) {
+
+}
 
 export function createRequest(type, url, params) {
   const token = sessionStorage.jwt;
@@ -43,9 +60,13 @@ export function createRequest(type, url, params) {
 
 export function responseHandler(response, dispatch) {
   if (response.status >= 200 && response.status < 300) {
+    // if (response.headers.has('x-pagination')) {
+    //   console.log(response.json());
+    //   // dispatch(setHeader(response.headers));
+    // }
+
     return response.json();
   } else if (response.status == 401) {
-    // dispatch(notAuthorized());
     const error = new Error(response.statusText);
     error.response = response;
     throw error;

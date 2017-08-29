@@ -5,6 +5,7 @@ import { List, Map, fromJS } from 'immutable';
 // Reducer
 var init = Map(fromJS({
   hideAppbar: false,
+  selectedPhoto: null,
   panelProps: {
     open: false,
     title: '',
@@ -30,6 +31,15 @@ export function reducer(state=init, action={}) {
 
     case 'HIDE_PANEL': {
       return state.setIn(['panelProps', 'open'], fromJS(action.status));
+    }
+
+    case 'SELECT_PHOTO': {
+      return state.set('selectedPhoto', fromJS(action.photoId));
+    }
+
+    case 'ADDTAG_PHOTO_SUCCESS': {
+      console.log(action);
+      return state.setIn(['panelProps', 'widgetData'], fromJS(action.payload));
     }
 
   }

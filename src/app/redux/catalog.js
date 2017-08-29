@@ -27,7 +27,7 @@ export function reducer(state=init, action={}) {
   switch (action.type) {
 
     case FETCH_CATALOGS_SUCCESS: {
-      state = state.set('catalogs', fromJS(action.payload));
+      state = state.set('catalogs', fromJS(action.payload.catalogs));
       return state;
     }
 

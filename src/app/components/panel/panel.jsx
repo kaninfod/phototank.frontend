@@ -1,8 +1,12 @@
 import React from 'react';
-import './styles';
-import PhotoInfo from '../widgets/photoInfo';
-import BucketInfo from '../widgets/bucketInfo';
-import { likePhoto } from '../../redux/photo';
+import { BottomSheet, ExpandableBottomSheet } from 'material-ui-bottom-sheet';
+import './panel.scss';
+import PhotoInfo from './widgets/photoInfo';
+import BucketInfo from './widgets/bucketInfo';
+import FloatingActionButton from 'material-ui/FloatingActionButton';
+import ContentAdd from 'material-ui/svg-icons/content/add';
+import { likePhoto, addTagPhoto, removeTagPhoto, commentPhoto } from '../../redux/photo';
+import { addPhotoAlbum } from '../../redux/album';
 import { connect } from 'react-redux';
 
 const widgets = {
@@ -25,9 +29,11 @@ const widgets = {
     currentUser:        store.nAuth.get('user'),
   };
 })
+
 class Panel extends React.Component {
   constructor(props) {
     super(props);
+    this._hidePanel = this._hidePanel.bind(this)
     this.state = {
       open: false,
       size: 'small',
@@ -51,25 +57,17 @@ class Panel extends React.Component {
     this.props.dispatch({ type: 'HIDE_PANEL', status: false, });
   }
 
-  _panelClassName() {
-    const openState = (this.state.open ? 'open' : '');
-    return 'panel'.concat(' ', openState, ' ', this.state.size);
-  }
-
   render () {
     const Widget = widgets[this.state.widget];
-
+//
     return (
-    <div id="panel" className={this._panelClassName()}>
-      <div className="title" >
-        <p> {this.state.title} </p>
-        <span onClick={this._hidePanel.bind(this)}> > </span>
-      </div>
-      <div className="content">
-        <Widget
-          widgetData={this.dataProvider()} />
-      </div>
-    </div>);
+      <ExpandableBottomSheet onRequestClose={this._hidePanel} open={this.state.open}
+        bodyStyle={{'marginTop': '70vh'}}>
+          <div className="content">
+            <Widget widgetData={this.dataProvider()} />
+          </div>
+      </ExpandableBottomSheet>
+    );
   }
 
   dataProvider() {
@@ -79,13 +77,15 @@ class Panel extends React.Component {
           photo: this.props.photo,
           taglist: this.props.taglist,
           albums: this.props.albums,
+          currentUser: this.props.currentUser,
           actions: {
             photoLike: this.photoLike.bind(this),
-            photoComment: this.photoLike.bind(this),
-            photoTag: this.photoLike.bind(this),
+            photoComment: this.photoAddComment.bind(this),
+            photoAddTag: this.photoAddTag.bind(this),
+            photoRemoveTag: this.photoRemoveTag.bind(this),
             photoRotate: this.photoLike.bind(this),
             photoDelete: this.photoLike.bind(this),
-            photoAlbumAdd: this.photoLike.bind(this),
+            photoAlbumAdd: this.photoAlbumAdd.bind(this),
           }
         }
       }
@@ -102,7 +102,7 @@ class Panel extends React.Component {
             bucketTag: this.photoLike.bind(this),
             bucketRotate: this.photoLike.bind(this),
             bucketDelete: this.photoLike.bind(this),
-            bucketAlbumAdd: this.photoLike.bind(this),
+            bucketAlbumAdd: this.photoAlbumAdd.bind(this),
           }
         }
       }
@@ -124,8 +124,22 @@ class Panel extends React.Component {
     this.props.dispatch(likePhoto(photoId))
   }
 
+  photoAlbumAdd(payload) {
+    // const payload = {albumId: albumId, photoId: photoId}
+    this.props.dispatch(addPhotoAlbum(payload))
+  }
 
+  photoAddComment(payload) {
+    this.props.dispatch(commentPhoto(payload))
+  }
 
+  photoAddTag(payload) {
+    this.props.dispatch(addTagPhoto(payload))
+  }
+
+  photoRemoveTag(payload) {
+    this.props.dispatch(removeTagPhoto(payload))
+  }
 
 }
 

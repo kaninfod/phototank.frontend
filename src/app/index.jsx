@@ -1,3 +1,5 @@
+import './stylesheets/global_styles';//
+
 import React                from 'react';
 import { render }           from 'react-dom';
 import { BrowserRouter,
@@ -5,8 +7,7 @@ import { BrowserRouter,
          IndexRoute,
          Redirect }         from 'react-router-dom';
 import createBrowserHistory from 'history/createBrowserHistory';
-import 'materialize-css/dist/css/materialize.css';
-import 'materialize-css/dist/js/materialize.js';
+
 import MuiThemeProvider     from 'material-ui/styles/MuiThemeProvider';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 
@@ -16,7 +17,6 @@ import store                from './redux/store';
 import SearchPhotos         from './pages/photos/search';
 
 import App                  from './pages/app';
-import Home                 from './pages/home';
 
 import Catalogs             from './pages/catalogs';
 import CatalogList          from './components/catalogs/cataloglist';
@@ -29,6 +29,7 @@ import NewAlbum             from './components/albums/newAlbum';
 import AlbumPhotos          from './pages/photos/album';
 
 import Photos               from './pages/photos';
+import PhotoDetail          from './components/photos/photodetail/photodetail';
 import Login                from './pages/login';
 
 injectTapEventPlugin();
@@ -52,9 +53,10 @@ render(
               <Route path="/albums/:id/photos/" component={AlbumPhotos}/>
             </Albums>
 
-            <Photos>
-              <Route path="/photos" component={SearchPhotos}/>
-            </Photos>
+
+              <Route path="/photos/:id" component={PhotoDetail}/>
+              <Route exact path="/photos" component={SearchPhotos}/>
+
 
             <Catalogs>
               <Route path="/catalogs/list" component={CatalogList}/>

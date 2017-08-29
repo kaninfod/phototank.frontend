@@ -1,27 +1,23 @@
 .panel {
-  background-color: white;
+  background-color: #cac6c6;
   z-index: 5;
   position:fixed;
   box-shadow: -2px 0px 5px 2px grey;
-  .title {
-    width: 100%;
-    height: 30px;
-    background-color: darkturquoise;
-    display:table;
-    p {
-      padding-left: 15px;
-      display: table-cell;
-      vertical-align: middle;
-    }
-    span {
-      display: table-cell;
-      vertical-align: middle;
-      cursor: default;
-      font-size: large;
-    }
+
+  .action-button {
+    position: absolute;
+    top: -30px;
+    right: 24px;
   }
 }
 
+.panel.sheet {
+  bottom: -50%;
+  width: 100%;
+  height: 50%;
+  transition:  bottom 0.3s;
+}
+//
 .panel.small {
   bottom: -45%;
   right: -25%;
@@ -46,7 +42,7 @@
   transition: right 0.5s;
 }
 
-.panel.open {
-  bottom: 1%;
-  right: 1%;
+.panel.open      {
+  bottom: 0%;
+  right: 0%;
 }
