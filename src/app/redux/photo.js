@@ -1,5 +1,5 @@
 import {
-  // apiActionHandler,
+  responseHandler,
   requestTypes,
   createRequest,
   notAuthorized,
@@ -25,6 +25,11 @@ export const TOGGLE_PHOTOS_BUCKET = 'TOGGLE_PHOTOS_BUCKET';
 
 // Reducer
 var init = Map(fromJS({
+  loadedAt: {
+    bucket: false,
+    taglist: false,
+    photos: false,
+  },
   bucket: [],
   photos: [],
   pagination: {
@@ -47,18 +52,21 @@ export function reducer(state=init, action={}) {
     case 'SET_HEADER':  return setPagination(state, action);
 
     case 'FETCH_PHOTOS_SUCCESS': {
+      state = setPagination(state, action);
+
       if (state.getIn(['pagination', 'out_of_bounds'])) {
         return state;
       }
 
       if (state.getIn(['pagination', 'first_page'])) {
-        state = state.set('photos', List(fromJS(action.payload)));
+        state = state.set('photos', List(fromJS(action.payload.photos)));
       } else {
         const photos = unionPhotos(state.get('photos'), action);
         state = state.set('photos', List(photos));
         state = limitPhotoArray(state);
       }
 
+      state = state.setIn(['loadedAt', 'photos'], Date());
       return state;
     }
 
@@ -70,15 +78,17 @@ export function reducer(state=init, action={}) {
     case 'REMOVETAG_PHOTO_SUCCESS':
     case 'COMMENT_PHOTO_SUCCESS':
     case 'LIKE_PHOTO_SUCCESS': {
-      return updatePhotoInPhotos(state, fromJS(action));
+      return updatePhotoInPhotos(state, fromJS(action)).set('photo', fromJS(action.payload.photo));
     }
 
     case 'GET_TAGLIST_PHOTO_SUCCESS': {
-      return state.set('taglist', fromJS(action.payload));
+      state = state.set('taglist', fromJS(action.payload.source_tags));
+      return state.setIn(['loadedAt', 'taglist'], Date());
     }
 
     case 'FETCH_BUCKET_SUCCESS': {
-      return state.set('bucket', fromJS(action.payload));
+      state = state.set('bucket', fromJS(action.payload.photos));
+      return state.setIn(['loadedAt', 'bucket'], Date());
     }
 
     case 'TOGGLE_PHOTOS_BUCKET_SUCCESS': {
@@ -118,10 +128,6 @@ function panelDataprovider(state, action) {
       return state;
     }
 
-    // case 'BUCKET_INFO': {
-    //   const index = state.get('photos').findIndex(p => p.get('id') == action.payload.photoId);
-    //   return state.setIn(['photo'], state.getIn(['photos', index]));
-    // }
   }
 }
 
@@ -131,7 +137,7 @@ function panelDataprovider(state, action) {
  */
 function updatePhotoInPhotos(state, action) {
   const _photos = state.get('photos').map(photo =>
-    photo.get('id') === action.getIn(['payload', 'id']) ? action.get('payload') : photo
+    photo.get('id') === action.getIn(['payload', 'photo', 'id']) ? action.getIn(['payload', 'photo']) : photo
   );
   return state.set('photos', _photos);
 }
@@ -148,31 +154,21 @@ function deletePhotoInPhotos(state, action) {
 }
 
 /**
- * updatePhotoInPhotos() updates/replaces a single photo within
- * the photos array in state
- */
-// function updatePhotoInPhotos(state, action) {
-//   const _photos = state.get('photos').map(photo =>
-//     photo.get('id') === action.getIn(['payload', 'id']) ? action.get('payload') : photo
-//   );
-//   return state.set('photos', _photos);
-// }
-
-/**
  * updateBucket() updates a single photo within
  * the bucket array in state.
  */
 function updateBucket(state, action) {
-  const facet = action.getIn(['payload', 'facets'], []).filter(f =>
+
+  const facet = action.getIn(['payload', 'photo', 'facets'], []).filter(f =>
     f.get('type') == 'Bucket'
   ).get(0);
 
   let bucket = [];
   if (!!facet) {
-    bucket = state.get('bucket').push(action.get('payload'));
+    bucket = state.get('bucket').push(action.getIn(['payload', 'photo']));
   } else {
     bucket = state.get('bucket').filter(
-      photo => photo.get('id') !== action.getIn(['payload', 'id'])
+      photo => photo.get('id') !== action.getIn(['payload', 'photo', 'id'])
     );
   }
 
@@ -189,12 +185,12 @@ function limitPhotoArray(state) {
 }
 
 function unionPhotos(state, action) {
-  const newPhotos = fromJS(action.payload);
+  const newPhotos = fromJS(action.payload.photos);
   return state.concat(newPhotos);
 }
 
 function setPagination(state, action) {
-  const pagination = JSON.parse(action.payload.get('x-pagination'));
+  const pagination = action.payload.meta;
   state = state
     .setIn(['pagination', 'total'], pagination.total)
     .setIn(['pagination', 'total_pages'], pagination.total_pages)
@@ -219,10 +215,6 @@ function fetchPhotosSuccess(data) {
 export function setHeader(data) {
   return { type: SET_HEADER, payload: data };
 }
-
-// export function clickPhoto(photoId) {
-//   return { type: CLICK_PHOTO, payload: { selectedPhoto: photoId, } };
-// }
 
 //API
 
@@ -274,6 +266,7 @@ export function fetchTaglist() {
     url: '/api/photos/taglist',
     httpVerb: requestTypes.GET,
     params: null,
+    loadedAtIdentifier: ['nPhoto', 'loadedAt', 'taglist'],
   };
 }
 
@@ -318,7 +311,6 @@ export function deletePhoto(photoId) {
 }
 
 // Bucket actions
-
 export function fetchBucket() {
   return {
     isAPI: true,
@@ -326,9 +318,9 @@ export function fetchBucket() {
     url: '/api/photos/bucket',
     httpVerb: requestTypes.GET,
     params: null,
+    loadedAtIdentifier: ['nPhoto', 'loadedAt', 'bucket'],
   };
 }
-
 
 export function rotateBucketPhotos(payload) {
   return {
@@ -361,45 +353,55 @@ export function likePhotosBucket(photoIds) {
 }
 
 export function fetchPhotos(payload) {
-  return dispatch => {
-    dispatch(requestPhotos(payload));
-
-    const request = photosGetRequest(payload, dispatch);
-    fetch(request)
-    .then(response => photosResponseHandler(response, dispatch))
-    .then(data => dispatch(fetchPhotosSuccess(data)))
-    .catch(err => err);
+  return {
+    isAPI: true,
+    type: 'FETCH_PHOTOS',
+    url: photosGetUrl(payload),
+    httpVerb: requestTypes.GET,
+    params: null,
+    loadedAtIdentifier: ['nPhoto', 'loadedAt', 'photos'],
   };
 }
 
-//Utility functions, mainly for fetchPhotos
-function photosResponseHandler(response, dispatch) {
-  if (response.
-    status >= 200 && response.status < 300) {
-    dispatch(setHeader(response.headers));
-    return response.json();
-  } else if (response.status == 401) {
-    const error = new Error(response.statusText);
-    error.response = response;
-    dispatch(notAuthorized());
-    throw error;
+export function fetchMorePhotos(payload) {
+  return {
+    isAPI: true,
+    type: 'FETCH_PHOTOS',
+    url: photosGetUrl(payload),
+    httpVerb: requestTypes.GET,
+    params: null,
+    // loadedAtIdentifier: ['nPhoto', 'loadedAt', 'photos'],
+  };
+}
+
+
+function photosGetUrl(payload) {
+  switch (payload.context) {
+    case 'catalog':
+      return '/api/catalogs/'.concat(payload.contextId, '/photos?page=', payload.page);
+    case 'album':
+      return '/api/albums/'.concat(payload.contextId, '/photos?page=', payload.page);
+    default:
+      const params = toQueryString(payload.searchParams);
+      return '/api/photos'.concat('?', params, '&page=', payload.page);
   }
 }
 
-function photosGetRequest(payload) {
-  var url;
-  switch (payload.context) {
-    case 'catalog':
-      url = '/api/catalogs/'.concat(payload.contextId, '/photos?page=', payload.page);
-      break;
-    case 'album':
-      url = '/api/albums/'.concat(payload.contextId, '/photos?page=', payload.page);
-      break;
-    default:
-      url = '/api/photos';
-      var params = toQueryString(payload.searchParams);
-      url = url.concat('?', params, '&page=', payload.page);
-      break;
+export function getPhoto(photoId, context) {
+  const index = context.photos.findIndex(p => p.get('id') == parseInt(photoId));
+  return context.photos.get(index);
+}
+
+export function getFacet(type, photo) {
+  if (photo) {
+    const facets = photo.get('facets', []).filter(f =>
+      f.get('type') == type
+    );
+
+    if (['Like', 'Bucket'].includes(type)) {
+      return facets.get(0, null);
+    }
+
+    return facets;
   }
-  return createRequest('GET', url, null);
 }

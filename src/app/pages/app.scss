@@ -1,10 +1,17 @@
-.pt-appbar {
-  position: fixed;
-  top: 0px;
-  width: 100%;
-  z-index: 10;
-}
+@import '../stylesheets/global_styles.scss';
 
-.pt-contents {
-  padding-top: 65px;
+.app {
+  display: flex;
+  flex-direction: column;
+  background-color: $background-color;
+
+  .appbar {
+    width: 100%;
+    z-index: 10;
+  }
+
+  .contents {
+
+  }
+
 }

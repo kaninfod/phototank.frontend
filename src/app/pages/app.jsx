@@ -53,21 +53,7 @@ class App extends React.Component {
     this.setState({ open: false });
   }
 
-  togglePanel() {
-    this.props.dispatch({
-      type: 'SHOW_PANEL',
-      payload: {
-        open: !this.props.panel.get('open'),
-        size: 'small',
-        title: 'from reducer',
-        widget: 'PHOTO_INFO',
-        widgetData: 'Martin',
-      }
-    })
-  }
-
   _renderAppbar() {
-    return null;
     return (
     <div className='pt-appbar'>
       <AppBar
@@ -117,17 +103,11 @@ class App extends React.Component {
     }
 
     return (
-      <div id='app'>
+      <div id="app" className="app">
         { this.props.hideAppbar ? null : this._renderAppbar() }
         <div className="pt-contents">
           {children}
         </div>
-        <div onClick={this.togglePanel.bind(this)}>kaj</div>
-
-        <Panel {...this.props} >
-
-          {null}
-        </Panel>
 
       </div>
     );

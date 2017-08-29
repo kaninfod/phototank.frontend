@@ -1,4 +1,5 @@
-@import '../../../stylesheets/material-icons';
+
+@import '../../../stylesheets/global_styles';
 @import './widget';
 
 .outer.outer_rilu.outerAnimating_rilu {
@@ -6,7 +7,11 @@
 }
 
 .photogrid {
-  display: inline-flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 125px);
+  grid-gap: 4px;
+  justify-items: start;
   justify-content: center;
+  background-color: $background-color;
+  padding-top: 1em;
 }

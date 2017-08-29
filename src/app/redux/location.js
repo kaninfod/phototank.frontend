@@ -11,29 +11,34 @@ export const REQUEST_CITIES = 'REQUEST_CITIES';
 var init = Map(fromJS({
   countries: [],
   cities: [],
+  loadedAt: {
+    cities: false,
+    countries: false,
+  },
 }));
 
-var newState = null;
+// var newState = null;
 
 export function reducer(state=init, action={}) {
   switch (action.type) {
 
     case FETCH_COUNTRIES_SUCCESS: {
-      action.payload.unshift({ id: -1, name: 'All' });
-      newState = state.set('countries', fromJS(action.payload));
-      return newState;
+      action.payload.countries.unshift({ id: -1, name: 'All' });
+      state = state.set('countries', fromJS(action.payload.countries));
+      state = state.setIn(['loadedAt', 'countries'], Date());
+      return state;
     }
 
     case FETCH_CITIES_SUCCESS: {
       action.payload.unshift({ id: -1, name: 'All' });
-      newState = state.set('cities', fromJS(action.payload));
-      return newState;
+      state = state.set('cities', fromJS(action.payload));
+      state = state.setIn(['loadedAt', 'cities'], Date());
+      return state;
     }
 
   }
   return state;
 }
-
 
 //API
 export function fetchCities() {
@@ -43,6 +48,7 @@ export function fetchCities() {
     url: '/api/locations/cities',
     httpVerb: requestTypes.GET,
     params: null,
+    loadedAtIdentifier: ['nLocation', 'loadedAt', 'cities'],
   };
 
   return dispatch => {
@@ -57,6 +63,7 @@ export function fetchCountries() {
     url: '/api/locations/countries',
     httpVerb: requestTypes.GET,
     params: null,
+    loadedAtIdentifier: ['nLocation', 'loadedAt', 'countries'],
   };
 
   return dispatch => {

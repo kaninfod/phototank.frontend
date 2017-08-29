@@ -1,16 +1,62 @@
-@import '../../../stylesheets/material-icons';
+// @import '../../../stylesheets/material-icons';
 
 .photo-widget {
   position: relative;
   border: none;
-  margin-bottom: 6px;
-  margin-left:1px;
-  margin-right:1px;
+
+  .date {
+    background-color: #6E7C84;
+    color: white;
+    text-align: center;
+    height: 14px;
+    font-size: 10px;
+    font-weight: 900;
+  }
+
+  .button-container {
+    position: absolute;
+    pointer-events: none;
+    top: 0;
+    width: 100%;
+    z-index: 5;
+    display: grid;
+    grid-template-columns: 30px 30px 30px;
+    justify-content: center;
+    grid-gap: 10px;
+
+    .overlay-button {
+      transition: visibility 0s, opacity 1.5s linear;
+      visibility: hidden;
+      opacity: 0;
+      height: 30px;
+      width: 30px;
+      text-align: center;
+      color: #ffffff;
+      opacity: 0.7;
+      background-color: black;
+      cursor:pointer;
+      text-align: center;
+      text-decoration: none;
+      color: #ffffff;
+
+      .material-icons{
+        font-size: 16px;
+      }
+    }
+
+    .overlay-button.show {
+      pointer-events: all;
+      visibility: visible;
+      opacity: 1;
+    }
+
+  }
 }
 
 .photo-widget.large {
   width:200px;
 }
+
 @media (max-width: 480px) {
   .photo-widget.small {
     width:125px;
@@ -24,51 +70,4 @@
 
 .photo-widget:focus {
   opacity:0.5;
-}
-
-.photo-widget > .date {
-  background-color: #6E7C84;
-  color: white;
-  text-align: center;
-  height: 14px;
-  font-size: 10px;
-  font-weight: 900;
-}
-
-.overlay-button > .material-icons{
-  font-size: 16px;
-}
-
-.photo-widget > .button-container {
-  position: absolute;
-  top: 5px;
-  right: 5px;
-  display: flex;
-  flex-direction: column;
-
-}
-
-.button-container > .overlay-button {
-  align-self:auto;
-  display: none;
-  height: 20px;
-  width: 20px;
-  margin-bottom: 4px;
-  text-align: center;
-  color: #ffffff;
-  opacity: 0.7;
-  background-color: black;
-  cursor:pointer;
-  text-align: center;
-  text-decoration: none;
-  color: #ffffff;
-  z-index: 5;
-}
-
-.button-container > .overlay-show {
-  display: inline-block;
-}
-
-.button-container > .overlay-select.selected {
-  display:inline-block;
 }

@@ -2,7 +2,6 @@ import React from 'react';
 import Waypoint from './waypoint';
 import './grid.scss';
 import Widget from './widget';
-import lazyload from 'jquery-lazyload';
 
 export default class Grid extends React.Component {
   constructor(props) {
@@ -17,6 +16,7 @@ export default class Grid extends React.Component {
       <Widget
         photoWidgetSize={this.state.photoWidgetSize}
         key={photo.get('id')}
+        selected={parseInt(photo.get('id')) == this.props.selectedPhoto}
         photo={photo}
         actions={this.props.photoActions}/>
     );

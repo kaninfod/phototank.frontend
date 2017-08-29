@@ -1,14 +1,15 @@
 import React from 'react';
 import { connect } from "react-redux";
 import Grid         from './photogrid/grid';
-import PhotoDialog  from './dialogs/photo';
-import BucketDialog from './dialogs/bucket';
-import BottomPanel  from './bottom-panel';
+// import PhotoDialog  from './dialogs/photo';
+// import BucketDialog from './dialogs/bucket';
+// import BottomPanel  from './bottom-panel';
 import Zoombox      from './photogrid/zoombox';
 import { fetchCities, fetchCountries } from '../../redux/location';
 import {
   togglePhotosBucket,
   fetchPhotos,
+  fetchMorePhotos,
   deletePhoto,
   fetchBucket ,
   fetchTaglist,
@@ -34,6 +35,7 @@ import { fetchAlbums, addPhotoAlbum, addBucketAlbum } from '../../redux/album';
     taglist:       store.nPhoto.get('taglist'),
     albums:        store.nAlbum.get('albums'),
     currentUser:   store.nAuth.get('user'),
+    selectedPhoto: store.ui.get('selectedPhoto'),
   };
 })
 class Photos extends React.Component {
@@ -51,7 +53,6 @@ class Photos extends React.Component {
       showDetails: false,
       selectedPhoto: null,
       selectedWidget: 'INFO',
-
       zoomboxOpen: false,
       zoomboxIndex: 0,
       searchParams: {
@@ -76,6 +77,7 @@ class Photos extends React.Component {
     this.props.dispatch(fetchTaglist())
     this.props.dispatch(fetchAlbums())
     this.props.dispatch(fetchCountries());
+    this.props.dispatch(fetchCities());
   }
 
   componentWillUpdate(nextProps, nextState){
@@ -100,26 +102,32 @@ class Photos extends React.Component {
   }
 
   handleClick(photoId) {
+    // this.props.dispatch({
+      // type: 'SHOW_PANEL',
+      // payload: {
+      //   open: true,
+      //   size: 'large',
+      //   title: 'Photo'.concat(photoId),
+      //   widget: 'BUCKET_INFO',
+      //   widgetData: this._getPhoto(photoId),
+      //   photoId: photoId,
+      // }
+    // })
+
     this.props.dispatch({
-      type: 'SHOW_PANEL',
-      payload: {
-        open: true,
-        size: 'large',
-        title: 'Photo'.concat(photoId),
-        widget: 'BUCKET_INFO',
-        widgetData: this._getPhoto(photoId),
-        photoId: photoId,
-      }
+      type: 'SELECT_PHOTO',
+      photoId: photoId
     })
+
     this.setState({
       selectedPhoto: this._getPhoto(photoId),
-      showDetails: true,
-      showBucket: false
+      // showDetails: true,
+      // showBucket: false
     })
   }
 
   handleInfiniteScroll() {
-    this.props.dispatch(fetchPhotos({
+    this.props.dispatch(fetchMorePhotos({
       context: this.props.context,
       contextId: this.props.contextId,
       searchParams: this.state.searchParams,
@@ -179,6 +187,19 @@ class Photos extends React.Component {
     }
   }
 
+  handleShowMore(photoId) {
+    this.props.dispatch({
+      type: 'SHOW_PANEL',
+      payload: {
+        open: true,
+        size: 'sheet',
+        title: 'Photo'.concat(photoId),
+        widget: 'PHOTO_INFO',
+        widgetData: this._getPhoto(photoId),
+        photoId: photoId,
+      }
+    })
+  }
 
 
   render () {
@@ -198,6 +219,7 @@ class Photos extends React.Component {
       LIKE:       this.likePhoto.bind(this),
       HIDE:       this.toggleDetailsDialogue.bind(this),
       FACETS:     this._getFacet.bind(this),
+      SHOWMORE:   this.handleShowMore.bind(this),
     }
 
     const bucketActions = {
@@ -212,6 +234,7 @@ class Photos extends React.Component {
       HIDE:       this.toggleBucketDialogue.bind(this),
     }
 
+
     return (
       <div>
         <Grid
@@ -220,9 +243,9 @@ class Photos extends React.Component {
           lastPage={this.props.lastPage}
           loading={this.props.loading}
           photoActions={photoActions}
-
+          selectedPhoto={this.props.selectedPhoto}
         >
-          <PhotoDialog
+{/*          <PhotoDialog
             photo={this.state.selectedPhoto}
             photoActions={photoActions}
             show={this.state.showDetails}
@@ -249,7 +272,7 @@ class Photos extends React.Component {
             onRemovePhoto={bucketActions.REMOVE}
             onShowBucket={this.toggleBucketDialogue}
           />
-
+*/}
           <Zoombox
             {...this.props}
             photoId={this.state.zoomPhotoId}
@@ -315,8 +338,8 @@ class Photos extends React.Component {
       this.props.dispatch(removeTagPhoto(payload))
     }
 
-    likePhoto() {
-      this.props.dispatch(likePhoto(this.state.selectedPhoto.get('id')))
+    likePhoto(photoId) {
+      this.props.dispatch(likePhoto(photoId))
     }
 
     deletePhoto(photo) {
@@ -361,8 +384,8 @@ class Photos extends React.Component {
     }
 }
 
-Photos.defaultProps = {
-  page: 1,
-};
+// Photos.defaultProps = {
+//   page: 1,
+// };
 
 export default Photos;

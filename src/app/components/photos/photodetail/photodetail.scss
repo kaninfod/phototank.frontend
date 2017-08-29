@@ -1,0 +1,146 @@
+@import '../../../stylesheets/global_styles';
+
+.photodetail {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-areas:
+    "photo photo photo photo"
+    "info info info info"
+    "tag tag tag tag"
+    "comment comment comment comment"
+    "album album album album";
+
+  @media (min-width: $break-medium) {
+    grid-template-areas:
+      "photo photo photo   photo"
+      "info  info  comment comment"
+      "album album comment comment"
+      "tag   tag   comment comment";
+    grid-template-columns: 150px 150px 1fr 1fr;
+    grid-template-rows: auto 20vh 15vh 20vh;
+  }
+
+  @media (min-width: $break-large) {
+    grid-template-areas:
+      "photo photo photo photo   photo"
+      ".     info  album comment .    "
+      ".     info  tag   comment .    ";
+
+    grid-template-columns: 1fr 300px 300px 300px 1fr;
+    grid-template-rows: 60vh 20vh 20vh;
+    grid-gap: 15px;
+  }
+
+  .photo {
+    grid-area: photo;
+
+    img {
+      object-fit: contain;
+      object-position: center;
+    }
+  }
+
+  .album {
+    grid-area: album;
+  }
+
+  .tags {
+    grid-area: tag;
+
+    .tag-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: start;
+      padding: 3px;
+    }
+  }
+
+  .info {
+    grid-area: info;
+    font-size: 12px;
+    color: #757575;
+    padding: 15px;
+    border: 1px solid black;
+
+    .table {
+      display: table;
+      .row {
+        height: 26px;
+        display: table-row;
+        .cell {
+          min-width: 53px;
+          display: table-cell;
+        }
+      }
+    }
+  }
+
+  .comments {
+    grid-area: comment;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 5px 5px 5px grey;
+    grid-gap: 3px;
+    .toggle-comments {
+
+      div { margin-left: 0.5em; }
+
+      background-color: white;
+      font-size: 12px;
+      color: #757575;
+
+      .material-icons {
+        vertical-align:middle;
+      }
+    }
+
+    .comments-container {
+      max-height: 25em;
+      overflow-y: scroll;
+
+      .comment {
+        display: grid;
+        grid-template-columns: 5em 1fr 1fr;
+        grid-template-rows: 1.5em 1fr 1.5em;
+        grid-template-areas:
+          "avatar date date"
+          "avatar comment comment"
+          "user user user";
+        &:nth-child(odd) {background-color: #ece7e7;}
+
+        img {
+          grid-area: avatar;
+          border-radius: 50%;
+          height: 3.5em;
+          padding: 0.4em;
+          width: auto;
+        }
+
+        #comment-date {
+          grid-area: date;
+          margin-right: 0.5em;
+          align-self: start;
+          justify-self: end;
+        }
+
+        #comment-user {
+          grid-area: user;
+        }
+
+        #comment-text {
+          grid-area: comment;
+        }
+
+        p {
+          margin-top: 3px;
+          margin-bottom: 3px;
+          font-size: 12px;
+          color: #757575;
+        }
+        &:hover {
+          background-color: #d8cece;
+        }
+      }
+    }
+  }
+}

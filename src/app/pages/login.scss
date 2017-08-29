@@ -1,0 +1,19 @@
+.login-dialog {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 25vw;
+  border-top: 1px outset #e0dfdf;
+  border-left: 1px outset #e0dfdf;
+  box-shadow: 5px 5px 5px grey;
+
+  > * {
+    padding: 5px;
+  }
+
+  .login-button {
+    align-self: flex-end;
+  }
+
+}
