@@ -35,6 +35,7 @@ export function reducer(state=init, action={}) {
   switch (action.type) {
 
     case FETCH_ALBUMS_SUCCESS: {
+      if (!action.payload) { return state; };
       state = state.set('albums', fromJS(action.payload.albums));
       return state.setIn(['loadedAt', 'albums'], Date());;
     }

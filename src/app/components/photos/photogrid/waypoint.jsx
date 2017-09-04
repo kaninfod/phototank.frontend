@@ -3,27 +3,31 @@ import { throttle } from 'lodash';
 let canTrigger = true;
 
 export default class Waypoint extends React.Component {
+  constructor(props) {
+    super(props)
+    this.handleScroll = _.throttle(this.handleScroll, 800).bind(this)
+  }
   propTypes: {
       onWindowScroll: React.PropTypes.func
   }
 
   componentDidMount() {
-    const callback = _.throttle(this.handleScroll.bind(this), 500);
-    if (this.props.onWindowScroll) window.addEventListener("scroll", callback);
+    if (this.props.onWindowScroll) window.addEventListener("scroll", this.handleScroll);
   }
 
   componentWillUnmount() {
-    if (this.props.onWindowScroll) window.removeEventListener("scroll", this.handleScroll.bind(this));
+    if (this.props.onWindowScroll) window.removeEventListener("scroll", this.handleScroll);
   }
 
   handleScroll(event) {
-    if (this._waypointPos() < 0 && this.props.loadMore && canTrigger) {
-      canTrigger = false
-      if (this.props.onWindowScroll) {
-        this.props.onWindowScroll(event);
+    // console.log(this._waypointPos(), this.props.loading, canTrigger)
+      if (this._waypointPos() < 0 && this.props.loadMore && canTrigger) {
+        canTrigger = false
+        if (this.props.onWindowScroll) {
+          this.props.onWindowScroll(event);
+        }
       }
 
-    }
   }
 
   _waypointPos() {
@@ -34,10 +38,11 @@ export default class Waypoint extends React.Component {
   }
 
   render() {
+    // console.log('grid loading', this.props.loading);
     return (
       <div className={this.props.className} ref="waypoint">
         { this.props.children }
-        {canTrigger = true}
+        {canTrigger = !this.props.loading}
       </div>
     );
   }

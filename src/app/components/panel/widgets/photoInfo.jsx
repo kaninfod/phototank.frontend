@@ -45,7 +45,7 @@ class CommentWidget extends React.Component {
     this.handleAddComment = this.handleAddComment.bind(this);
     this.toggleComments = this.toggleComments.bind(this);
     const _data = this.props.widgetData.photo;
-    const _comments = getFacet('Comment', _data);
+    const _comments = getFacet('CommentFacet', _data);
     this.state = {
       showAllComments: false,
       data: _data,
@@ -57,7 +57,7 @@ class CommentWidget extends React.Component {
   }
 
   componentWillReceiveProps(nextProps, nextContext) {
-    this.setState({ commentCount: getFacet('Comment', nextProps.widgetData.photo).size, });
+    this.setState({ commentCount: getFacet('CommentFacet', nextProps.widgetData.photo).size, });
   }
 
   toggleComments() {
@@ -90,7 +90,7 @@ class CommentWidget extends React.Component {
   }
 
   _getComments() {
-    const _data = getFacet('Comment', this.props.widgetData.photo);
+    const _data = getFacet('CommentFacet', this.props.widgetData.photo);
     if (this.state.showAllComments) {
       return _data.slice().reverse();
     } else {
@@ -213,7 +213,7 @@ class TagWidget extends React.Component {
   render () {
     const taglist = this.props.widgetData.taglist.toJS();
     const _data = this.props.widgetData.photo;
-    const photoTags = getFacet('Tag', _data).map(tag =>
+    const photoTags = getFacet('TagFacet', _data).map(tag =>
      (this.renderChip({ label: tag.get('name'), key: tag.get('id') }))
     );
 

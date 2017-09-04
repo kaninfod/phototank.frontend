@@ -44,7 +44,7 @@ export class TagWidget extends React.Component {
   render () {
     const taglist = this.props.taglist.toJS();
     const _data = this.props.photo;
-    const photoTags = getFacet('Tag', _data).map(tag =>
+    const photoTags = getFacet('TagFacet', _data).map(tag =>
      (this.renderChip({ label: tag.get('name'), key: tag.get('id') }))
     );
 

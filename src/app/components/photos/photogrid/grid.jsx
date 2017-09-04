@@ -29,7 +29,8 @@ export default class Grid extends React.Component {
       <div>
         <Waypoint className="row photogrid"
           onWindowScroll={this.props.photoActions.SCROLL}
-          offset={400}
+          offset={1000}
+          fix={Date()}
           loading={this.props.loading}
           loadMore={!this.props.lastPage}>
 

@@ -49,9 +49,11 @@ var newState = null;
 export function reducer(state=init, action={}) {
   switch (action.type) {
 
-    case 'SET_HEADER':  return setPagination(state, action);
+    // case 'SET_HEADER':  return setPagination(state, action);
 
     case 'FETCH_PHOTOS_SUCCESS': {
+      if (!action.payload) { return state; };
+
       state = setPagination(state, action);
 
       if (state.getIn(['pagination', 'out_of_bounds'])) {
@@ -82,11 +84,13 @@ export function reducer(state=init, action={}) {
     }
 
     case 'GET_TAGLIST_PHOTO_SUCCESS': {
-      state = state.set('taglist', fromJS(action.payload.source_tags));
+      if (!action.payload) { return state; };
+      state = state.set('taglist', fromJS(action.payload.tags));
       return state.setIn(['loadedAt', 'taglist'], Date());
     }
 
     case 'FETCH_BUCKET_SUCCESS': {
+      if (!action.payload) { return state; };
       state = state.set('bucket', fromJS(action.payload.photos));
       return state.setIn(['loadedAt', 'bucket'], Date());
     }
@@ -398,7 +402,7 @@ export function getFacet(type, photo) {
       f.get('type') == type
     );
 
-    if (['Like', 'Bucket'].includes(type)) {
+    if (['LikeFacet', 'BucketFacet'].includes(type)) {
       return facets.get(0, null);
     }
 

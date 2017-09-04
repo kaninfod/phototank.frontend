@@ -10,19 +10,22 @@ export const apiService = store => next => action => {
 
   if (action.isAPI) {
 
-    if (action.loadedAtIdentifier) {
-      const _storeBranch = action.loadedAtIdentifier[0];
-      const _identifier = action.loadedAtIdentifier.slice(1);
-      const _loadedAt = store.getState()[_storeBranch].getIn(_identifier);
-      if (new Date() - new Date(_loadedAt) < 300000 && _loadedAt) {
-        console.log('no load for you');
-        return;
-      }
-    }
-
     const _actionTypeSuccess = action.type.concat('_SUCCESS');
     const _actionTypeError = action.type.concat('_ERROR');
     const request = createRequest(action.httpVerb, action.url, action.params);
+
+    if (action.loadedAtIdentifier) {
+      const reloadInteval = 300000; //ms
+      const _storeBranch = action.loadedAtIdentifier[0];
+      const _identifier = action.loadedAtIdentifier.slice(1);
+      const _loadedAt = store.getState()[_storeBranch].getIn(_identifier);
+      const allowReloadIn = reloadInteval - (new Date() - new Date(_loadedAt));
+      
+      if (allowReloadIn > 0 && _loadedAt) {
+        store.dispatch({ type: _actionTypeSuccess, msg: allowReloadIn / 1000 });
+        return;
+      }
+    }
 
     fetch(request)
     .then(response => responseHandler(response))

@@ -23,6 +23,8 @@ export function reducer(state=init, action={}) {
   switch (action.type) {
 
     case FETCH_COUNTRIES_SUCCESS: {
+      if (!action.payload) { return state; };
+
       action.payload.countries.unshift({ id: -1, name: 'All' });
       state = state.set('countries', fromJS(action.payload.countries));
       state = state.setIn(['loadedAt', 'countries'], Date());
@@ -30,7 +32,9 @@ export function reducer(state=init, action={}) {
     }
 
     case FETCH_CITIES_SUCCESS: {
-      action.payload.unshift({ id: -1, name: 'All' });
+      if (!action.payload) { return state; };
+
+      action.payload.cities.unshift({ id: -1, name: 'All' });
       state = state.set('cities', fromJS(action.payload));
       state = state.setIn(['loadedAt', 'cities'], Date());
       return state;

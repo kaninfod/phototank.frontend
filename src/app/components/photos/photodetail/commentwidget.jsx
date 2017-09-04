@@ -9,7 +9,7 @@ export class CommentWidget extends React.Component {
     this.handleAddComment = this.handleAddComment.bind(this);
     this.toggleComments = this.toggleComments.bind(this);
     const _data = this.props.photo;
-    const _comments = getFacet('Comment', _data);
+    const _comments = getFacet('CommentFacet', _data);
     this.state = {
       showAllComments: false,
       data: _data,
@@ -22,7 +22,7 @@ export class CommentWidget extends React.Component {
 
   componentWillReceiveProps(nextProps, nextContext) {
     const _data = nextProps.photo;
-    const _comments = getFacet('Comment', _data);
+    const _comments = getFacet('CommentFacet', _data);
 
     this.setState({
       commentCount: _comments.size,

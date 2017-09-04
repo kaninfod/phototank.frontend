@@ -61,7 +61,7 @@ class Photos extends React.Component {
         direction: false,
         like: false,
         tags: [],
-        photosPerPage:50,
+        photosPerPage:150,
       },
     };
   };
