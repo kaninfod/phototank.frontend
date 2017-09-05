@@ -29,12 +29,13 @@ import { fetchAlbums, addPhotoAlbum, addBucketAlbum } from '../../redux/album';
     lastPage:      store.nPhoto.getIn(['pagination', 'last_page']),
     page:          store.nPhoto.getIn(['pagination', 'next_page']),
     photos:        store.nPhoto.get('photos'),
-    countries:     store.nLocation.get('countries').toJS(),
     bucket:        store.nPhoto.get('bucket'),
-    loading:       store.app.getIn(['loadingStates', 'photoGrid']),
     taglist:       store.nPhoto.get('taglist'),
+    countries:     store.nLocation.get('countries').toJS(),
     albums:        store.nAlbum.get('albums'),
     currentUser:   store.nAuth.get('user'),
+    initialLoad:   store.app.get('initialLoad'),
+    loading:       store.app.getIn(['loadingStates', 'photoGrid']),
     selectedPhoto: store.ui.get('selectedPhoto'),
   };
 })
@@ -49,10 +50,10 @@ class Photos extends React.Component {
 
     this.updateGrid            = false;
     this.state = {
-      showBucket: false,
-      showDetails: false,
+      // showBucket: false,
+      // showDetails: false,
       selectedPhoto: null,
-      selectedWidget: 'INFO',
+      // selectedWidget: 'INFO',
       zoomboxOpen: false,
       zoomboxIndex: 0,
       searchParams: {
@@ -73,11 +74,11 @@ class Photos extends React.Component {
       searchParams: this.state.searchParams,
       page: 1,
     }));
-    this.props.dispatch(fetchBucket());
-    this.props.dispatch(fetchTaglist())
-    this.props.dispatch(fetchAlbums())
-    this.props.dispatch(fetchCountries());
-    this.props.dispatch(fetchCities());
+    // this.props.dispatch(fetchBucket());
+    // this.props.dispatch(fetchTaglist())
+    // this.props.dispatch(fetchAlbums())
+    // this.props.dispatch(fetchCountries());
+    // this.props.dispatch(fetchCities());
   }
 
   componentWillUpdate(nextProps, nextState){
@@ -94,6 +95,14 @@ class Photos extends React.Component {
   }
 
   componentWillReceiveProps(nextProps, nextContext) {
+    if (nextProps.initialLoad && nextProps.photos.size > 0) {
+      this.props.dispatch({type: 'TOGGLE_INITIAL_LOAD'});
+      this.props.dispatch(fetchBucket());
+      this.props.dispatch(fetchTaglist())
+      this.props.dispatch(fetchAlbums())
+      this.props.dispatch(fetchCountries());
+      this.props.dispatch(fetchCities());
+    }
     if (this.state.selectedPhoto) {
       this.setState({
         selectedPhoto: this._getPhoto(this.state.selectedPhoto.get('id'), nextProps),
@@ -102,18 +111,6 @@ class Photos extends React.Component {
   }
 
   handleClick(photoId) {
-    // this.props.dispatch({
-      // type: 'SHOW_PANEL',
-      // payload: {
-      //   open: true,
-      //   size: 'large',
-      //   title: 'Photo'.concat(photoId),
-      //   widget: 'BUCKET_INFO',
-      //   widgetData: this._getPhoto(photoId),
-      //   photoId: photoId,
-      // }
-    // })
-
     this.props.dispatch({
       type: 'SELECT_PHOTO',
       photoId: photoId

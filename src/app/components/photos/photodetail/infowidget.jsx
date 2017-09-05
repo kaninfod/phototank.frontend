@@ -1,8 +1,11 @@
 import React from 'react';
+import { getFacet } from '../../../redux/photo';
 
 export function InfoWidget(props) {
 
   const _data = props.photo;
+  const _location = getFacet('LocationFacet', _data).getIn([0, 'location']);
+  
   return (
     <div className="info">
       <div className="table">
@@ -18,17 +21,17 @@ export function InfoWidget(props) {
 
         <div className="row">
           <div className="cell">Country:</div>
-          <div className="cell">{_data.getIn(['location', 'country_name'])}</div>
+          <div className="cell">{_location.get('country_name')}</div>
         </div>
 
         <div className="row">
           <div className="cell">City:</div>
-          <div className="cell">{_data.getIn(['location', 'city_name'])}</div>
+          <div className="cell">{_location.get('city_name')}</div>
         </div>
 
         <div className="row">
           <div className="cell">Adderss:</div>
-          <div className="cell">{_data.getIn(['location', 'address'])}</div>
+          <div className="cell">{_location.get('address')}</div>
         </div>
 
         <div className="row">

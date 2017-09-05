@@ -15,8 +15,9 @@ var init = Map(fromJS({
     fetchCatelogs: false,
     albumsFetch: false,
   },
+  initialLoad: true,
   selectedPhoto: [],
-  selectedWidget: 'INFO',
+  // selectedWidget: 'INFO',
 }));
 
 var newState = null;
@@ -24,13 +25,17 @@ var newState = null;
 export function reducer(state=init, action={}) {
   switch (action.type) {
 
-    case SET_WIDGET: {
-      return state.set('selectedWidget', action.payload.widget);
-    }
+    // case SET_WIDGET: {
+    //   return state.set('selectedWidget', action.payload.widget);
+    // }
 
     // case photoActions.CLICK_PHOTO: {
     //   return state.set('selectedPhoto', action.payload);
     // }
+
+    case 'TOGGLE_INITIAL_LOAD': {
+      return state.set('initialLoad', false);
+    }
 
     case catalogActions.VERIFY_CATALOG_REQUEST: {
       return state.setIn(['loadingStates', 'verifyCatalog'], true);
