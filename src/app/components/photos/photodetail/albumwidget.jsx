@@ -1,5 +1,6 @@
 import React from 'react';
 import AutoComplete from 'material-ui/AutoComplete';
+import styles from './photodetail.scss';
 
 export class AlbumWidget extends React.Component {
   constructor(props) {
@@ -11,7 +12,7 @@ export class AlbumWidget extends React.Component {
       albumSearchText: '',
     };
   }
-
+//
   handleAlbumSearchText(searchText) {
     this.setState({ albumSearchText: searchText });
   }
@@ -28,7 +29,7 @@ export class AlbumWidget extends React.Component {
     const dataSourceConfig = { text: 'name', value: 'id' };
 
     return (
-      <div className="album">
+      <div className={styles.album}>
         <AutoComplete
              fullWidth
              hintText="Add to album..."

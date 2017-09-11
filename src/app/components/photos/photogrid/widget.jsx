@@ -1,41 +1,40 @@
+
 import React from 'react';
 import LazyLoad from 'react-lazy-load';
-import Button from './button';
-import Zoom from './ic_zoom.svg';
-import More from './ic_menu.svg';
-import Delete from './ic_delete.svg';
-import Check from './ic_check_circle.svg';
-import Like from './ic_thumb_up.svg';
+import cx from 'classnames';
 import { browserHistory } from 'react-router-dom';
 import {
   BrowserRouter as Router,
   Route,
   Link
 } from 'react-router-dom';
+import IconButton from 'material-ui/IconButton';
+import { getFacet } from '../../../redux/photo';
+
+import styles from './widget.scss'
 
 export default class Widget extends React.Component {
   constructor(props) {
     super(props);
     this.handleClick = this.handleClick.bind(this);
-    this.handleHover = this.handleHover.bind(this);
+    // this.handleHover = this.handleHover.bind(this);
     this.handleSelect = this.handleSelect.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
     this.handleLike = this.handleLike.bind(this);
     this.handleZoom = this.handleZoom.bind(this);
-    this.handleShowMore = this.handleShowMore.bind(this);
     this.state = {
       buttonState: 'hide',
     };
   }
 
-  handleHover(e) {
-    var overlayButton = $(this.refs.widget).find('.overlay-button:not(.overlay-processing)');
-    if (e.type == 'mouseenter') {
-      overlayButton.addClass('overlay-show');
-    } else {
-      overlayButton.removeClass('overlay-show');
-    }
-  }
+  // handleHover(e) {
+  //   var overlayButton = $(this.refs.widget).find('.overlay-button:not(.overlay-processing)');
+  //   if (e.type == 'mouseenter') {
+  //     overlayButton.addClass('overlay-show');
+  //   } else {
+  //     overlayButton.removeClass('overlay-show');
+  //   }
+  // }
 
   handleSelect(e) {
     this.props.actions.TOGGLE(this.props.photo.get('id'));
@@ -61,11 +60,6 @@ export default class Widget extends React.Component {
     this.setState({ buttonState: 'show' });
   }
 
-  handleShowMore(e) {
-    // browserHistory.push('/albums/list');
-    // this.props.actions.SHOWMORE(this.props.photo.get('id'));
-  }
-
   _buttonClass(bucket) {
     const _isBucket = bucket && this.props.actions.FACETS('Bucket', this.props.photo.get('id'));
     const _isSelected = this.props.selected;
@@ -73,11 +67,11 @@ export default class Widget extends React.Component {
   }
 
   _bucketState() {
-    return this.props.actions.FACETS('Bucket', this.props.photo.get('id')) ? true : false;
+    return getFacet('BucketFacet', this.props.photo) ? true : false;
   }
 
   _likeState() {
-    return this.props.actions.FACETS('Like', this.props.photo.get('id')) ? true : false;
+    return getFacet('LikeFacet', this.props.photo) ? true : false;
   }
 
   _photoUrl() {
@@ -91,7 +85,7 @@ export default class Widget extends React.Component {
     return (
 
         <div
-          className={'hoverable photo-widget z-depth-1 '}
+          className={styles.photoWidget}
           id={photo.get('id')} ref="widget"
           onClick={this.clickPhoto.bind(this)} >
 
@@ -102,36 +96,57 @@ export default class Widget extends React.Component {
                   src= {this._photoUrl()} />
               </LazyLoad>
 
-              <div className="date">{photo.get('date_taken_formatted')}</div>
+              <div className={styles.date}>{photo.get('date_taken_formatted')}</div>
 
-              <div className='button-container'>
+              <div className={styles.buttonContainer}>
 
                 <Button selected={this._bucketState()} visible={this.props.selected} onClick={this.handleSelect} >
-                  <Check/>
+                  done
                 </Button>
 
                 <Button visible={this.props.selected} onClick={this.handleZoom} >
-                  <Zoom/>
+                  zoom_in
                 </Button>
 
                 <Button selected={this._likeState()} visible={this.props.selected} onClick={this.handleLike} >
-                  <Like/>
+                  thumb_up
                 </Button>
 
                 <Button visible={this.props.selected} onClick={this.handleDelete} >
-                  <Delete/>
+                  delete
                 </Button>
 
                 <Link to={'/photos/'.concat(photo.get('id'))}>
                   <Button
                     visible={this.props.selected}  >
-                    <More/>
+                    menu
                   </Button>
-              </Link>
+                </Link>
+
+                <Button visible={this.props.selected}  >
+                  share
+                </Button>
             </div>
 
         </div>
 
       );
   }
+}
+
+function Button(props) {
+  let _class = cx(styles.iconToggleContainer,
+                { [styles.visible]: props.visible,
+                  [styles.selected]: props.selected, });
+  return (
+    <div className={_class}>
+      <div className={styles.iconToggle} onClick={props.onClick}>
+        <i class={[styles.materialIcons, styles.md18].join(' ')}>
+          {props.children}
+        </i>
+      </div>
+    </div>
+);
+
+
 }

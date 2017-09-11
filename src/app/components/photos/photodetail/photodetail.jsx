@@ -6,16 +6,28 @@ import { InfoWidget } from './infowidget';
 import { CommentWidget } from './commentwidget';
 import { TagWidget } from './tagwidget';
 import { AlbumWidget } from './albumwidget';
+import { RotateWidget } from './rotatewidget';
 import { PhotoWidget } from './photowidget';
 
-import { likePhoto, addTagPhoto, removeTagPhoto, commentPhoto } from '../../../redux/photo';
-import { addPhotoAlbum } from '../../../redux/album';
+import {
+  fetchPhoto,
+  fetchTaglist,
+  likePhoto,
+  addTagPhoto,
+  removeTagPhoto,
+  commentPhoto,
+  rotatePhoto,
+  photoAlbumAdd } from '../../../redux/photo';
+import { fetchAlbums, } from '../../../redux/album';
 
-import './photodetail.scss';//
+import styles from './photodetail.scss';
+import cx from 'classnames';
+
 
 @connect((store) => {
   return {
     photos:        store.nPhoto.get('photos'),
+    photo:         store.nPhoto.get('photo'),
     taglist:       store.nPhoto.get('taglist'),
     albums:        store.nAlbum.get('albums'),
   };
@@ -27,10 +39,18 @@ class PhotoDetail extends React.Component {
     this.photoAddTag = this.photoAddTag.bind(this)
     this.photoRemoveTag = this.photoRemoveTag.bind(this)
     this.photoAlbumAdd = this.photoAlbumAdd.bind(this)
+    this.photoRotate = this.photoRotate.bind(this)
     this.state = {
       photoId: this.props.match.params.id,
-      photo: getPhoto(this.props.match.params.id, this.props),
+      photo: this.props.photo,
+      // photo: getPhoto(this.props.match.params.id, this.props),
     };
+  }
+
+  componentWillMount() {
+    this.props.dispatch(fetchPhoto(this.props.match.params.id))
+    this.props.dispatch(fetchTaglist())
+    this.props.dispatch(fetchAlbums())
   }
 
   componentWillReceiveProps(nextProps, nextContext) {
@@ -44,7 +64,7 @@ class PhotoDetail extends React.Component {
   }
 
   photoAlbumAdd(payload) {
-    this.props.dispatch(addPhotoAlbum(payload))
+    this.props.dispatch(photoAlbumAdd(payload))
   }
 
   photoAddComment(payload) {
@@ -59,35 +79,46 @@ class PhotoDetail extends React.Component {
     this.props.dispatch(removeTagPhoto(payload))
   }
 
+  photoRotate(payload) {
+    this.props.dispatch(rotatePhoto(payload));
+  }
 
   render() {
-    if (!this.state.photo) { return null };
+    if (!this.props.photo) { return null };
 
+    const _class = cx(styles.photodetail, styles.photodetailGrid, {
+        [styles.portrait]: this.props.photo.get('portrait'),  //this.state.photo.get('portrait'),
+        [styles.landscape]: !this.props.photo.get('portrait'), //!this.state.photo.get('portrait')
+      })
     return (
-      <div className='photodetail'>
+      <div className={_class}>
 
-        <PhotoWidget photo={this.state.photo}/>
+        <PhotoWidget photo={this.props.photo}/>
 
-        <InfoWidget photo={this.state.photo} />
+
+        <InfoWidget photo={this.props.photo} />
 
         <CommentWidget
-          photo={this.state.photo}
+          photo={this.props.photo}
           photoAddComment={this.photoAddComment} />
 
-        <TagWidget photo={this.state.photo}
+        <TagWidget photo={this.props.photo}
           photoRemoveTag={this.photoRemoveTag}
           photoAddTag={this.photoAddTag}
           taglist={this.props.taglist}/>
 
-
         <AlbumWidget
-          photo={this.state.photo}
+          photo={this.props.photo}
           albums={this.props.albums}
           photoAlbumAdd={this.photoAlbumAdd} />
+
+        <RotateWidget
+          photoRotate={this.photoRotate}
+          photo={this.props.photo} />
 
       </div>
     );
   }
 }
-
+//
 export default PhotoDetail;

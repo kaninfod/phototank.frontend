@@ -1,8 +1,6 @@
 @import '../stylesheets/global_styles.scss';
 
 .app {
-  display: flex;
-  flex-direction: column;
   background-color: $background-color;
 
   .appbar {
@@ -11,7 +9,8 @@
   }
 
   .contents {
-
+    top: 60px;
+    position: relative;
   }
 
 }

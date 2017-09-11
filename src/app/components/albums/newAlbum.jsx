@@ -140,7 +140,7 @@ class NewAlbum extends React.Component {
   render() {
     return (
       <div>
-        <Paper zDepth={3} className="dialogue">
+        <Paper zDepth={3} className={styles.dialogue}>
           <TextField
             value={this.state.name}
             onChange={this.handleChangeAlbumname}
@@ -186,7 +186,7 @@ class NewAlbum extends React.Component {
             label="Liked"
           />
 
-        <div className="actions">
+        <div className={styles.actions}>
           <RaisedButton
             label="Save"
             onClick={this.handleClickSave}
@@ -197,7 +197,6 @@ class NewAlbum extends React.Component {
           />
         </div>
         </Paper>
-
 
       </div>
     );

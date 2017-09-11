@@ -8,11 +8,7 @@ var APP_DIR = path.resolve(__dirname, 'src/app');
 
 var config = {
   resolve: {
-    // root: path.resolve('./src)'),
     extensions: ['.js', '.jsx', '.scss'],
-    // alias: {
-    //   jquery: 'jquery/src/jquery',
-    // },
   },
   entry: {
     main: APP_DIR + '/index.jsx',
@@ -26,8 +22,8 @@ var config = {
     loaders: [
       {
         test: /\.jsx?/,
-        include: APP_DIR,
         loader: 'babel-loader',
+        include: APP_DIR,
         query: {
           presets: ['react', 'es2015', 'stage-0', 'stage-1'],
           plugins: [
@@ -37,26 +33,36 @@ var config = {
           ],
         },
       },
+      // {
+      //   test: /\.svg$/,
+      //   loader: 'babel-loader!svg-react-loader',
+      // },
+      // {
+      //   test: /.(woff|woff2|eot|ttf)$/,
+      //   loader: 'url-loader?prefix=font/&limit=5000',
+      // },
       {
-        test: /\.svg$/,
-        loader: 'babel-loader!svg-react-loader',
+        test: /\.(scss|css|sass)$/,
+        include: APP_DIR,
+        loader: ExtractTextPlugin.extract(
+          ['css-loader?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]',
+           'sass-loader',
+          ]
+        ),
       },
-      { test: /.(woff|woff2|eot|ttf)$/, loader: 'url-loader?prefix=font/&limit=5000', },
-      { test: /\.(scss|css|sass)$/, loader: ExtractTextPlugin.extract(['css-loader', 'sass-loader']), },
     ],
   },
   devtool: '#inline-source-map',
-
   plugins: [
     new webpack.ProvidePlugin({
       Promise: 'es6-promise',
       fetch: 'imports-loader?this=>global!exports-loader?global.fetch!whatwg-fetch',
     }),
     new ExtractTextPlugin('[name].[chunkhash].css'),
-    new webpack.ProvidePlugin({
-        $: 'jquery',
-        jQuery: 'jquery',
-      }),
+    // new webpack.ProvidePlugin({
+    //     $: 'jquery',
+    //     jQuery: 'jquery',
+    //   }),
     new HtmlWebpackPlugin({
       title: 'PhotoTank',
       template: 'src/app/html-template.ejs',
@@ -70,7 +76,6 @@ var config = {
     new webpack.optimize.UglifyJsPlugin(),
     new webpack.optimize.AggressiveMergingPlugin(),
   ],
-
   devServer: {
     contentBase: path.resolve(__dirname, 'src'),
     proxy: {
@@ -81,7 +86,6 @@ var config = {
     },
     historyApiFallback: true,
   },
-
 };
 
 module.exports = config;

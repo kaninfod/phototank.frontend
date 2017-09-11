@@ -1,145 +1,199 @@
 @import '../../../stylesheets/global_styles';
 
-.photodetail {
+.photodetailGrid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: 1fr;
+  grid-template-rows: 30vh repeat(5 auto);
+  grid-gap: 10px;
   grid-template-areas:
-    "photo photo photo photo"
-    "info info info info"
-    "tag tag tag tag"
-    "comment comment comment comment"
-    "album album album album";
+    "photo"
+    "info"
+    "tag"
+    "comment"
+    "album"
+    "rotate";
+}
 
   @media (min-width: $break-medium) {
+    .photodetailGrid.portrait {
+    grid-template-columns: 1fr 2fr;
+    // grid-template-rows: 55vh 10vh 10vh 15vh;
+    grid-gap: 10px;
     grid-template-areas:
-      "photo photo photo   photo"
-      "info  info  comment comment"
-      "album album comment comment"
-      "tag   tag   comment comment";
-    grid-template-columns: 150px 150px 1fr 1fr;
-    grid-template-rows: auto 20vh 15vh 20vh;
-  }
+      "info    photo"
+      "album   photo"
+      "comment photo"
+      "tag     photo"
+      "rotate  photo";
+   }
+
+.photodetailGrid.landscape {
+   grid-template-columns: 1fr 1fr 1fr;
+   grid-template-rows: 55vh 10vh 10vh 15vh;
+   grid-gap: 10px;
+   grid-template-areas:
+     "photo photo  photo"
+     "info  album  comment "
+     "info rotate  comment "
+     "tag  tag     comment ";
+  }//
+ }
 
   @media (min-width: $break-large) {
-    grid-template-areas:
-      "photo photo photo photo   photo"
-      ".     info  album comment .    "
-      ".     info  tag   comment .    ";
+    .photodetailGrid.portrait {
+      grid-template-columns: minmax(200px, 1fr) minmax(250px, 1fr) 2fr;
+      grid-template-rows: 25vh 25vh 25vh 10vh;
+      grid-gap: 10px;
+      grid-template-areas:
+        "info   comment photo"
+        "tag    comment photo"
+        "album  comment photo"
+        "rotate comment photo";
+    }
 
-    grid-template-columns: 1fr 300px 300px 300px 1fr;
-    grid-template-rows: 60vh 20vh 20vh;
-    grid-gap: 15px;
-  }
-
-  .photo {
-    grid-area: photo;
-
-    img {
-      object-fit: contain;
-      object-position: center;
+    .photodetailGrid.landscape {
+      grid-template-columns: repeat(5, 1fr);
+      grid-template-rows: 30vh 30vh 20vh;
+      grid-gap: 10px;
+      grid-template-areas:
+        "info    photo photo photo   photo"
+        "comment photo photo photo   photo"
+        "comment tag     tag   album rotate"
     }
   }
 
-  .album {
-    grid-area: album;
+
+.photo {
+  grid-area: photo;
+  composes: box3;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
+
+  img {
+    object-fit: cover;
+    width: 100%;
+    max-height: 100%;
   }
+}
 
-  .tags {
-    grid-area: tag;
+.rotate {
+  grid-area: rotate;
+  composes: box3;
+  height: 65px;
+}
 
-    .tag-container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: start;
-      padding: 3px;
+.album {
+  grid-area: album;
+  composes: box3;
+  height: 65px;
+}
+
+.tags {
+  overflow: hidden;
+  grid-area: tag;
+  composes: box3;
+  display: flex;
+  flex-direction: column;
+
+
+  .tagContainer {
+    overflow-y: scroll;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: start;
+    // padding-bottom: : 4px;
+    /// flex-grow: 1;
+  }
+}
+
+.info {
+  grid-area: info;
+  composes: box3;
+  font-size: 12px;
+  color: #757575;
+  padding: 15px;
+
+  .table {
+    display: table;
+    .row {
+      height: 26px;
+      display: table-row;
+      .cell {
+        min-width: 53px;
+        display: table-cell;
+      }
     }
   }
+}
 
-  .info {
-    grid-area: info;
+.comments {
+  grid-area: comment;
+  composes: box3;
+  display: flex;
+  flex-direction: column;
+  grid-gap: 3px;
+
+  .toggleComments {
+    div { margin-left: 0.5em; }
+    background-color: white;
     font-size: 12px;
     color: #757575;
-    padding: 15px;
-    border: 1px solid black;
 
-    .table {
-      display: table;
-      .row {
-        height: 26px;
-        display: table-row;
-        .cell {
-          min-width: 53px;
-          display: table-cell;
-        }
-      }
+    .materialIcons {
+      vertical-align:middle;
     }
   }
 
-  .comments {
-    grid-area: comment;
-    display: flex;
+  .commentsContainer {
     flex-direction: column;
-    box-shadow: 5px 5px 5px grey;
-    grid-gap: 3px;
-    .toggle-comments {
+    overflow-y: scroll;
 
-      div { margin-left: 0.5em; }
+    .comment {
+      flex-grow: 1;
+      display: grid;
+      grid-template-columns: 5em 1fr 1fr;
+      grid-template-rows: 1.5em 1fr 1.5em;
+      grid-template-areas:
+        "avatar date date"
+        "avatar comment comment"
+        "user user user";
+      &:nth-child(odd) {background-color: #ece7e7;}
 
-      background-color: white;
-      font-size: 12px;
-      color: #757575;
-
-      .material-icons {
-        vertical-align:middle;
+      img {
+        grid-area: avatar;
+        border-radius: 50%;
+        height: 3.5em;
+        padding: 0.4em;
+        width: auto;
       }
-    }
 
-    .comments-container {
-      max-height: 25em;
-      overflow-y: scroll;
+      .commentDate {
+        grid-area: date;
+        margin-right: 0.5em;
+        align-self: start;
+        justify-self: end;
+      }
 
-      .comment {
-        display: grid;
-        grid-template-columns: 5em 1fr 1fr;
-        grid-template-rows: 1.5em 1fr 1.5em;
-        grid-template-areas:
-          "avatar date date"
-          "avatar comment comment"
-          "user user user";
-        &:nth-child(odd) {background-color: #ece7e7;}
+      .commentUser {
+        grid-area: user;
+      }
 
-        img {
-          grid-area: avatar;
-          border-radius: 50%;
-          height: 3.5em;
-          padding: 0.4em;
-          width: auto;
-        }
+      .commentText {
+        grid-area: comment;
+      }
 
-        #comment-date {
-          grid-area: date;
-          margin-right: 0.5em;
-          align-self: start;
-          justify-self: end;
-        }
-
-        #comment-user {
-          grid-area: user;
-        }
-
-        #comment-text {
-          grid-area: comment;
-        }
-
-        p {
-          margin-top: 3px;
-          margin-bottom: 3px;
-          font-size: 12px;
-          color: #757575;
-        }
-        &:hover {
-          background-color: #d8cece;
-        }
+      p {
+        margin-top: 3px;
+        margin-bottom: 3px;
+        font-size: 12px;
+        color: #757575;
+      }
+      &:hover {
+        background-color: #d8cece;
       }
     }
   }

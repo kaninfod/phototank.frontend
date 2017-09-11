@@ -4,6 +4,7 @@ import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import { Link } from 'react-router-dom';
+import styles from './card.scss';
 
 class Album extends React.Component {
   constructor(props) {
@@ -15,14 +16,14 @@ class Album extends React.Component {
 
   render () {
     return (
-      <div class="pt-card-album">
+      <div class={styles.cardAlbum}>
         <img src={this.props.album.get('cover_url').concat('?token=', sessionStorage.jwt)}></img>
-          <div class="title">
-            <div class="alignleft">
+          <div class={styles.title}>
+            <div class={styles.alignleft}>
               <p>{this.props.album.get('name')}</p>
               <p>{this.props.album.get('size')}</p>
             </div>
-            <div class="alignright">
+            <div class={styles.alignright}>
               <IconMenu
                 iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
                 anchorOrigin={{ horizontal: 'right', vertical: 'top' }}

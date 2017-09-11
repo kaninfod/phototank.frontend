@@ -10,8 +10,8 @@ export const CREATE_ALBUM = 'CREATE_ALBUM';
 export const CREATE_ALBUM_SUCCESS = 'CREATE_ALBUM_SUCCESS';
 export const UPDATE_ALBUM = 'UPDATE_ALBUM';
 export const UPDATE_ALBUM_SUCCESS = 'UPDATE_ALBUM_SUCCESS';
-export const ADDPHOTO_ALBUM_REQUEST = 'ADDPHOTO_ALBUM_REQUEST';
-export const ADDPHOTO_ALBUM_SUCCESS = 'ADDPHOTO_ALBUM_SUCCESS';
+// export const ADDPHOTO_ALBUM_REQUEST = 'ADDPHOTO_ALBUM_REQUEST';
+// export const ADDPHOTO_ALBUM_SUCCESS = 'ADDPHOTO_ALBUM_SUCCESS';
 export const ADDBUCKET_ALBUM_REQUEST = 'ADDBUCKET_ALBUM_REQUEST';
 export const ADDBUCKET_ALBUM_SUCCESS = 'ADDBUCKET_ALBUM_SUCCESS';
 export const DELETE_ALBUM_REQUEST = 'DELETE_ALBUM_REQUEST';
@@ -121,33 +121,33 @@ export function updateAlbum(payload) {
   };
 }
 
-export function addPhotoAlbum(payload) {
-  const apiPayload = {
-    isAPI: true,
-    type: 'ADDPHOTO_ALBUM',
-    url: '/api/albums/'.concat(payload.albumId, '/photo/', payload.photoId),
-    httpVerb: requestTypes.PUT,
-    params: null,
-  };
-
-  return dispatch => {
-    dispatch(apiPayload);
-  };
-}
-
-export function addBucketAlbum(albumId) {
-  const apiPayload = {
-    isAPI: true,
-    type: 'ADDBUCKET_ALBUM',
-    url: '/api/albums/'.concat(albumId, '/bucket'),
-    httpVerb: requestTypes.PUT,
-    params: null,
-  };
-
-  return dispatch => {
-    dispatch(apiPayload);
-  };
-}
+// export function addPhotoAlbum(payload) {
+//   const apiPayload = {
+//     isAPI: true,
+//     type: 'ADDPHOTO_ALBUM',
+//     url: '/api/albums/'.concat(payload.albumId, '/photo/', payload.photoId),
+//     httpVerb: requestTypes.PUT,
+//     params: null,
+//   };
+//
+//   return dispatch => {
+//     dispatch(apiPayload);
+//   };
+// }
+// 
+// export function addBucketAlbum(albumId) {
+//   const apiPayload = {
+//     isAPI: true,
+//     type: 'ADDBUCKET_ALBUM',
+//     url: '/api/albums/'.concat(albumId, '/bucket'),
+//     httpVerb: requestTypes.PUT,
+//     params: null,
+//   };
+//
+//   return dispatch => {
+//     dispatch(apiPayload);
+//   };
+// }
 
 export function deleteAlbum(albumId) {
   const apiPayload = {

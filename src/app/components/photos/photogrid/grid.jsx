@@ -1,6 +1,7 @@
 import React from 'react';
 import Waypoint from './waypoint';
-import './grid.scss';
+// import './grid.scss';
+import styles from './grid.scss';
 import Widget from './widget';
 
 export default class Grid extends React.Component {
@@ -27,7 +28,7 @@ export default class Grid extends React.Component {
     return (
 
       <div>
-        <Waypoint className="row photogrid"
+        <Waypoint className={styles.photogrid}
           onWindowScroll={this.props.photoActions.SCROLL}
           offset={1000}
           fix={Date()}

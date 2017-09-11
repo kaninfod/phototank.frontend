@@ -2,6 +2,7 @@ import React from 'react';
 import AutoComplete from 'material-ui/AutoComplete';
 import Chip from 'material-ui/Chip';
 import { getFacet } from '../../../redux/photo';
+import styles from './photodetail.scss';
 
 export class TagWidget extends React.Component {
   constructor(props) {
@@ -16,9 +17,9 @@ export class TagWidget extends React.Component {
   }
 
   renderChip(data) {
-    const styles = { margin: 4, };
+    const styles_ = { margin: 4, };
     return (
-     <Chip style={styles} key={data.key} onRequestDelete={() => this.removeTag(data)} >
+     <Chip style={styles_} key={data.key} onRequestDelete={() => this.removeTag(data)} >
        {data.label}
      </Chip>
    );
@@ -40,7 +41,7 @@ export class TagWidget extends React.Component {
   handleTagSearchText(searchText) {
     this.setState({ tagSearchText: searchText });
   }
-
+//
   render () {
     const taglist = this.props.taglist.toJS();
     const _data = this.props.photo;
@@ -51,7 +52,7 @@ export class TagWidget extends React.Component {
     const dataSourceConfig = { text: 'name', value: 'id' };
 
     return (
-      <div className="tags">
+      <div className={styles.tags}>
         <AutoComplete
             fullWidth
             hintText="Add tag"
@@ -62,7 +63,7 @@ export class TagWidget extends React.Component {
             searchText={this.state.tagSearchText}
             onUpdateInput={this.handleTagSearchText}
           />
-        <div className="tag-container">
+        <div className={styles.tagContainer}>
           {photoTags}
         </div>
        </div>

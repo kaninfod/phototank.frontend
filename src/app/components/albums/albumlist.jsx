@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import Album from './album';
-import './card';
+import styles from './card';
 import { fetchAlbums, deleteAlbum } from '../../redux/album';
 
 @connect((store) => {
@@ -36,7 +36,7 @@ class AlbumList extends React.Component {
 
         <Link to="/albums/new">
           <FloatingActionButton
-            class="fab">
+            class={styles.fab}>
             <ContentAdd />
           </FloatingActionButton>
         </Link>

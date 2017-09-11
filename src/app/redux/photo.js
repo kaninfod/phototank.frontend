@@ -50,6 +50,10 @@ export function reducer(state=init, action={}) {
   switch (action.type) {
 
     // case 'SET_HEADER':  return setPagination(state, action);
+    case 'FETCH_PHOTO_SUCCESS': {
+      return state.set('photo', fromJS(action.payload.photos[0]));
+
+    }
 
     case 'FETCH_PHOTOS_SUCCESS': {
       if (!action.payload) { return state; };
@@ -237,9 +241,9 @@ export function rotatePhoto(payload) {
   return {
     isAPI: true,
     type: 'ROTATE_PHOTO',
-    url: '/api/photos/'.concat(payload.photoId, '/rotate/', payload.rotation),
-    httpVerb: requestTypes.GET,
-    params: null,
+    url: '/api/photos/'.concat(payload.photoId, '/rotate/'),
+    httpVerb: requestTypes.POST,
+    params: { degrees: payload.degrees },
   };
 }
 
@@ -271,6 +275,16 @@ export function fetchTaglist() {
     httpVerb: requestTypes.GET,
     params: null,
     loadedAtIdentifier: ['nPhoto', 'loadedAt', 'taglist'],
+  };
+}
+
+export function photoAlbumAdd(payload) {
+  return {
+    isAPI: true,
+    type: 'ALBUMADD_PHOTO',
+    url: '/api/photos/'.concat(payload.photoId, '/add_to_album'),
+    httpVerb: requestTypes.POST,
+    params: { album_id: payload.albumId },
   };
 }
 

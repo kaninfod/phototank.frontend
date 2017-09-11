@@ -17,7 +17,6 @@ var init = Map(fromJS({
   },
   initialLoad: true,
   selectedPhoto: [],
-  // selectedWidget: 'INFO',
 }));
 
 var newState = null;
@@ -25,13 +24,6 @@ var newState = null;
 export function reducer(state=init, action={}) {
   switch (action.type) {
 
-    // case SET_WIDGET: {
-    //   return state.set('selectedWidget', action.payload.widget);
-    // }
-
-    // case photoActions.CLICK_PHOTO: {
-    //   return state.set('selectedPhoto', action.payload);
-    // }
 
     case 'TOGGLE_INITIAL_LOAD': {
       return state.set('initialLoad', false);
@@ -75,6 +67,14 @@ export function reducer(state=init, action={}) {
 
     case albumActions.FETCH_ALBUMS_SUCCESS: {
       return state.setIn(['loadingStates', 'fetchAlbums'], false);
+    }
+
+    case photoActions.FETCH_PHOTO_REQUEST: {
+      return state.setIn(['loadingStates', 'photoGrid'], true);
+    }
+
+    case photoActions.FETCH_PHOTO_SUCCESS: {
+      return state.setIn(['loadingStates', 'photoGrid'], false);
     }
 
     case photoActions.FETCH_PHOTOS_REQUEST: {

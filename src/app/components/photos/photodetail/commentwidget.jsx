@@ -1,6 +1,7 @@
 import React from 'react';
 import TextField from 'material-ui/TextField';
 import { getFacet } from '../../../redux/photo';
+import styles from './photodetail.scss';
 
 export class CommentWidget extends React.Component {
   constructor(props) {
@@ -70,18 +71,18 @@ export class CommentWidget extends React.Component {
 
   _renderComments() {
     return this._getComments().map(c =>
-      <div className="comment" key={c.get('id')}>
+      <div className={styles.comment} key={c.get('id')}>
         <img src={c.getIn(['user', 'avatar']).concat('?token=', sessionStorage.jwt)} />
-        <p id="comment-user"> {c.getIn(['user', 'email'])} </p>
-        <p id="comment-date"> {c.get('created')} </p>
-        <p id="comment-text"> {c.get('name')} </p>
+        <p className={styles.commentUser}> {c.getIn(['user', 'email'])} </p>
+        <p className={styles.commentDate}> {c.get('created')} </p>
+        <p className={styles.commentText}> {c.get('name')} </p>
       </div>
     );
   }
 
   render () {
     return (
-      <div className="comments">
+      <div className={styles.comments}>
         <TextField
           fullWidth
           onKeyDown={this.handleAddComment}
@@ -89,13 +90,13 @@ export class CommentWidget extends React.Component {
           value={this.state.commentText}
           onChange={this.handleChangeComment}
         />
-      <div className="toggle-comments" onClick={ this.toggleComments }>
+      <div className={styles.toggleComments} onClick={ this.toggleComments }>
           <div>
             {this.state.commentCount} comments
-            <i class="material-icons">{ this.state.commentToggleState }</i>
+            <i class={styles.materialIcons}>{ this.state.commentToggleState }</i>
           </div>
         </div>
-        <div className="comments-container">
+        <div className={styles.commentsContainer}>
           {this._renderComments()}
         </div>
       </div>

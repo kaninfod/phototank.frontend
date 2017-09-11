@@ -45,14 +45,14 @@ class Photos extends React.Component {
 
     this.changeSearchParams    = this.changeSearchParams.bind(this)
     this.hideZoombox           = this.hideZoombox.bind(this);
-    this.toggleBucketDialogue  = this.toggleBucketDialogue.bind(this)
-    this._getFacet             = this._getFacet.bind(this)
+    // this.toggleBucketDialogue  = this.toggleBucketDialogue.bind(this)
+    // this._getFacet             = this._getFacet.bind(this)
 
     this.updateGrid            = false;
     this.state = {
       // showBucket: false,
       // showDetails: false,
-      selectedPhoto: null,
+      // selectedPhoto: null,
       // selectedWidget: 'INFO',
       zoomboxOpen: false,
       zoomboxIndex: 0,
@@ -103,11 +103,11 @@ class Photos extends React.Component {
       this.props.dispatch(fetchCountries());
       this.props.dispatch(fetchCities());
     }
-    if (this.state.selectedPhoto) {
-      this.setState({
-        selectedPhoto: this._getPhoto(this.state.selectedPhoto.get('id'), nextProps),
-      })
-    }
+    // if (this.state.selectedPhoto) {
+    //   this.setState({
+    //     // selectedPhoto: this._getPhoto(this.state.selectedPhoto.get('id'), nextProps),
+    //   })
+    // }
   }
 
   handleClick(photoId) {
@@ -115,12 +115,12 @@ class Photos extends React.Component {
       type: 'SELECT_PHOTO',
       photoId: photoId
     })
-
-    this.setState({
-      selectedPhoto: this._getPhoto(photoId),
-      // showDetails: true,
-      // showBucket: false
-    })
+    //
+    // this.setState({
+    //   selectedPhoto: this._getPhoto(photoId),
+    //   showDetails: true,
+    //   showBucket: false
+    // })
   }
 
   handleInfiniteScroll() {
@@ -139,24 +139,24 @@ class Photos extends React.Component {
     this.setState(state)
   }
 
-  _getPhoto(photoId, context=this.props) {
-    const index = context.photos.findIndex(p => p.get('id') == photoId)
-    return context.photos.get(index);
-  }
+  // _getPhoto(photoId, context=this.props) {
+  //   const index = context.photos.findIndex(p => p.get('id') == photoId)
+  //   return context.photos.get(index);
+  // }
 
-  _getFacet(type, photo=this.state.selectedPhoto) {
-    var photo = typeof(photo) == 'number' ? this._getPhoto(photo) : photo
-    if (photo) {
-      const facets = photo.get('facets', []).filter(f =>
-        f.get('type') == type
-      )
-
-      if (['Like', 'Bucket'].includes(type)) {
-        return facets.get(0, null);
-      }
-      return facets;
-    }
-  }
+  // _getFacet(type, photo=this.state.selectedPhoto) {
+  //   var photo = typeof(photo) == 'number' ? this._getPhoto(photo) : photo
+  //   if (photo) {
+  //     const facets = photo.get('facets', []).filter(f =>
+  //       f.get('type') == type
+  //     )
+  //
+  //     if (['Like', 'Bucket'].includes(type)) {
+  //       return facets.get(0, null);
+  //     }
+  //     return facets;
+  //   }
+  // }
 
   showZoombox(photoId) {
     var index = this.props.photos.findIndex(obj =>  obj.get('id') === photoId );
@@ -168,35 +168,35 @@ class Photos extends React.Component {
     this.setState({ zoomboxOpen: false });
   }
 
-  toggleDetailsDialogue() {
-    if (!this.state.showDetails) {
-      this.setState({ showDetails: true, showBucket: false });
-    } else {
-      this.setState({ showDetails: false });
-    }
-  }
+  // toggleDetailsDialogue() {
+  //   if (!this.state.showDetails) {
+  //     this.setState({ showDetails: true, showBucket: false });
+  //   } else {
+  //     this.setState({ showDetails: false });
+  //   }
+  // }
 
-  toggleBucketDialogue() {
-    if (!this.state.showBucket) {
-      this.setState({ showDetails: false, showBucket: true });
-    } else {
-      this.setState({ showBucket: false });
-    }
-  }
+  // toggleBucketDialogue() {
+  //   if (!this.state.showBucket) {
+  //     this.setState({ showDetails: false, showBucket: true });
+  //   } else {
+  //     this.setState({ showBucket: false });
+  //   }
+  // }
 
-  handleShowMore(photoId) {
-    this.props.dispatch({
-      type: 'SHOW_PANEL',
-      payload: {
-        open: true,
-        size: 'sheet',
-        title: 'Photo'.concat(photoId),
-        widget: 'PHOTO_INFO',
-        widgetData: this._getPhoto(photoId),
-        photoId: photoId,
-      }
-    })
-  }
+  // handleShowMore(photoId) {
+  //   this.props.dispatch({
+  //     type: 'SHOW_PANEL',
+  //     payload: {
+  //       open: true,
+  //       size: 'sheet',
+  //       title: 'Photo'.concat(photoId),
+  //       widget: 'PHOTO_INFO',
+  //       widgetData: this._getPhoto(photoId),
+  //       photoId: photoId,
+  //     }
+  //   })
+  // }
 
 
   render () {
@@ -208,28 +208,28 @@ class Photos extends React.Component {
       CLICK:      this.handleClick.bind(this),
       ZOOM:       this.showZoombox.bind(this),
       SCROLL:     this.handleInfiniteScroll.bind(this),
-      ROTATE:     this.rotatePhoto.bind(this),
-      ALBUMS:     this.addToAlbum.bind(this),
-      COMMENTS:   this.addComment.bind(this),
-      ADDTAG:     this.addTag.bind(this),
-      REMOVETAG:  this.removeTag.bind(this),
+      // ROTATE:     this.rotatePhoto.bind(this),
+      // ALBUMS:     this.addToAlbum.bind(this),
+      // COMMENTS:   this.addComment.bind(this),
+      // ADDTAG:     this.addTag.bind(this),
+      // REMOVETAG:  this.removeTag.bind(this),
       LIKE:       this.likePhoto.bind(this),
-      HIDE:       this.toggleDetailsDialogue.bind(this),
-      FACETS:     this._getFacet.bind(this),
-      SHOWMORE:   this.handleShowMore.bind(this),
+      // HIDE:       this.toggleDetailsDialogue.bind(this),
+      // FACETS:     this._getFacet.bind(this),
+      // SHOWMORE:   this.handleShowMore.bind(this),
     }
 
-    const bucketActions = {
-      REMOVE:     this.bucketRemovePhoto.bind(this),
-      DELETE:     this.bucketDeletePhotos.bind(this),
-      ADDTAG:     this.bucketAddTag.bind(this),
-      REMOVETAG:  this.bucketRemoveTag.bind(this),
-      LIKE:       this.bucketLikePhotos.bind(this),
-      ROTATE:     this.bucketRotatePhotos.bind(this),
-      ALBUMS:     this.bucketAddToAlbum.bind(this),
-      ADDCOMMENT: this.bucketAddComment.bind(this),
-      HIDE:       this.toggleBucketDialogue.bind(this),
-    }
+    // const bucketActions = {
+    //   REMOVE:     this.bucketRemovePhoto.bind(this),
+    //   DELETE:     this.bucketDeletePhotos.bind(this),
+    //   ADDTAG:     this.bucketAddTag.bind(this),
+    //   REMOVETAG:  this.bucketRemoveTag.bind(this),
+    //   LIKE:       this.bucketLikePhotos.bind(this),
+    //   ROTATE:     this.bucketRotatePhotos.bind(this),
+    //   ALBUMS:     this.bucketAddToAlbum.bind(this),
+    //   ADDCOMMENT: this.bucketAddComment.bind(this),
+    //   HIDE:       this.toggleBucketDialogue.bind(this),
+    // }
 
 
     return (
@@ -295,90 +295,90 @@ class Photos extends React.Component {
         this.props.dispatch(togglePhotosBucket(photoId))
     }
 
-    addToAlbum(albumId) {
-      const payload = {
-        photoId: this.state.selectedPhoto.get('id'),
-        albumId: albumId
-      }
-      this.props.dispatch(addPhotoAlbum(payload))
-    }
+    // addToAlbum(albumId) {
+    //   const payload = {
+    //     photoId: this.props.photo.get('id'),
+    //     albumId: albumId
+    //   }
+    //   this.props.dispatch(addPhotoAlbum(payload))
+    // }
 
-    rotatePhoto(rotation) {
-      const payload = {
-        photoId: this.state.selectedPhoto.get('id'),
-        rotation: rotation
-      }
-      this.props.dispatch(rotatePhoto(payload))
-    }
-
-    addComment(comment) {
-      const payload = {
-        photoId: this.state.selectedPhoto.get('id'),
-        comment: comment
-      }
-      this.props.dispatch(commentPhoto(payload))
-    }
-
-    addTag(tag) {
-      const payload = {
-        photoId: this.state.selectedPhoto.get('id'),
-        name: tag,
-      }
-      this.props.dispatch(addTagPhoto(payload))
-    }
-
-    removeTag(tagId) {
-      const payload = {
-        photoId: this.state.selectedPhoto.get('id'),
-        tagId: tagId,
-      }
-      this.props.dispatch(removeTagPhoto(payload))
-    }
+    // rotatePhoto(rotation) {
+    //   const payload = {
+    //     photoId: this.props.photo.get('id'),
+    //     rotation: rotation
+    //   }
+    //   this.props.dispatch(rotatePhoto(payload))
+    // }
+    //
+    // addComment(comment) {
+    //   const payload = {
+    //     photoId: this.props.photo.get('id'),
+    //     comment: comment
+    //   }
+    //   this.props.dispatch(commentPhoto(payload))
+    // }
+    //
+    // addTag(tag) {
+    //   const payload = {
+    //     photoId: this.props.photo.get('id'),
+    //     name: tag,
+    //   }
+    //   this.props.dispatch(addTagPhoto(payload))
+    // }
+    //
+    // removeTag(tagId) {
+    //   const payload = {
+    //     photoId: this.props.photo.get('id'),
+    //     tagId: tagId,
+    //   }
+    //   this.props.dispatch(removeTagPhoto(payload))
+    // }
 
     likePhoto(photoId) {
       this.props.dispatch(likePhoto(photoId))
     }
 
     deletePhoto(photo) {
-      const id = typeof photo == 'number' ? photo : this.state.selectedPhoto.get('id')
+      const id = typeof photo == 'number' ? photo : this.props.photo.get('id')
       this.props.dispatch(deletePhoto(id))
     }
 
   /**
    *  Dispatch functions for entire bucket
    **/
-    bucketRemovePhoto(id) {
-      this.props.dispatch(togglePhotosBucket(id));
-    }
-
-    bucketDeletePhotos() {
-      console.log('delete photos');
-    }
-
-    bucketAddTag(tag) {
-      this.props.dispatch(tagPhotosBucket(tag));
-    }
-
-    bucketRemoveTag() {
-      console.log('remove photos');
-    }
-
-    bucketLikePhotos() {
-      const photoIds = this.props.bucket.map(p => p.get('id')).toJS()
-      this.props.dispatch(likePhotosBucket(photoIds));
-    }
-
-    bucketRotatePhotos(degrees) {
-      this.props.dispatch(rotateBucketPhotos(degrees))
-    }
-
-    bucketAddToAlbum(albumId) {
-      this.props.dispatch(addBucketAlbum(albumId));
-    }
-
-    bucketAddComment(comment) {
-      this.props.dispatch(commentPhotosBucket(comment));
-    }
+    // bucketRemovePhoto(id) {
+    //   this.props.dispatch(togglePhotosBucket(id));
+    // }
+    //
+    // bucketDeletePhotos() {
+    //   console.log('delete photos');
+    // }
+    //
+    // bucketAddTag(tag) {
+    //   this.props.dispatch(tagPhotosBucket(tag));
+    // }
+    //
+    // bucketRemoveTag() {
+    //   console.log('remove photos');
+    // }
+    //
+    // bucketLikePhotos() {
+    //   const photoIds = this.props.bucket.map(p => p.get('id')).toJS()
+    //   this.props.dispatch(likePhotosBucket(photoIds));
+    // }
+    //
+    // bucketRotatePhotos(degrees) {
+    //   this.props.dispatch(rotateBucketPhotos(degrees))
+    // }
+    //
+    // bucketAddToAlbum(albumId) {
+    //   this.props.dispatch(addBucketAlbum(albumId));
+    // }
+    //
+    // bucketAddComment(comment) {
+    //   this.props.dispatch(commentPhotosBucket(comment));
+    // }
 }
 
 // Photos.defaultProps = {

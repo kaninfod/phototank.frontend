@@ -1,3 +1,5 @@
+var createError = require('http-errors');
+
 export const requestTypes = {
   POST:   'POST',
   GET:    'GET',
@@ -20,7 +22,7 @@ export const apiService = store => next => action => {
       const _identifier = action.loadedAtIdentifier.slice(1);
       const _loadedAt = store.getState()[_storeBranch].getIn(_identifier);
       const allowReloadIn = reloadInteval - (new Date() - new Date(_loadedAt));
-      
+
       if (allowReloadIn > 0 && _loadedAt) {
         store.dispatch({ type: _actionTypeSuccess, msg: allowReloadIn / 1000 });
         return;
@@ -32,15 +34,15 @@ export const apiService = store => next => action => {
     .then(data =>
       store.dispatch({ type: _actionTypeSuccess, payload: data })
     )
-    .catch(error =>
-      next({ type: _actionTypeError, payload: error })
-    );
+    .catch(error => {
+      if (error.status == 401) {
+        next({ type: 'LOGOUT_SUCCESS' });
+      } else {
+        next({ type: _actionTypeError, payload: error });
+      }
+    });
   }
 };
-
-function shouldLoad(state, action) {
-
-}
 
 export function createRequest(type, url, params) {
   const token = sessionStorage.jwt;
@@ -63,20 +65,10 @@ export function createRequest(type, url, params) {
 
 export function responseHandler(response, dispatch) {
   if (response.status >= 200 && response.status < 300) {
-    // if (response.headers.has('x-pagination')) {
-    //   console.log(response.json());
-    //   // dispatch(setHeader(response.headers));
-    // }
-
     return response.json();
-  } else if (response.status == 401) {
-    const error = new Error(response.statusText);
-    error.response = response;
-    throw error;
   } else {
-    const error = new Error(response.statusText);
-    error.response = response;
-    throw error;
+    const err = createError(response.status, response.statusText);
+    throw err;
   }
 }
 
@@ -87,11 +79,4 @@ export function toQueryString(paramsObject) {
     .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(paramsObject[key])}`)
     .join('&')
   ;
-}
-
-// Action Creators
-export function notAuthorized() {
-  return dispatch => {
-    dispatch({ type: 'LOG_OUT' });
-  };
 }

@@ -4,7 +4,7 @@ import { logout, login } from '../redux/auth'
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 
-import './login.scss'//
+import styles from './login.scss';
 
 @connect((store) => {
   return {
@@ -57,7 +57,7 @@ export default class Login extends React.Component {
   render() {
     return (
 
-      <div className="login-dialog">
+      <div class={styles.login_dialog}>
         <TextField
           floatingLabelText="Email address"
           value={this.state.email}
@@ -69,7 +69,7 @@ export default class Login extends React.Component {
           value={this.state.password}
           onChange={this.passwordChanged}
         />
-        <div className="login-button">
+      <div className={styles.login_button}>
           <RaisedButton
             label="Login"
             labelPosition="before"
