@@ -30,6 +30,7 @@ import AlbumPhotos          from './pages/photos/album';
 
 import Photos               from './pages/photos';
 import PhotoDetail          from './components/photos/photodetail/photodetail';
+import Bucket          from './components/photos/bucket/bucket';
 import Login                from './pages/login';
 
 injectTapEventPlugin();
@@ -54,8 +55,10 @@ render(
             </Albums>
 
 
-              <Route path="/photos/:id" component={PhotoDetail}/>
-              <Route exact path="/photos" component={SearchPhotos}/>
+            <Route exact path="/photos/bucket" component={Bucket}/>
+            <Route path="/photos/view/:id" component={PhotoDetail}/>
+            <Route exact path="/photos" component={SearchPhotos}/>
+
 
 
             <Catalogs>

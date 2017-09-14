@@ -48,12 +48,17 @@ export class CommentWidget extends React.Component {
   handleAddComment(e) {
     if (e.keyCode == 13) {
       this.props.photoAddComment({
-        photoId: this.props.photo.get('id'),
+        photoId: this._photoId(), //this.props.photo.get('id'),
         comment: this.state.commentText,
       });
 
       this.setState({ commentText: '' });
     }
+  }
+
+  _photoId() {
+    const _photo = this.props.photo;
+    return typeof _photo == 'string' ? _photo : _photo.get('id');
   }
 
   handleChangeComment(e, newValue) {
@@ -80,24 +85,40 @@ export class CommentWidget extends React.Component {
     );
   }
 
-  render () {
+  _renderCommentsComponent() {
+    if (typeof this.props.photo == 'string') { return null; }
+
     return (
-      <div className={styles.comments}>
-        <TextField
-          fullWidth
-          onKeyDown={this.handleAddComment}
-          hintText="Add a comment..."
-          value={this.state.commentText}
-          onChange={this.handleChangeComment}
-        />
-      <div className={styles.toggleComments} onClick={ this.toggleComments }>
-          <div>
+      <div className={styles.flexAlign}>
+        <div className={styles.toggleComments} onClick={ this.toggleComments }>
+          <div className={styles.flexAlign}>
             {this.state.commentCount} comments
             <i class={styles.materialIcons}>{ this.state.commentToggleState }</i>
           </div>
         </div>
         <div className={styles.commentsContainer}>
           {this._renderComments()}
+        </div>
+      </div>
+    );
+  }
+
+  render () {
+    return (
+
+      <div className={styles.comments}>
+        <div class={styles.title}>Comments</div>
+        <div class={styles.widgetContainer}>
+          <TextField
+            fullWidth
+            onKeyDown={this.handleAddComment}
+            hintText="Add a comment..."
+            value={this.state.commentText}
+            onChange={this.handleChangeComment}
+          />
+
+          {this._renderCommentsComponent()}
+
         </div>
       </div>
     );

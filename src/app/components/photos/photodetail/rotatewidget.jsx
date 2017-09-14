@@ -14,22 +14,29 @@ export class RotateWidget extends React.Component {
   }
 
   handleChange(event, key, value) {
-    console.log(key, value);
     if (value) {
-      const payload = { photoId: this.props.photo.get('id'), degrees: value };
+      const payload = { photoId: this._photoId(), degrees: value };
       this.props.photoRotate(payload);
     }
+  }
+
+  _photoId() {
+    const _photo = this.props.photo;
+    return typeof _photo == 'string' ? _photo : _photo.get('id');
   }
 
   render () {
     return (
       <div className={styles.rotate}>
-        <DropDownMenu value={this.state.value} onChange={this.handleChange}>
-          <MenuItem value={0} primaryText="Rotate photo..." />
-          <MenuItem value={90} primaryText="90" />
-          <MenuItem value={180} primaryText="180" />
-          <MenuItem value={270} primaryText="270" />
-        </DropDownMenu>
+        <div class={styles.title}>Rotate</div>
+        <div class={styles.widgetContainer}>
+          <DropDownMenu value={this.state.value} onChange={this.handleChange}>
+            <MenuItem value={0} primaryText="Rotate photo..." />
+            <MenuItem value={90} primaryText="90" />
+            <MenuItem value={180} primaryText="180" />
+            <MenuItem value={270} primaryText="270" />
+          </DropDownMenu>
+        </div>
       </div>
     );
   }

@@ -1,10 +1,24 @@
 @import './material-icons.scss';
-$background-color: white;
+@import 'fonts/swansea/stylesheet.css';
+
+
+//Colors
+$primary        : #cfd8dc;
+$primaryLight   : #ffffff;
+$primaryDark    : #9ea7aa;
+$secondary      : #9ccc65;
+$secondaryLight : #cfff95;
+$secondaryDark  : #6b9b37;
+
+$primaryText    : #000000;
 
 $break-small: 360px;
 $break-medium: 640px;
 $break-large: 1024px;
 
+html {
+  background-color: $primary;
+}
 
 .box1 {
     box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);

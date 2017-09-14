@@ -9,6 +9,7 @@ var APP_DIR = path.resolve(__dirname, 'src/app');
 var config = {
   resolve: {
     extensions: ['.js', '.jsx', '.scss'],
+    modules: ['src', 'node_modules', 'fonts'],
   },
   entry: {
     main: APP_DIR + '/index.jsx',
@@ -33,14 +34,10 @@ var config = {
           ],
         },
       },
-      // {
-      //   test: /\.svg$/,
-      //   loader: 'babel-loader!svg-react-loader',
-      // },
-      // {
-      //   test: /.(woff|woff2|eot|ttf)$/,
-      //   loader: 'url-loader?prefix=font/&limit=5000',
-      // },
+      {
+        test: /\.(eot|svg|ttf|woff|woff2)$/,
+        loader: 'file-loader?name=[name].[ext]'
+      },
       {
         test: /\.(scss|css|sass)$/,
         include: APP_DIR,
@@ -54,6 +51,9 @@ var config = {
   },
   devtool: '#inline-source-map',
   plugins: [
+    // new webpack.DefinePlugin({
+    //   'process.env.NODE_ENV': process.env.NODE_ENV,
+    // }),
     new webpack.ProvidePlugin({
       Promise: 'es6-promise',
       fetch: 'imports-loader?this=>global!exports-loader?global.fetch!whatwg-fetch',
@@ -68,13 +68,13 @@ var config = {
       template: 'src/app/html-template.ejs',
       filename: 'index.html',
     }),
-    new webpack.DefinePlugin({
-      'process.env': {
-        'NODE_ENV': JSON.stringify('production'),
-      },
-    }),
-    new webpack.optimize.UglifyJsPlugin(),
-    new webpack.optimize.AggressiveMergingPlugin(),
+    // new webpack.DefinePlugin({
+    //   'process.env': {
+    //     'NODE_ENV': JSON.stringify('production'),
+    //   },
+    // }),
+    // new webpack.optimize.UglifyJsPlugin(),
+    // new webpack.optimize.AggressiveMergingPlugin(),
   ],
   devServer: {
     contentBase: path.resolve(__dirname, 'src'),

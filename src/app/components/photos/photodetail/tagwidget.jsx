@@ -27,46 +27,52 @@ export class TagWidget extends React.Component {
 
   addTag(tag, index) {
     const _name = index == -1 ? tag : tag.name;
-    const payload = { photoId: this.props.photo.get('id'), name: _name, };
+    const payload = { photoId: this._photoId(), name: _name, };
     this.props.photoAddTag(payload);
-
     this.setState({ tagSearchText: '' });
   }
 
   removeTag(tag) {
-    const payload = { photoId: this.props.photo.get('id'), tagId: tag.key, };
+    const payload = { photoId: this._photoId(), tagId: tag.key, };
     this.props.photoRemoveTag(payload);
+  }
+
+  _photoId() {
+    const _photo = this.props.photo;
+    return typeof _photo == 'string' ? _photo : _photo.get('id');
   }
 
   handleTagSearchText(searchText) {
     this.setState({ tagSearchText: searchText });
   }
-//
+
   render () {
     const taglist = this.props.taglist.toJS();
-    const _data = this.props.photo;
+    const _data = typeof this.props.photo == 'string' ? [] : this.props.photo;
     const photoTags = getFacet('TagFacet', _data).map(tag =>
      (this.renderChip({ label: tag.get('name'), key: tag.get('id') }))
     );
-
     const dataSourceConfig = { text: 'name', value: 'id' };
 
     return (
       <div className={styles.tags}>
-        <AutoComplete
-            fullWidth
-            hintText="Add tag"
-            filter={(searchText, key) => (key.indexOf(searchText) !== -1)}
-            dataSource={taglist}
-            dataSourceConfig={dataSourceConfig}
-            onNewRequest={this.addTag}
-            searchText={this.state.tagSearchText}
-            onUpdateInput={this.handleTagSearchText}
-          />
-        <div className={styles.tagContainer}>
-          {photoTags}
+        <div class={styles.title}>Tags</div>
+        <div class={styles.widgetContainer}>
+          <AutoComplete
+              fullWidth
+              hintText="Add tag"
+              filter={(searchText, key) => (key.indexOf(searchText) !== -1)}
+              dataSource={taglist}
+              dataSourceConfig={dataSourceConfig}
+              onNewRequest={this.addTag}
+              searchText={this.state.tagSearchText}
+              onUpdateInput={this.handleTagSearchText}
+            />
+          <div className={styles.tagContainer}>
+            {photoTags}
+          </div>
         </div>
-       </div>
+      </div>
 
     );
   }

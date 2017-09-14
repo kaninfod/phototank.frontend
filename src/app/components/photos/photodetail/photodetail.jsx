@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from "react-redux";
 import { getPhoto } from '../../../redux/photo';
-
 import { InfoWidget } from './infowidget';
 import { CommentWidget } from './commentwidget';
 import { TagWidget } from './tagwidget';
@@ -108,7 +107,7 @@ class PhotoDetail extends React.Component {
           taglist={this.props.taglist}/>
 
         <AlbumWidget
-          photo={this.props.photo}
+          photoId={this.props.photo.get('id')}
           albums={this.props.albums}
           photoAlbumAdd={this.photoAlbumAdd} />
 

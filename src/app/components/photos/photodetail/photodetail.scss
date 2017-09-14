@@ -1,5 +1,33 @@
 @import '../../../stylesheets/global_styles';
 
+.flexAlign {
+  display: inherit;
+  flex-direction: inherit;
+}
+
+.widget {
+  background-color: $primaryLight;
+  margin: 5px;
+}
+
+.widgetContainer {
+  composes: flexAlign;
+  padding: 4px;
+}
+
+.title {
+  height: 37px;
+  background-color: $secondaryDark;
+  line-height: 2.5;
+  font-family: swansea;
+  padding-left: 15px;
+  font-weight: normal;
+  font-size: 16px;
+  color: $primaryText;
+}
+
+
+
 .photodetailGrid {
   display: grid;
   grid-template-columns: 1fr;
@@ -14,22 +42,22 @@
     "rotate";
 }
 
-  @media (min-width: $break-medium) {
-    .photodetailGrid.portrait {
-    grid-template-columns: 1fr 2fr;
-    // grid-template-rows: 55vh 10vh 10vh 15vh;
-    grid-gap: 10px;
-    grid-template-areas:
-      "info    photo"
-      "album   photo"
-      "comment photo"
-      "tag     photo"
-      "rotate  photo";
-   }
+@media (min-width: $break-medium) {
+  .photodetailGrid.portrait {
+  grid-template-columns: 1fr 2fr;
+  // grid-template-rows: 55vh 10vh 10vh 15vh;
+  grid-gap: 10px;
+  grid-template-areas:
+    "info    photo"
+    "album   photo"
+    "comment photo"
+    "tag     photo"
+    "rotate  photo";
+ }
 
-.photodetailGrid.landscape {
+ .photodetailGrid.landscape {
    grid-template-columns: 1fr 1fr 1fr;
-   grid-template-rows: 55vh 10vh 10vh 15vh;
+   grid-template-rows: 50vh 10vh 10vh 15vh;
    grid-gap: 10px;
    grid-template-areas:
      "photo photo  photo"
@@ -37,35 +65,35 @@
      "info rotate  comment "
      "tag  tag     comment ";
   }//
- }
+}
 
-  @media (min-width: $break-large) {
-    .photodetailGrid.portrait {
-      grid-template-columns: minmax(200px, 1fr) minmax(250px, 1fr) 2fr;
-      grid-template-rows: 25vh 25vh 25vh 10vh;
-      grid-gap: 10px;
-      grid-template-areas:
-        "info   comment photo"
-        "tag    comment photo"
-        "album  comment photo"
-        "rotate comment photo";
-    }
-
-    .photodetailGrid.landscape {
-      grid-template-columns: repeat(5, 1fr);
-      grid-template-rows: 30vh 30vh 20vh;
-      grid-gap: 10px;
-      grid-template-areas:
-        "info    photo photo photo   photo"
-        "comment photo photo photo   photo"
-        "comment tag     tag   album rotate"
-    }
+@media (min-width: $break-large) {
+  .photodetailGrid.portrait {
+    grid-template-columns: minmax(200px, 1fr) minmax(250px, 1fr) 2fr;
+    grid-template-rows: 25vh 25vh 25vh 10vh;
+    grid-gap: 10px;
+    grid-template-areas:
+      "info   comment photo"
+      "tag    comment photo"
+      "album  comment photo"
+      "rotate comment photo";
   }
+
+  .photodetailGrid.landscape {
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: 35vh 30vh 20vh;
+    grid-gap: 10px;
+    grid-template-areas:
+      "info    photo photo photo   photo"
+      "comment photo photo photo   photo"
+      "comment tag     tag   album rotate"
+  }
+}
 
 
 .photo {
   grid-area: photo;
-  composes: box3;
+  composes: box1;
   width: 100%;
   display: flex;
   align-items: center;
@@ -81,21 +109,25 @@
 }
 
 .rotate {
+  composes: widget;
+  composes: box1;
   grid-area: rotate;
-  composes: box3;
-  height: 65px;
+  // height: 65px;
+  overflow-y: scroll;
 }
 
 .album {
+  composes: widget;
+  composes: box1;
   grid-area: album;
-  composes: box3;
-  height: 65px;
+  // height: 65px;
 }
 
 .tags {
+  composes: widget;
+  composes: box1;
   overflow: hidden;
   grid-area: tag;
-  composes: box3;
   display: flex;
   flex-direction: column;
 
@@ -105,17 +137,17 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: start;
-    // padding-bottom: : 4px;
-    /// flex-grow: 1;
   }
 }
 
 .info {
+  composes: widget;
+  composes: box1;
   grid-area: info;
-  composes: box3;
   font-size: 12px;
+  font-family: swansea;
   color: #757575;
-  padding: 15px;
+  overflow-y: scroll;
 
   .table {
     display: table;
@@ -131,8 +163,9 @@
 }
 
 .comments {
+  composes: widget;
+  composes: box1;
   grid-area: comment;
-  composes: box3;
   display: flex;
   flex-direction: column;
   grid-gap: 3px;

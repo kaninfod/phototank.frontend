@@ -1,0 +1,22 @@
+.bucket {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  grid-template-areas:
+    "photogrid actions"
+}
+
+.bucketGrid {
+  grid-area: photogrid;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.actions {
+  grid-area: actions;
+}
+
+
+.bucketGrid img {
+  margin-left: 3px;
+}

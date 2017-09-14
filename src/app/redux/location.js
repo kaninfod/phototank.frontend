@@ -1,12 +1,6 @@
 import { requestTypes } from './apiUtils';
 import { List, Map, fromJS } from 'immutable';
 
-//actions
-export const FETCH_COUNTRIES_SUCCESS = 'FETCH_COUNTRIES_SUCCESS';
-export const REQUEST_COUNTRIES = 'REQUEST_COUNTRIES';
-export const FETCH_CITIES_SUCCESS = 'FETCH_CITIES_SUCCESS';
-export const REQUEST_CITIES = 'REQUEST_CITIES';
-
 // Reducer
 var init = Map(fromJS({
   countries: [],
@@ -22,8 +16,8 @@ var init = Map(fromJS({
 export function reducer(state=init, action={}) {
   switch (action.type) {
 
-    case FETCH_COUNTRIES_SUCCESS: {
-      if (!action.payload) { return state; };
+    case 'FETCH_COUNTRIES_SUCCESS': {
+      if (!action.payload) { return state; }
 
       action.payload.countries.unshift({ id: -1, name: 'All' });
       state = state.set('countries', fromJS(action.payload.countries));
@@ -31,8 +25,8 @@ export function reducer(state=init, action={}) {
       return state;
     }
 
-    case FETCH_CITIES_SUCCESS: {
-      if (!action.payload) { return state; };
+    case 'FETCH_CITIES_SUCCESS': {
+      if (!action.payload) { return state; }
 
       action.payload.cities.unshift({ id: -1, name: 'All' });
       state = state.set('cities', fromJS(action.payload));
@@ -46,7 +40,7 @@ export function reducer(state=init, action={}) {
 
 //API
 export function fetchCities() {
-  const apiPayload = {
+  return {
     isAPI: true,
     type: 'FETCH_CITIES',
     url: '/api/locations/cities',
@@ -54,23 +48,15 @@ export function fetchCities() {
     params: null,
     loadedAtIdentifier: ['nLocation', 'loadedAt', 'cities'],
   };
-
-  return dispatch => {
-    dispatch(apiPayload);
-  };
 }
 
 export function fetchCountries() {
-  const apiPayload = {
+  return {
     isAPI: true,
     type: 'FETCH_COUNTRIES',
     url: '/api/locations/countries',
     httpVerb: requestTypes.GET,
     params: null,
     loadedAtIdentifier: ['nLocation', 'loadedAt', 'countries'],
-  };
-
-  return dispatch => {
-    dispatch(apiPayload);
   };
 }

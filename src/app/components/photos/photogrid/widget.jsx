@@ -4,8 +4,8 @@ import LazyLoad from 'react-lazy-load';
 import cx from 'classnames';
 import { browserHistory } from 'react-router-dom';
 import {
-  BrowserRouter as Router,
-  Route,
+  // BrowserRouter as Router,
+  // Route,
   Link
 } from 'react-router-dom';
 import IconButton from 'material-ui/IconButton';
@@ -116,7 +116,7 @@ export default class Widget extends React.Component {
                   delete
                 </Button>
 
-                <Link to={'/photos/'.concat(photo.get('id'))}>
+                <Link to={'/photos/view/'.concat(photo.get('id'))}>
                   <Button
                     visible={this.props.selected}  >
                     menu
@@ -141,7 +141,7 @@ function Button(props) {
   return (
     <div className={_class}>
       <div className={styles.iconToggle} onClick={props.onClick}>
-        <i class={[styles.materialIcons, styles.md18].join(' ')}>
+        <i class={cx(styles.materialIcons, styles.md18)}>
           {props.children}
         </i>
       </div>

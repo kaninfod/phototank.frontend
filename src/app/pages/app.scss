@@ -1,16 +1,24 @@
 @import '../stylesheets/global_styles.scss';
 
 .app {
-  background-color: $background-color;
+  background-color: $primary;
 
   .appbar {
     width: 100%;
     z-index: 10;
   }
 
+
   .contents {
     top: 60px;
     position: relative;
   }
 
+}
+
+.appBarStyle {
+   position: fixed;
+   top: 0;
+   left: 0;
+   background-color: $secondaryDark;
 }

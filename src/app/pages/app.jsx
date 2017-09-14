@@ -11,24 +11,24 @@ import IconButton from 'material-ui/IconButton';
 import IconMenu from 'material-ui/IconMenu';
 import CircularProgress from 'material-ui/CircularProgress';
 import { Link } from 'react-router-dom';
+import Badge from 'material-ui/Badge';
 
 @connect((store) => {
   return {
-    user:         store.nAuth.get('user'),
     loggedIn:     store.nAuth.get('loggedIn'),
     hideAppbar:   store.ui.get('hideAppbar'),
     loadStatus:   store.app.get('loadingStates'),
+    bucketCount:  store.nPhoto.get('bucketCount'),
   };
 })
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.handleTouchTap = this.handleTouchTap.bind(this);
     this.handleLogout = this.handleLogout.bind(this);
     this.handleShowSearchPanel = this.handleShowSearchPanel.bind(this);
+
     this.state = {
       open: false,
-      showSearchPanel: false,
     };
   }
 
@@ -38,29 +38,18 @@ class App extends React.Component {
 
   handleLogout() {
     this.props.dispatch(logout())
-    this.handleCloseLeftMenu()
-  }
-
-  handleTouchTap(event) {
-    event.preventDefault();
-
-    this.setState({
-      open: true,
-      anchorEl: event.currentTarget,
-    });
   }
 
   handleShowSearchPanel() {
-    this.setState({
-      showSearchPanel: !this.state.showSearchPanel,
-    })
+    this.props.dispatch({type: 'TOGGLE_SEARCHPANEL'});
   }
 
 
   render() {
-    const children = validateAuth(this.props)
+    const _children = validateAuth(this.props)
     const _showAppBar = (!this.props.hideAppbar && this.props.loggedIn)
-    const showLoading = !this.props.loadStatus.every(v => !v);
+    const _showLoading = !this.props.loadStatus.every(v => !v);
+    const _showSearchButton = this.props.location.pathname == '/photos/bucket' ? false : true
 
     return (
       <div id="app" className={styles.app}>
@@ -68,18 +57,15 @@ class App extends React.Component {
         <AppBarTop
           closeMenu="{this.handleCloseLeftMenu}"
           handleLogout={this.handleLogout}
+          showSearchButton={_showSearchButton}
           showSearchPanel={this.handleShowSearchPanel}
-          showLoading={showLoading}
+          showLoading={_showLoading}
           show={_showAppBar}
+          bucketCount={this.props.bucketCount}
         />
 
-        <RightDrawer
-          open={this.state.showSearchPanel}
-          handleShowSearchPanel={this.handleShowSearchPanel}
-          />
-
         <div className={styles.contents}>
-          {children}
+          {_children}
         </div>
 
       </div>
@@ -94,21 +80,23 @@ function validateAuth(props) {
     return props.children;
   }
 }
-//
+
 function AppBarTop(props) {
   if (!props.show) { return null }
   return (
     <div className={styles.appbar}>
       <AppBar
         title="Phototank"
-        style={{ position: "fixed", top: 0, left: 0 }}
+        style={{ position: "fixed", top: 0, left: 0, backgroundColor: "#6b9b37" }}
         iconElementLeft={
           <LeftMenu closeMenu={props.closeMenu} handleLogout={props.handleLogout} />
         }
         iconElementRight={
           <RightMenu
+            showSearchButton={props.showSearchButton}
             showLoading={props.showLoading}
             showSearchPanel={props.showSearchPanel}
+            bucketCount={props.bucketCount}
             />
         }
         />
@@ -116,27 +104,27 @@ function AppBarTop(props) {
   )
 }
 
-function RightDrawer(props) {
-  return (
-    <Drawer
-      docked={false}
-      width={300}
-      openSecondary={true}
-      open={props.open}
-      onRequestChange={props.handleShowSearchPanel}
-       >
-    </Drawer>
-  )
-}
-
 function RightMenu(props) {
+  const _badgeClass = {top: -12, right: -12}
+  if (!props.bucketCount) { _badgeClass.display = 'none'};
+
+  let _searchButtonStyle = {}
+  if (!props.showSearchButton) { _searchButtonStyle .display = 'none'};
   return (
     <div>
-      <IconButton onTouchTap={props.showSearchPanel}>
-        <i class={styles.materialIcons}>shopping_basket</i>
-      </IconButton>
+      <Link to={'/photos/bucket'}>
+        <IconButton iconStyle={{ padding: 0 }}>
+          <Badge
+            badgeContent={props.bucketCount}
+            secondary={true}
+            badgeStyle={_badgeClass}
+            >
+            <i class={styles.materialIcons}>shopping_basket</i>
+          </Badge>
+        </IconButton>
+      </Link>
 
-      <IconButton onTouchTap={props.showSearchPanel}>
+      <IconButton style={_searchButtonStyle} onTouchTap={props.showSearchPanel}>
         <i class={styles.materialIcons}>search</i>
       </IconButton>
 
