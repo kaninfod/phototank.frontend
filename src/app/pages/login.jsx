@@ -82,32 +82,3 @@ export default class Login extends React.Component {
     )
   }
 }
-
-
-
-// <div class="row login-card">
-//   <div class="col s12 m6 ">
-//     <div class="card ">
-//
-//       <div class="row">
-//         <div class="input-field col s6">
-//           <i class="material-icons prefix">account_circle</i>
-//           <input id="email"  value={this.state.email} onChange={this.emailChanged} type="text" class="validate"/>
-//           <label for="email">email</label>
-//         </div>
-//       </div>
-//       <div class="row">
-//         <div class="input-field col s6">
-//           <i class="material-icons prefix">account_circle</i>
-//           <input id="password" value={this.state.password} onChange={this.passwordChanged} type="password" class="validate"/>
-//           <label for="password">Password</label>
-//         </div>
-//       </div>
-//       <div class="row">
-//         <button class="btn waves-effect waves-light" type="submit" onClick={this.handleLogin}>Login
-//          <i class="material-icons right">send</i>
-//        </button>
-//       </div>
-//     </div>
-//   </div>
-// </div>

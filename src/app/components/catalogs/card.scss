@@ -1,4 +1,4 @@
-.pt-card-catalog {
+.ptCardCatalog {
   width: 270px;
   height: 270px;
   margin: 10px;
@@ -30,15 +30,17 @@
   bottom:20px;
   z-index: 5;
 }
+
 .dialogue {
   padding:20px;
   width: 400px;
-  height: 500px;
+  height: 350px;
   overflow-y: scroll;
   display: block;
   margin: auto;
   margin-top: 100px;
 }
+
 .actions {
   float: right;
   padding-top: 50px;

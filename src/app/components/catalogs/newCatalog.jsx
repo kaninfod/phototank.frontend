@@ -1,6 +1,6 @@
 import React from 'react';
 import createReactClass from 'create-react-class';
-import './card';
+import styles from './card';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
@@ -8,6 +8,7 @@ import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import Paper from 'material-ui/Paper';
 import { connect } from "react-redux";
+import { withRouter } from 'react-router-dom';
 
 import { fetchCatalogs, fetchCatalog, createCatalog, verifyCatalog } from '../../redux/catalog';
 
@@ -16,10 +17,10 @@ import { fetchCatalogs, fetchCatalog, createCatalog, verifyCatalog } from '../..
     albums: store.nAlbum.get('albums'),
     catalog: store.nCatalog.get('catalog'),
     catalogs: store.nCatalog.get('catalogs'),
-    // loading: store.catalog.get('loading'),
   };
 })
-export default class NewCatalog extends React.Component {
+
+class NewCatalog extends React.Component {
   constructor(props) {
     super(props);
     this.authorize = ['DropboxCatalog', 'FlickrCatalog']
@@ -32,6 +33,7 @@ export default class NewCatalog extends React.Component {
     this.state = {
       name: '',
       catalogType: null,
+      catalogValue: null,
       catalog: 1,
       authorizeOpen: false,
       actionButtonLabel: 'Save',
@@ -87,7 +89,6 @@ export default class NewCatalog extends React.Component {
   handleClickProgress() {
     // Step 1 form is correct and next/ok is pressed
     if (!this.state.progressToStepTwo) {
-      console.log('createCatalog');
 
       this.props.dispatch(createCatalog({
         name: this.state.name,
@@ -102,7 +103,6 @@ export default class NewCatalog extends React.Component {
 
     } else if (this.authorize.includes(this.state.catalogType)) {
 
-      console.log('This is where I check if user went to service and OK.ed', this.props.catalog.get('id'));
       this.props.dispatch(fetchCatalog(this.props.catalog.get('id')))
 
     } else if (!this.authorize.includes(this.state.catalogType)) {
@@ -113,8 +113,17 @@ export default class NewCatalog extends React.Component {
   }
 
   render() {
+
+    const { history } = this.props;
+    // if (!this.props.catalog.size) { return null }
+    if (this.props.catalog.get('access_token')) {
+      this.props.dispatch({ type: 'CLEAR_CATALOG' })
+      history.push('/catalogs/list');
+    }
+
     return (
-      <Paper zDepth={3} className="dialogue">
+
+      <Paper zDepth={3} className={styles.dialogue}>
 
         <StepOne
           nameValue={this.state.name}
@@ -135,7 +144,7 @@ export default class NewCatalog extends React.Component {
 
 
 
-        <div className="actions">
+        <div className={styles.actions}>
           <RaisedButton
             label={this.state.actionButtonLabel}
             onClick={this.handleClickProgress}
@@ -150,13 +159,9 @@ export default class NewCatalog extends React.Component {
   }
 }
 
-// <StepTwoDropbox
-//   catalogType={this.state.catalogType}
-//   catalog={this.props.catalog}
-//   show={this.state.progressToStepTwo}
-//   verifier={this.state.verifier}
-//   verifierHandler={this.handleVerifier}
-//   />
+export default withRouter(NewCatalog);
+
+
 const StepOne = createReactClass({
   render () {
     if (!this.props.show) { return null }
@@ -171,63 +176,39 @@ const StepOne = createReactClass({
         <SelectField
           floatingLabelText="Type"
           value={this.props.catalogType}
-          onChange={this.props.catalogTypeOnChange}
-        >
-          <MenuItem value={null} primaryText="Select..." />
+          onChange={this.props.catalogTypeOnChange}>
+
           <MenuItem value={'DropboxCatalog'} primaryText="Dropbox Catalog" />
           <MenuItem value={'FlickrCatalog'} primaryText="Flickr Catalog" />
           <MenuItem value={'LocalCatalog'} primaryText="Local Catalog" />
+
         </SelectField>
 
         <SelectField
           floatingLabelText="Synchronise from catalog"
           value={this.props.catalogValue}
           onChange={this.props.catalogOnChange}>
+
           {this.props.catalogs.map(cat => {
             return <MenuItem key={cat.get('id')} value={cat.get('id')} primaryText={cat.get('name')} />;
           })}
-          </SelectField>
+
+        </SelectField>
       </div>
     )
   }
 })
 
-const StepTwo = createReactClass({
-  render () {
-    if (!(this.props.show )) { return null }
+// const StepTwo = createReactClass({
+function StepTwo(props) {
+    if (!(props.show )) { return null }
     return (
       <div>
         <p>
-          Goto <a target="_blank" href={this.props.catalog.get('auth_url')}>Flickr</a> to
+          Goto <a target="_blank" href={props.catalog.get('auth_url')}>Flickr</a> to
           authorize access to your Flickr account.
           Press 'Next' when done.
         </p>
       </div>
     )
-  }
-})
-
-// const StepTwoDropbox = createReactClass({
-//   handleVerifier(e) {
-//     this.props.verifierHandler(e.target.value);
-//   },
-//
-//   render () {
-//     if (!(this.props.show && this.props.catalogType == 'DropboxCatalog')) { return null }
-//     return (
-//       <div>
-//         <p>
-//           Goto <a target="_blank" href={this.props.catalog.get('auth_url')}>Dropbox</a> to
-//           authorize access to your Dropbox account.
-//           Enter the verifier code below:
-//         </p>
-//         <TextField
-//           key="1"
-//           onChange={this.handleVerifier}
-//           defaultValue={this.props.verifier}
-//           floatingLabelText="Dropbox verifier code"
-//          />
-//       </div>
-//     )
-//   }
-// })
+}

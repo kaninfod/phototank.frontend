@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from "react-redux";
 import { Link } from 'react-router-dom';
 import { fetchCatalogs, importCatalog, deleteCatalog } from '../../redux/catalog';
-import './card';
+import styles from './card';
 import Catalog from './catalog';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
@@ -26,6 +26,7 @@ class CatalogList extends React.Component {
 
   componentWillMount() {
     this.props.dispatch(fetchCatalogs());
+
   }
 
   importToCatalog(catalog) {
@@ -50,7 +51,7 @@ class CatalogList extends React.Component {
       <div>
         <Link to="/catalogs/new">
           <FloatingActionButton
-            class="fab">
+            class={styles.fab}>
             <ContentAdd />
           </FloatingActionButton>
         </Link>

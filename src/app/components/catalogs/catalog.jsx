@@ -4,6 +4,7 @@ import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import { Link } from 'react-router-dom';
+import styles from './card';
 
 class Catalog extends React.Component {
   constructor(props) {
@@ -30,14 +31,14 @@ class Catalog extends React.Component {
 
   render () {
     return (
-      <div class="pt-card-catalog">
+      <div className={styles.ptCardCatalog}>
         <img src={this.props.catalog.get('cover_url').concat('?token=', sessionStorage.jwt)}></img>
-          <div class="title">
-            <div class="alignleft">
+          <div className={styles.title}>
+            <div className={styles.alignleft}>
               <p>{this.props.catalog.get('name')}</p>
               <p>{this.props.catalog.get('type')}</p>
             </div>
-            <div class="alignright">
+            <div className={styles.alignright}>
               <IconMenu
                 iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
                 anchorOrigin={{ horizontal: 'right', vertical: 'top' }}

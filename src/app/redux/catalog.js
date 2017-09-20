@@ -17,7 +17,7 @@ export const UPDATE_CATALOG_REQUEST = 'UPDATE_CATALOG_REQUEST';
 
 // Reducer
 var init = Map(fromJS({
-  catalogs: [],
+  catalogs: new Map,
   catalog: [],
 }));
 
@@ -26,18 +26,23 @@ var newState = null;
 export function reducer(state=init, action={}) {
   switch (action.type) {
 
-    case FETCH_CATALOGS_SUCCESS: {
+    case 'FETCH_CATALOGS_SUCCESS': {
       state = state.set('catalogs', fromJS(action.payload.catalogs));
       return state;
     }
 
     case 'FETCH_CATALOG_SUCCESS': {
-      state = state.set('catalog', fromJS(action.payload));
+      state = state.set('catalog', fromJS(action.payload.catalogs));
+      return state;
+    }
+
+    case 'CLEAR_CATALOG': {
+      state = state.set('catalog', new Map);
       return state;
     }
 
     case 'CREATE_CATALOG_SUCCESS': {
-      state = state.set('catalog', fromJS(action.payload));
+      state = state.set('catalog', fromJS(action.payload.catalogs));
       return state;
     }
 
@@ -82,7 +87,7 @@ export function fetchCatalog(catalogId) {
   const apiPayload = {
     isAPI: true,
     type: 'FETCH_CATALOG',
-    url: '/api/catalogs/'.concat(catalogId, '.json'),
+    url: '/api/catalogs/'.concat(catalogId),
     httpVerb: requestTypes.GET,
     params: null,
   };

@@ -11,6 +11,7 @@ var init = Map(fromJS({
     taglist: false,
     photos: false,
   },
+  snackBarMsg: '',
   bucket: [],
   photos: [],
   bucketCount: 0,
@@ -52,6 +53,7 @@ export function reducer(state=init, action={}) {
     case 'REMOVETAG_PHOTO_SUCCESS':
     case 'COMMENT_PHOTO_SUCCESS':
     case 'LIKE_PHOTO_SUCCESS': {
+      state = state.set('snackBarMsg', 'added the stuff');
       return updatePhotoInPhotos(state, fromJS(action)).set('photo', fromJS(action.payload.photo));
     }
 

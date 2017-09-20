@@ -11,7 +11,9 @@ import IconButton from 'material-ui/IconButton';
 import IconMenu from 'material-ui/IconMenu';
 import CircularProgress from 'material-ui/CircularProgress';
 import { Link } from 'react-router-dom';
+// import { withRouter } from 'react-router'
 import Badge from 'material-ui/Badge';
+import Snackbar from 'material-ui/Snackbar';
 
 @connect((store) => {
   return {
@@ -29,7 +31,14 @@ class App extends React.Component {
 
     this.state = {
       open: false,
+      snackBarMsg: '',
     };
+  }
+
+  componentWillReceiveProps(nextProps, nextContext) {
+    if (nextProps.snackBarMsg) {
+      this.state.snackBarMsg = nextProps.snackBarMsg;
+    }
   }
 
   componentWillMount() {
@@ -67,6 +76,13 @@ class App extends React.Component {
         <div className={styles.contents}>
           {_children}
         </div>
+
+        <Snackbar
+          open={this.state.open}
+          message="Event added to your calendar"
+          autoHideDuration={4000}
+          onRequestClose={this.handleRequestClose}
+        />
 
       </div>
     );

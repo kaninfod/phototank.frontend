@@ -82,6 +82,7 @@ export default class Widget extends React.Component {
   render() {
     const props = this.props;
     const photo = props.photo;
+
     return (
 
         <div
@@ -100,31 +101,35 @@ export default class Widget extends React.Component {
 
               <div className={styles.buttonContainer}>
 
-                <Button selected={this._bucketState()} visible={this.props.selected} onClick={this.handleSelect} >
+                <Button selected={this._bucketState()} visible={props.selected} onClick={this.handleSelect} >
                   done
                 </Button>
 
-                <Button visible={this.props.selected} onClick={this.handleZoom} >
+                <Button visible={props.selected} onClick={this.handleZoom} >
                   zoom_in
                 </Button>
 
-                <Button selected={this._likeState()} visible={this.props.selected} onClick={this.handleLike} >
+                <Button selected={this._likeState()} visible={props.selected} onClick={this.handleLike} >
                   thumb_up
                 </Button>
 
-                <Button visible={this.props.selected} onClick={this.handleDelete} >
+                <Button visible={props.selected} onClick={this.handleDelete} >
                   delete
                 </Button>
 
                 <Link to={'/photos/view/'.concat(photo.get('id'))}>
                   <Button
-                    visible={this.props.selected}  >
+                    visible={props.selected}  >
                     menu
                   </Button>
                 </Link>
 
-                <Button visible={this.props.selected}  >
+                <Button visible={props.selected}  >
                   share
+                </Button>
+
+                <Button nohover={true} visible={photo.get('status') == 6}  >
+                  update
                 </Button>
             </div>
 
@@ -137,7 +142,8 @@ export default class Widget extends React.Component {
 function Button(props) {
   let _class = cx(styles.iconToggleContainer,
                 { [styles.visible]: props.visible,
-                  [styles.selected]: props.selected, });
+                  [styles.selected]: props.selected,
+                  [styles.hover]: !props.nohover, });
   return (
     <div className={_class}>
       <div className={styles.iconToggle} onClick={props.onClick}>

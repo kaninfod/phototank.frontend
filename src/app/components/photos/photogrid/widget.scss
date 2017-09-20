@@ -1,17 +1,19 @@
 @import '../../../stylesheets/global_styles';
 
-
 .photoWidget {
   position: relative;
   border: none;
 
+.nohover { display: inherit; }
+.hover { display: inherit;}
+
   @media (pointer: fine) {
-    &:hover > .buttonContainer > .iconToggleContainer,
-    &:hover > .buttonContainer > a > .iconToggleContainer
+    &:hover > .buttonContainer > .iconToggleContainer.hover,
+    &:hover > .buttonContainer > a > .iconToggleContainer.hover
      {
-          opacity: 1;
-          visibility: visible;
-          pointer-events: all;
+        opacity: 1;
+        visibility: visible;
+        pointer-events: all;
     }
   }
   .date {
@@ -39,16 +41,6 @@
     a { text-decoration: none; }
   }
 }
-
-// .photoWidget {
-//   width:200px;
-// }
-//
-// @media (min-width: $break-large) {
-//   .photoWidget {
-//     width:125px;
-//   }
-// }
 
 .photoWidget img {
   min-height: 125px;

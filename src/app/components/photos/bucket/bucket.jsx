@@ -101,7 +101,7 @@ export default Bucket;
 
 function renderBucket(props) {
   return props.map(photo =>
-    <div key={photo.get('id')}>
+    <div  key={photo.get('id')}>
       <img src={photo.get('url_tm').concat('?token=', sessionStorage.jwt)} />
     </div>
   )
