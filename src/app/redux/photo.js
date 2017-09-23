@@ -368,16 +368,18 @@ export function getPhoto(photoId, context) {
 }
 
 export function getFacet(type, photo) {
+
   if (Immutable.Iterable.isIterable(photo)) {
     const facets = photo.get('facets', []).filter(f =>
       f.get('type') == type
     );
 
     if (['LikeFacet', 'BucketFacet'].includes(type)) {
-      return facets.get(0, null);
+      return facets.get(0, false);
     }
 
     return facets;
+
   } else {
     return [];
   }

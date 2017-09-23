@@ -173,12 +173,23 @@ class Photos extends React.Component {
    *  Dispatch functions for single photos
    **/
     //Photo
-    toggleBucketPhoto(photoId) {
-        this.props.dispatch(togglePhotosBucket(photoId))
+    toggleBucketPhoto(photoId, state) {
+      this.props.dispatch(togglePhotosBucket(photoId))
+      const payload = {
+        type: 'SHOW_MESSAGE',
+        message: state ? 'You selected a photo' : 'You unselected a photo',
+        timeout: 1500,
+      }
+      this.props.dispatch(payload)
     }
 
-    likePhoto(photoId) {
+    likePhoto(photoId, state) {
       this.props.dispatch(likePhoto(photoId))
+      const payload = {
+        type: 'SHOW_MESSAGE',
+        message: state ? 'You liked a photo' : 'You unliked a photo',
+        timeout: 1500, }
+      this.props.dispatch(payload)
     }
 
     deletePhoto(photo) {

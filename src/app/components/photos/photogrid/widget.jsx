@@ -27,21 +27,12 @@ export default class Widget extends React.Component {
     };
   }
 
-  // handleHover(e) {
-  //   var overlayButton = $(this.refs.widget).find('.overlay-button:not(.overlay-processing)');
-  //   if (e.type == 'mouseenter') {
-  //     overlayButton.addClass('overlay-show');
-  //   } else {
-  //     overlayButton.removeClass('overlay-show');
-  //   }
-  // }
-
   handleSelect(e) {
-    this.props.actions.TOGGLE(this.props.photo.get('id'));
+    this.props.actions.TOGGLE(this.props.photo.get('id'), !this._bucketState());
   }
 
   handleLike(e) {
-    this.props.actions.LIKE(this.props.photo.get('id'));
+    this.props.actions.LIKE(this.props.photo.get('id'), !this._likeState());
   }
 
   handleZoom(e) {
@@ -58,12 +49,6 @@ export default class Widget extends React.Component {
 
   clickPhoto(e) {
     this.setState({ buttonState: 'show' });
-  }
-
-  _buttonClass(bucket) {
-    const _isBucket = bucket && this.props.actions.FACETS('Bucket', this.props.photo.get('id'));
-    const _isSelected = this.props.selected;
-    return _isBucket || _isSelected;
   }
 
   _bucketState() {

@@ -7,13 +7,7 @@ import styles from './photodetail.scss';
 export class TagWidget extends React.Component {
   constructor(props) {
     super(props);
-    this.addTag = this.addTag.bind(this);
     this.removeTag = this.removeTag.bind(this);
-    this.handleTagSearchText = this.handleTagSearchText.bind(this);
-
-    this.state = {
-      tagSearchText: '',
-    };
   }
 
   renderChip(data) {
@@ -25,55 +19,66 @@ export class TagWidget extends React.Component {
    );
   }
 
+  removeTag(tag) {
+    const payload = { photoId: this.props.photo.get('id'), tagId: tag.key, };
+    this.props.actions.handleRemoveTag(payload);
+  }
+
+  render () {
+    const _data = typeof this.props.photo == 'string' ? [] : this.props.photo;
+    const photoTags = getFacet('TagFacet', _data).map(tag =>
+     (this.renderChip({ label: tag.get('name'), key: tag.get('id') }))
+    );
+
+    return (
+      <div className={styles.tags}>
+        <div className={styles.tagContainer}>
+          {photoTags}
+        </div>
+      </div>
+
+    );
+  }
+}
+
+export class TagInput extends React.Component {
+  constructor(props) {
+    super(props);
+    this.addTag = this.addTag.bind(this);
+    this.handleTagSearchText = this.handleTagSearchText.bind(this);
+
+    this.state = {
+      tagSearchText: '',
+    };
+  }
+
   addTag(tag, index) {
     const _name = index == -1 ? tag : tag.name;
-    const payload = { photoId: this._photoId(), name: _name, };
-    this.props.photoAddTag(payload);
+    const payload = { photoId: this.props.photo.get('id'), name: _name, };
+    this.props.actions.handleAddTag(payload);
     this.setState({ tagSearchText: '' });
-  }
-
-  removeTag(tag) {
-    const payload = { photoId: this._photoId(), tagId: tag.key, };
-    this.props.photoRemoveTag(payload);
-  }
-
-  _photoId() {
-    const _photo = this.props.photo;
-    return typeof _photo == 'string' ? _photo : _photo.get('id');
   }
 
   handleTagSearchText(searchText) {
     this.setState({ tagSearchText: searchText });
   }
 
-  render () {
+  render() {
+    if (!this.props.show) { return null; }
+
     const taglist = this.props.taglist.toJS();
-    const _data = typeof this.props.photo == 'string' ? [] : this.props.photo;
-    const photoTags = getFacet('TagFacet', _data).map(tag =>
-     (this.renderChip({ label: tag.get('name'), key: tag.get('id') }))
-    );
     const dataSourceConfig = { text: 'name', value: 'id' };
-
     return (
-      <div className={styles.tags}>
-        <div class={styles.title}>Tags</div>
-        <div class={styles.widgetContainer}>
-          <AutoComplete
-              fullWidth
-              hintText="Add tag"
-              filter={(searchText, key) => (key.indexOf(searchText) !== -1)}
-              dataSource={taglist}
-              dataSourceConfig={dataSourceConfig}
-              onNewRequest={this.addTag}
-              searchText={this.state.tagSearchText}
-              onUpdateInput={this.handleTagSearchText}
-            />
-          <div className={styles.tagContainer}>
-            {photoTags}
-          </div>
-        </div>
-      </div>
-
+      <AutoComplete
+          fullWidth
+          hintText="Add tag"
+          filter={(searchText, key) => (key.indexOf(searchText) !== -1)}
+          dataSource={taglist}
+          dataSourceConfig={dataSourceConfig}
+          onNewRequest={this.addTag}
+          searchText={this.state.tagSearchText}
+          onUpdateInput={this.handleTagSearchText}
+        />
     );
   }
 }

@@ -18,34 +18,31 @@ export class AlbumWidget extends React.Component {
   }
 
   handleAlbumSelected(chosenRequest, index) {
-    const payload = { albumId: chosenRequest.id, photoId: this.props.photoId };//.get('id') };
-    this.props.photoAlbumAdd(payload);
+    this.props.actions.handleAlbumAdd(chosenRequest.id);
     this.setState({ albumSearchText: '' });
   }
 
   render () {
-    // const _data = this.props.photo;
+    if (!this.props.show) { return null; }
+
     const albums = this.props.albums.toJS();
     const dataSourceConfig = { text: 'name', value: 'id' };
 
     return (
       <div className={styles.album}>
-        <div class={styles.title}>Albums</div>
-        <div class={styles.widgetContainer}>
-          <AutoComplete
-               fullWidth
-               hintText="Add to album..."
-               filter={(searchText, key) => (key.indexOf(searchText) !== -1)}
-               dataSource={albums}
-               dataSourceConfig={dataSourceConfig}
-               onNewRequest={this.handleAlbumSelected}
-               searchText={this.state.albumSearchText}
-               onUpdateInput={this.handleAlbumSearchText}
-               targetOrigin={{ horizontal: 'left', vertical: 'bottom', }}
-               anchorOrigin={{ horizontal: 'left', vertical: 'bottom', }}
-               maxSearchResults={5}
-              />
-        </div>
+        <AutoComplete
+             fullWidth
+             hintText="Add to album..."
+             filter={(searchText, key) => (key.indexOf(searchText) !== -1)}
+             dataSource={albums}
+             dataSourceConfig={dataSourceConfig}
+             onNewRequest={this.handleAlbumSelected}
+             searchText={this.state.albumSearchText}
+             onUpdateInput={this.handleAlbumSearchText}
+             targetOrigin={{ horizontal: 'left', vertical: 'bottom', }}
+             anchorOrigin={{ horizontal: 'left', vertical: 'bottom', }}
+             maxSearchResults={5}
+            />
       </div>
     );
   }
