@@ -43,7 +43,7 @@ render(
     <MuiThemeProvider>
       <BrowserRouter history={history}>
         <div>
-          <Route path="/login" component={Login} />
+          <Route path="/login" component={Photos} />
 
           <App>
 

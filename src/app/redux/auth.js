@@ -25,6 +25,7 @@ export function reducer(state=init, action={}) {
     }
 
     case 'LOGOUT_SUCCESS': {
+      console.log('do I go here');
       sessionStorage.removeItem('jwt');
       return state.set('loggedIn', false).set('user', null);
     }

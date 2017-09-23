@@ -5,6 +5,10 @@ var init = Map(fromJS({
   hideAppbar: false,
   selectedPhoto: null,
   showSearchPanel: false,
+  snackBar: {
+    show: false,
+    message: '',
+  },
 }));
 
 var newState = null;
@@ -25,6 +29,13 @@ export function reducer(state=init, action={}) {
       return state.set('selectedPhoto', fromJS(action.photoId));
     }
 
+    case 'SHOW_MESSAGE': {
+      return state.set('snackBar', fromJS({ show: true, message: action.message, timeout: action.timeout || 3500 }));
+    }
+
+    case 'HIDE_MESSAGE': {
+      return state.set('snackBar', fromJS({ show: false, message: '' }));
+    }
   }
   return state;
 }
