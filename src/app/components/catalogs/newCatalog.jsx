@@ -1,6 +1,6 @@
 import React from 'react';
 import createReactClass from 'create-react-class';
-import styles from './card';
+import styles from '../../stylesheets/card';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';

@@ -52,9 +52,10 @@ export function reducer(state=init, action={}) {
     case 'ADDTAG_PHOTO_SUCCESS':
     case 'REMOVETAG_PHOTO_SUCCESS':
     case 'COMMENT_PHOTO_SUCCESS':
-    case 'LIKE_PHOTO_SUCCESS': {
-      state = state.set('snackBarMsg', 'added the stuff');
-      return updatePhotoInPhotos(state, fromJS(action)).set('photo', fromJS(action.payload.photo));
+    case 'LIKE_PHOTO_SUCCESS':
+    case 'UNLIKE_PHOTO_SUCCESS': {
+      console.log(action.payload);
+      return updatePhotoInPhotos(state, action).set('photo', fromJS(action.payload.photo));
     }
 
     case 'GET_TAGLIST_PHOTO_SUCCESS': {
@@ -72,9 +73,16 @@ export function reducer(state=init, action={}) {
       return setCacheTime(state, 'bucket');
     }
 
+    case 'CLEAR_BUCKET_SUCCESS': {
+      state = filterFacets(state, 'BucketFacet');
+      return state.set('bucket', fromJS([])).set('bucketCount', 0);
+    }
+
     case 'TOGGLE_PHOTOS_BUCKET_SUCCESS': {
-      state = updatePhotoInPhotos(state, fromJS(action));
-      state = updateBucket(state, fromJS(action));
+      state = updatePhotoInPhotos(state, action);
+
+      // state = updateBucket(state, fromJS(action));
+      state = state.set('bucket', fromJS(action.payload.photos));
       return state.set('bucketCount', state.get('bucket').size);
     }
 
@@ -100,9 +108,33 @@ function setCacheTime(state, cacheType) {
  * the photos array in state
  */
 function updatePhotoInPhotos(state, action) {
-  const _photos = state.get('photos').map(photo =>
-    photo.get('id') === action.getIn(['payload', 'photo', 'id']) ? action.getIn(['payload', 'photo']) : photo
-  );
+
+  function single(action, photo) {
+    if (photo.get('id') === action.payload.photo.id) {
+      return fromJS(action.payload.photo);
+    } else {
+      return photo;
+    }
+  }
+
+  function multiple(action, photo) {
+    let result = null;
+    action.payload.photos.filter(bucketPhoto => {
+      if (photo.get('id') === bucketPhoto.id) {
+        result = fromJS(bucketPhoto);
+      }
+    });
+    return result || photo;
+  }
+
+  const _photos = state.get('photos').map(photo => {
+    if (Object.keys(action.payload)[0] == 'photo') {
+      return single(action, photo);
+    } else {
+      return multiple(action, photo);
+    }
+  });
+
   return state.set('photos', _photos);
 }
 
@@ -115,6 +147,24 @@ function deletePhotoInPhotos(state, action) {
      obj.get('id') != action.getIn(['payload', 'id']) //action.payload.photo_id
   );
   return state.set('photos', photos);
+}
+
+/*
+  Get one or more photos with specific facets from collection of photos in state
+*/
+export function filterFacets(state, facetType) {
+
+  function _filter(photo, facetType) {
+    return photo.get('facets').filter(facet =>
+      facet.get('type') != facetType
+    );
+  }
+
+  const _photos = state.get('photos').map(photo =>
+    photo.set('facets', _filter(photo, facetType))
+  );
+
+  return state.set('photos', _photos);
 }
 
 /**
@@ -132,6 +182,7 @@ function updateBucket(state, action) {
       photo => photo.get('id') !== action.getIn(['payload', 'photo', 'id'])
     );
   }
+
   return state.set('bucket', bucket);
 }
 
@@ -276,7 +327,17 @@ export function likePhoto(photoId) {
   return {
     isAPI: true,
     type: 'LIKE_PHOTO',
-    url: '/api/photos/'.concat(photoId, '/like/toggle'),
+    url: '/api/photos/'.concat(photoId, '/like'),
+    httpVerb: requestTypes.POST,
+    params: null,
+  };
+}
+
+export function unlikePhoto(photoId) {
+  return {
+    isAPI: true,
+    type: 'UNLIKE_PHOTO',
+    url: '/api/photos/'.concat(photoId, '/unlike'),
     httpVerb: requestTypes.POST,
     params: null,
   };
@@ -301,6 +362,16 @@ export function fetchBucket() {
     httpVerb: requestTypes.GET,
     params: null,
     loadedAtIdentifier: ['nPhoto', 'loadedAt', 'bucket'],
+  };
+}
+
+export function clearBucket() {
+  return {
+    isAPI: true,
+    type: 'CLEAR_BUCKET',
+    url: '/api/photos/bucket/clear',
+    httpVerb: requestTypes.POST,
+    params: null,
   };
 }
 
@@ -367,14 +438,16 @@ export function getPhoto(photoId, context) {
   return context.photos.get(index);
 }
 
-export function getFacet(type, photo) {
-
+/*
+  Get facets from a single photo
+*/
+export function getFacet(facetType, photo) {
   if (Immutable.Iterable.isIterable(photo)) {
     const facets = photo.get('facets', []).filter(f =>
-      f.get('type') == type
+      f.get('type') == facetType
     );
 
-    if (['LikeFacet', 'BucketFacet'].includes(type)) {
+    if (['LikeFacet', 'BucketFacet'].includes(facetType)) {
       return facets.get(0, false);
     }
 

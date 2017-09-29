@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import Album from './album';
-import styles from './card';
+import styles from '../../stylesheets/card';
 import { fetchAlbums, deleteAlbum } from '../../redux/album';
 
 @connect((store) => {

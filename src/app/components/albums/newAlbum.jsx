@@ -8,7 +8,6 @@ import MenuItem from 'material-ui/MenuItem';
 import Toggle from 'material-ui/Toggle';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
-import './card';
 import { fetchCities, fetchCountries } from '../../redux/location'
 import { fetchAlbum, createAlbum, updateAlbum } from '../../redux/album'
 import {orange500, blue500} from 'material-ui/styles/colors';

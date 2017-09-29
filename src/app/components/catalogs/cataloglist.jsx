@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from "react-redux";
 import { Link } from 'react-router-dom';
 import { fetchCatalogs, importCatalog, deleteCatalog } from '../../redux/catalog';
-import styles from './card';
+import styles from '../../stylesheets/card';
 import Catalog from './catalog';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
@@ -65,7 +65,7 @@ function List(props) {
 
   return (
     <div>
-      {props.catalogs.map(catalog => {
+      {props.catalogs.valueSeq().map(catalog => {
         return <Catalog
           id={catalog.get('id')}
           key={catalog.get('id')}

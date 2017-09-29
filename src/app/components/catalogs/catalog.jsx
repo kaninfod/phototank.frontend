@@ -4,7 +4,7 @@ import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import { Link } from 'react-router-dom';
-import styles from './card';
+import styles from '../../stylesheets/card';
 
 class Catalog extends React.Component {
   constructor(props) {
@@ -31,7 +31,7 @@ class Catalog extends React.Component {
 
   render () {
     return (
-      <div className={styles.ptCardCatalog}>
+      <div className={styles.ptCard} >
         <img src={this.props.catalog.get('cover_url').concat('?token=', sessionStorage.jwt)}></img>
           <div className={styles.title}>
             <div className={styles.alignleft}>

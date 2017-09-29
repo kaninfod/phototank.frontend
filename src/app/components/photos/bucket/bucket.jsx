@@ -1,18 +1,16 @@
 import React from 'react';
 import { connect } from "react-redux";
 import { fetchAlbums, } from '../../../redux/album';
-// import { fetchBucket, fetchTaglist } from '../../../redux/photo';
-import { AlbumWidget } from '../photodetail/albumwidget';
-import { TagWidget } from '../photodetail/tagwidget';
-import { CommentWidget } from '../photodetail/commentwidget';
-import { RotateWidget } from '../photodetail/rotatewidget';
+import { PhotoActions } from '../photodetail/photoactions';
 import styles from './bucket.scss';
 import cx from 'classnames';
 import {
   fetchPhoto,
   fetchBucket,
+  clearBucket,
   fetchTaglist,
   likePhoto,
+  unlikePhoto,
   addTagPhoto,
   removeTagPhoto,
   commentPhoto,
@@ -29,7 +27,15 @@ import {
 class Bucket extends React.Component {
   constructor(props) {
     super(props);
-
+    this.photoAddComment = this.photoAddComment.bind(this)
+    this.photoAddTag = this.photoAddTag.bind(this)
+    this.photoRemoveTag = this.photoRemoveTag.bind(this)
+    this.photoAlbumAdd = this.photoAlbumAdd.bind(this)
+    this.photoRotate = this.photoRotate.bind(this)
+    this.photoLike = this.photoLike.bind(this)
+    this.photoUnlike = this.photoUnlike.bind(this)
+    this.photoDelete = this.photoDelete.bind(this)
+    this.bucketClear = this.bucketClear.bind(this)
     this.state = {
       // photo: getPhoto(this.props.match.params.id, this.props),
     };
@@ -39,6 +45,24 @@ class Bucket extends React.Component {
     this.props.dispatch(fetchBucket())
     this.props.dispatch(fetchTaglist())
     this.props.dispatch(fetchAlbums())
+  }
+
+  bucketClear() {
+    console.log('imma gonna clear the bucket');
+    this.props.dispatch(clearBucket())
+  }
+
+  photoDelete() {
+    this.props.dispatch(deletePhoto(this.props.photo.get('id')))
+    this.props.history.push('/photos');
+  }
+
+  photoLike() {
+    this.props.dispatch(likePhoto('bucket'))
+  }
+
+  photoUnlike() {
+    this.props.dispatch(unlikePhoto('bucket'))
   }
 
   photoAddComment(payload) {
@@ -64,28 +88,30 @@ class Bucket extends React.Component {
   render() {
     if (!(this.props.albums && this.props.bucket && this.props.taglist)) { return null };
 
+    const actions = {
+      handleLike: this.photoLike,
+      handleUnlike: this.photoUnlike,
+      handleAddTag: this.photoAddTag,
+      handleRemoveTag: this.photoRemoveTag,
+      handleRotate: this.photoRotate,
+      handleAlbumAdd: this.photoAlbumAdd,
+      handleDelete: this.photoDelete,
+      handleClear: this.bucketClear,
+    }
+
     return (
       <div className={styles.bucket}>
         <div className={styles.actions}>
 
-          <AlbumWidget
-            photoId="bucket"
+          <PhotoActions
+            bucketMode={true}
+            photo={this.props.bucket}
+            actions={actions}
+            taglist={this.props.taglist}
             albums={this.props.albums}
-            photoAlbumAdd={this.photoAlbumAdd.bind(this)} />
+            />
 
-          <TagWidget photo="bucket"
-            photoRemoveTag={this.photoRemoveTag.bind(this)}
-            photoAddTag={this.photoAddTag.bind(this)}
-            taglist={this.props.taglist}/>
-          <CommentWidget
-            photo='bucket'
-            photoAddComment={this.photoAddComment.bind(this)} />
-          <RotateWidget
-            photoRotate={this.photoRotate.bind(this)}
-            photo="bucket" />
         </div>
-
-
 
         <div className={styles.bucketGrid}>
           {renderBucket(this.props.bucket)}
@@ -97,7 +123,6 @@ class Bucket extends React.Component {
 }
 
 export default Bucket;
-
 
 function renderBucket(props) {
   return props.map(photo =>

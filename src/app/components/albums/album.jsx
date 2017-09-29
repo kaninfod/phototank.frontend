@@ -4,7 +4,7 @@ import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import { Link } from 'react-router-dom';
-import styles from './card.scss';
+import styles from '../../stylesheets/card';
 
 class Album extends React.Component {
   constructor(props) {
@@ -16,7 +16,7 @@ class Album extends React.Component {
 
   render () {
     return (
-      <div class={styles.cardAlbum}>
+      <div class={styles.ptCard}>
         <img src={this.props.album.get('cover_url').concat('?token=', sessionStorage.jwt)}></img>
           <div class={styles.title}>
             <div class={styles.alignleft}>

@@ -13,10 +13,7 @@ export class PhotoActions extends React.Component {
   constructor(props) {
     super(props);
     this.likeState = this.likeState.bind(this);
-    this.handleTagInputState = this.handleTagInputState.bind(this);
-    this.handleAlbumInputState = this.handleAlbumInputState.bind(this);
-    this.handleRotateInputState = this.handleRotateInputState.bind(this);
-    this.handleShareInputState = this.handleShareInputState.bind(this);
+    this.handleActionButton = this.handleActionButton.bind(this);
     this.state = {
       showTagInput: false,
       showAlbumInput: false,
@@ -26,43 +23,18 @@ export class PhotoActions extends React.Component {
   }
 
   likeState() {
-    return !!getFacet('LikeFacet', this.props.photo);
+    if (!this.props.bucketMode) {
+      return !!getFacet('LikeFacet', this.props.photo);
+    }
   }
 
-  handleTagInputState() {
+  handleActionButton(event) {
+    const _action = event.currentTarget.dataset.action;
     this.setState({
-      showRotateInput: false,
-      showAlbumInput: false,
-      showTagInput: !this.state.showTagInput,
-      showShareInput: false,
-    });
-
-  }
-
-  handleAlbumInputState() {
-    this.setState({
-      showRotateInput: false,
-      showAlbumInput: !this.state.showAlbumInput,
-      showTagInput: false,
-      showShareInput: false,
-    });
-  }
-
-  handleRotateInputState() {
-    this.setState({
-      showRotateInput: !this.state.showRotateInput,
-      showAlbumInput: false,
-      showTagInput: false,
-      showShareInput: false,
-    });
-  }
-
-  handleShareInputState() {
-    this.setState({
-      showShareInput: !this.state.showShareInput,
-      showAlbumInput: false,
-      showTagInput: false,
-      showRotateInput: false,
+      showShareInput:  _action == 'share'  ? true : false,
+      showAlbumInput:  _action == 'album'  ? true : false,
+      showTagInput:    _action == 'tag'    ? true : false,
+      showRotateInput: _action == 'rotate' ? true : false,
     });
   }
 
@@ -74,10 +46,7 @@ export class PhotoActions extends React.Component {
           <ActionButtons
             {...this.props}
             likeState={this.likeState}
-            handleTagInputState={this.handleTagInputState}
-            handleAlbumInputState={this.handleAlbumInputState}
-            handleRotateInputState={this.handleRotateInputState}
-            handleShareInputState={this.handleShareInputState}
+            handleActionButton={this.handleActionButton}
             />
           <div className={styles.actionContainer}>
 
@@ -89,7 +58,6 @@ export class PhotoActions extends React.Component {
             <RotateWidget
               {...this.props}
               show={this.state.showRotateInput}/>
-
 
             <TagInput
               {...this.props}
@@ -117,52 +85,77 @@ function ActionButtons(props) {
   const _inactive = { color: '#9ea7aa' };
   const _like = props.likeState() ? _active : _inactive;
 
+  const _actionButtonsData = [
+    {
+      tooltip: 'Like photo',
+      style: _like,
+      action: props.actions.handleLike,
+      icon: 'thumb_up',
+    },
+    {
+      tooltip: 'Unlike photo',
+      style: _like,
+      action: props.actions.handleUnlike,
+      icon: 'thumb_down',
+      hide: !props.bucketMode,
+    },
+    {
+      tooltip: 'Tag photo',
+      action: props.handleActionButton,
+      icon: 'local_offer',
+      dataAction: 'tag',
+    },
+    {
+      tooltip: 'Add to album',
+      action: props.handleActionButton,
+      icon: 'photo_album',
+      dataAction: 'album',
+    },
+    {
+      tooltip: 'Rotate photo',
+      action: props.handleActionButton,
+      icon: 'rotate_right',
+      dataAction: 'rotate',
+    },
+    {
+      tooltip: 'Share photo',
+      action: props.handleActionButton,
+      icon: 'share',
+      dataAction: 'share',
+    },
+    {
+      tooltip: 'Clear bucket',
+      action: props.actions.handleClear,
+      icon: 'remove_shopping_cart',
+      hide: !props.bucketMode,
+    },
+  ];
+
+  const _actionButtons = _actionButtonsData.map(actionButton =>
+    ActionButton(actionButton)
+  );
+
   return (
     <div className={styles.actionButtons}>
-
-      <IconButton
-        tooltip="Like photo"
-        tooltipPosition="top-left"
-        style={_like}
-        onClick={props.actions.handleLike}>
-        <i class={styles.materialIcons}>thumb_up</i>
-      </IconButton>
-
-      <IconButton
-        tooltip="Tag photo"
-        tooltipPosition="top-left"
-        onClick={props.handleTagInputState}>
-        <i class={styles.materialIcons}>local_offer</i>
-      </IconButton>
-
-      <IconButton
-        tooltip="Add to album"
-        tooltipPosition="top-left"
-        onClick={props.handleAlbumInputState}>
-        <i class={styles.materialIcons}>photo_album</i>
-      </IconButton>
-
-      <IconButton
-        tooltip="Rotate photo"
-        tooltipPosition="top-left"
-        onClick={props.handleRotateInputState}>
-        <i class={styles.materialIcons}>rotate_right</i>
-      </IconButton>
-
-      <IconButton
-        tooltip="Share photo"
-        tooltipPosition="top-left"
-        onClick={props.handleShareInputState}>>
-        <i class={styles.materialIcons}>share</i>
-      </IconButton>
-
-      <IconButton
-        tooltip="Delete photo"
-        tooltipPosition="top-left"
-        onClick={props.actions.handleDelete}>
-        <i class={styles.materialIcons}>delete</i>
-      </IconButton>
+      {_actionButtons}
     </div>
 
-  )
+  );
+}
+
+function ActionButton(props) {
+  if (props.hide) { props.style = { display: 'none' }; };
+
+  return (
+    <div key={props.tooltip}>
+      <IconButton
+        tooltip={props.tooltip}
+        tooltipPosition="top-left"
+        style={props.style || null}
+        data-action={props.dataAction || null}
+        onClick={props.action}>
+        <i class={styles.materialIcons}>{props.icon}</i>
+      </IconButton>
+    </div>
+  );
 }

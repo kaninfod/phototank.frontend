@@ -74,7 +74,6 @@ class App extends React.Component {
           autoHideDuration={this.props.snackBar.get('timeout')}
           onRequestClose={this.handleCloseSnackBar}
         />
-
       </div>
     );
   }

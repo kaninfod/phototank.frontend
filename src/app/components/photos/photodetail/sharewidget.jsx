@@ -14,7 +14,6 @@ export class ShareWidget extends React.Component {
   }
 
   handleShareClick(event) {
-    console.log(event.currentTarget.dataset.url);
     window.open(event.currentTarget.dataset.url, 'name');
   }
 
@@ -23,6 +22,7 @@ export class ShareWidget extends React.Component {
     _facets = _facets.filter(facet => facet.getIn(['instance', 'instance_type']) != 'master');
     const _chips = _facets.map(facet =>
       <Chip
+        key={facet.get('id')}
         data-url={facet.getIn(['instance', 'photo_url'])}
         onClick={this.handleShareClick}
         style={styles.chip}>
@@ -35,27 +35,12 @@ export class ShareWidget extends React.Component {
   }
 
   render () {
-
     if (!this.props.show) { return null; }
 
     return (
       <div className={styles.share}>
-        {/*<ShareChips photo={this.props.photo} handleShareClick={this.handleShareClick}/>*/}
         {this.renderChips()}
       </div>
     );
   }
-}
-
-function ShareChips(props) {
-  let _facets = getFacet('CatalogFacet', props.photo);
-  _facets = _facets.filter(facet => facet.getIn(['instance', 'instance_type']) != 'master');
-  const _chips = _facets.map(facet =>
-    <Chip onClick={props.handleShareClick} style={styles.chip}>
-      <Avatar icon={<i class={styles.materialIcons}>share</i>}/>
-      {facet.getIn(['instance', 'instance_type'])}
-    </Chip>
-  );
-  return _chips;
-
 }

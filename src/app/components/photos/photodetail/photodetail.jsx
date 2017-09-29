@@ -93,8 +93,8 @@ class PhotoDetail extends React.Component {
     if (!this.props.photo) { return null };
 
     const _class = cx(styles.photodetail, styles.photodetailGrid, {
-        [styles.portrait]: this.props.photo.get('portrait'),  //this.state.photo.get('portrait'),
-        [styles.landscape]: !this.props.photo.get('portrait'), //!this.state.photo.get('portrait')
+        [styles.portrait]: this.props.photo.get('portrait'),
+        [styles.landscape]: !this.props.photo.get('portrait'),
       })
 
       const actions = {
@@ -108,8 +108,6 @@ class PhotoDetail extends React.Component {
 
     return (
       <div className={_class}>
-
-
 
         <PhotoWidget photo={this.props.photo}/>
 
