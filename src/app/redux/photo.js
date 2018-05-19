@@ -54,7 +54,6 @@ export function reducer(state=init, action={}) {
     case 'COMMENT_PHOTO_SUCCESS':
     case 'LIKE_PHOTO_SUCCESS':
     case 'UNLIKE_PHOTO_SUCCESS': {
-      console.log(action.payload);
       return updatePhotoInPhotos(state, action).set('photo', fromJS(action.payload.photo));
     }
 
@@ -81,10 +80,12 @@ export function reducer(state=init, action={}) {
     case 'TOGGLE_PHOTOS_BUCKET_SUCCESS': {
       state = updatePhotoInPhotos(state, action);
 
-      // state = updateBucket(state, fromJS(action));
-      state = state.set('bucket', fromJS(action.payload.photos));
+      state = updateBucket(state, action);
+      // state = state.set('bucket', fromJS(action.payload.photos));
       return state.set('bucketCount', state.get('bucket').size);
     }
+
+
 
     case 'LIKE_PHOTOS_BUCKET_SUCCESS': {
       action.payload.forEach(item => {
@@ -144,7 +145,7 @@ function updatePhotoInPhotos(state, action) {
  */
 function deletePhotoInPhotos(state, action) {
   const photos = state.get('photos').filter(obj =>
-     obj.get('id') != action.getIn(['payload', 'id']) //action.payload.photo_id
+     obj.get('id') != action.getIn(['payload', 'photo', 'id']) //action.payload.photo_id
   );
   return state.set('photos', photos);
 }
@@ -172,14 +173,13 @@ export function filterFacets(state, facetType) {
  * the bucket array in state.
  */
 function updateBucket(state, action) {
-  const facet = getFacet('BucketFacet', action.getIn(['payload', 'photo'], []));
-
+  const facet = getFacet('BucketFacet', fromJS(action.payload.photo));
   let bucket = [];
   if (!!facet) {
-    bucket = state.get('bucket').push(action.getIn(['payload', 'photo']));
+    bucket = state.get('bucket').push(fromJS(action.payload.photo));
   } else {
-    bucket = state.get('bucket').filter(
-      photo => photo.get('id') !== action.getIn(['payload', 'photo', 'id'])
+    bucket = state.get('bucket').filter(photo =>
+      photo.get('id') !== action.payload.photo.id
     );
   }
 
@@ -389,6 +389,26 @@ export function togglePhotosBucket(photoId) {
   return {
     isAPI: true,
     type: 'TOGGLE_PHOTOS_BUCKET',
+    url: '/api/photos/'.concat(photoId, '/bucket/toggle'),
+    httpVerb: requestTypes.POST,
+    params: null,
+  };
+}
+
+export function addPhotosBucket(photoId) {
+  return {
+    isAPI: true,
+    type: 'ADD_PHOTOS_BUCKET',
+    url: '/api/photos/'.concat(photoId, '/bucket/toggle'),
+    httpVerb: requestTypes.POST,
+    params: null,
+  };
+}
+
+export function removePhotosBucket(photoId) {
+  return {
+    isAPI: true,
+    type: 'REMOVE_PHOTOS_BUCKET',
     url: '/api/photos/'.concat(photoId, '/bucket/toggle'),
     httpVerb: requestTypes.POST,
     params: null,

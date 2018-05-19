@@ -13,4 +13,32 @@
   justify-content: center;
   background-color: $primary;
   padding-top: 1em;
+  padding-bottom: 1em;
+  visibility: visible;
+  opacity: 1;
+  transition: visibility 2220ms linear 2220ms, height 2300ms;
+}
+
+.photogrid.hide {
+  visibility: hidden;
+  height: 0;
+}
+
+.photogridSection {
+  display: flex;
+  flex-direction: column;
+}
+
+.gridHeading {
+  font-family: swansea;
+  border-bottom: 4px solid $secondaryLight;
+  cursor: pointer;
+  display: flex;
+  justify-content: flex-end;
+  margin-right: 7px;
+  align-items: center;
+
+  i {
+    pointer-events: none;
+  }
 }

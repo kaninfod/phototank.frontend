@@ -1,17 +1,24 @@
-var webpack = require('webpack');
-var path = require('path');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
+const webpack = require('webpack');
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
-var BUILD_DIR = path.resolve(__dirname, 'public');
-var APP_DIR = path.resolve(__dirname, 'src/app');
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
+
+const CleanWebpackPlugin = require('clean-webpack-plugin');
+
+const BUILD_DIR = path.resolve(__dirname, 'public');
+const APP_DIR = path.resolve(__dirname, 'src/app');
 
 var config = {
   resolve: {
-    extensions: ['.js', '.jsx', '.scss'],
-    modules: ['src', 'node_modules', 'fonts'],
+    extensions: ['.js', '.jsx', '.scss', '.css'],
+    modules: ['src', 'node_modules'],
+    alias: {
+      Fonts: path.resolve(__dirname, 'src/fonts/'),
+    },
   },
-  entry: {
+    entry: {
     main: APP_DIR + '/index.jsx',
   },
   output: {
@@ -20,7 +27,7 @@ var config = {
     filename: '[name].[chunkhash].js',
   },
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.jsx?/,
         loader: 'babel-loader',
@@ -35,47 +42,56 @@ var config = {
         },
       },
       {
-        test: /\.(eot|svg|ttf|woff|woff2)$/,
-        loader: 'file-loader?name=[name].[ext]'
+        test: /\.woff2$/,
+        include: APP_DIR,
+        use: ["url-loader"],
       },
       {
-        test: /\.(scss|css|sass)$/,
-        include: APP_DIR,
-        loader: ExtractTextPlugin.extract(
-          ['css-loader?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]',
-           'sass-loader',
-          ]
-        ),
+        test: /\.scss$/,
+        use:  [  
+          MiniCssExtractPlugin.loader,
+          { loader: 'css-loader', options: { importLoaders: 1, modules: true } },
+          'resolve-url-loader',
+          { loader: 'sass-loader', options: { sourceMap: true } }
+        ]
       },
     ],
   },
   devtool: '#inline-source-map',
   plugins: [
-    // new webpack.DefinePlugin({
-    //   'process.env.NODE_ENV': process.env.NODE_ENV,
-    // }),
+    
+    new CleanWebpackPlugin('public', {} ),
+
     new webpack.ProvidePlugin({
       Promise: 'es6-promise',
       fetch: 'imports-loader?this=>global!exports-loader?global.fetch!whatwg-fetch',
     }),
-    new ExtractTextPlugin('[name].[chunkhash].css'),
-    // new webpack.ProvidePlugin({
-    //     $: 'jquery',
-    //     jQuery: 'jquery',
-    //   }),
+
+    new MiniCssExtractPlugin({
+      filename: 'style.[contenthash].css',
+    }),
+
     new HtmlWebpackPlugin({
       title: 'PhotoTank',
       template: 'src/app/html-template.ejs',
       filename: 'index.html',
     }),
-    // new webpack.DefinePlugin({
-    //   'process.env': {
-    //     'NODE_ENV': JSON.stringify('production'),
-    //   },
-    // }),
-    // new webpack.optimize.UglifyJsPlugin(),
-    // new webpack.optimize.AggressiveMergingPlugin(),
+
+    new webpack.optimize.AggressiveMergingPlugin(),
   ],
+
+  optimization: {
+    minimizer: [
+      new UglifyJSPlugin({
+        uglifyOptions: {
+          compress: {
+            drop_console: true,
+          }
+        }
+      })
+    ]
+  },
+
   devServer: {
     contentBase: path.resolve(__dirname, 'src'),
     proxy: {

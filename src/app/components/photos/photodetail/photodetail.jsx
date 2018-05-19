@@ -1,4 +1,5 @@
 import React from 'react';
+import ConfirmDelete from '../confirmDelete'
 import { connect } from "react-redux";
 import { getPhoto } from '../../../redux/photo';
 import { InfoWidget } from './infowidget';
@@ -39,11 +40,12 @@ class PhotoDetail extends React.Component {
     this.photoAlbumAdd = this.photoAlbumAdd.bind(this)
     this.photoRotate = this.photoRotate.bind(this)
     this.photoLike = this.photoLike.bind(this)
+    this.confirmDelete = this.confirmDelete.bind(this)
     this.photoDelete = this.photoDelete.bind(this)
     this.state = {
       photoId: this.props.match.params.id,
       photo: this.props.photo,
-      // photo: getPhoto(this.props.match.params.id, this.props),
+      confirmDeleteOpen: false,
     };
   }
 
@@ -57,6 +59,10 @@ class PhotoDetail extends React.Component {
     this.setState({
       photo: getPhoto(this.state.photoId, nextProps),
     })
+  }
+
+  confirmDelete() {
+    this.setState({ confirmDeleteOpen: true, });
   }
 
   photoDelete() {
@@ -103,7 +109,7 @@ class PhotoDetail extends React.Component {
         handleRemoveTag: this.photoRemoveTag,
         handleRotate: this.photoRotate,
         handleAlbumAdd: this.photoAlbumAdd,
-        handleDelete: this.photoDelete,
+        handleDelete: this.confirmDelete,
       }
 
     return (
@@ -123,6 +129,11 @@ class PhotoDetail extends React.Component {
           taglist={this.props.taglist}
           albums={this.props.albums}
           />
+
+          <ConfirmDelete
+            open={this.state.confirmDeleteOpen}
+            id={this.props.photo.get('id')}
+            handleDelete={this.photoDelete} />
 
       </div>
     );

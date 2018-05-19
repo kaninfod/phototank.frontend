@@ -22,27 +22,37 @@ export function InfoWidget(props) {
             <div className={styles.cell}>{_data.get('make').concat(' ', _data.get('model'))}</div>
           </div>
 
-          <div className={styles.row}>
-            <div className={styles.cell}>Country:</div>
-            <div className={styles.cell}>{_location.get('country_name')}</div>
-          </div>
-
-          <div className={styles.row}>
-            <div className={styles.cell}>City:</div>
-            <div className={styles.cell}>{_location.get('city_name')}</div>
-          </div>
-
-          <div className={styles.row}>
-            <div className={styles.cell}>Adderss:</div>
-            <div className={styles.cell}>{_location.get('address')}</div>
-          </div>
+          { location(_location)}
 
           <div className={styles.row}>
             <div className={styles.cell}>Id:</div>
             <div className={styles.cell}>{_data.get('id')}</div>
           </div>
-        </div>  
+        </div>
       </div>
     </div>
   );
+}
+
+function location(props) {
+
+  if (props == null) return null
+  return (
+    <div  >
+      <div className={styles.row}>
+        <div className={styles.cell}>Country:</div>
+        <div className={styles.cell}>{props.get('country_name')}</div>
+      </div>
+
+      <div className={styles.row}>
+        <div className={styles.cell}>City:</div>
+        <div className={styles.cell}>{props.get('city_name')}</div>
+      </div>
+
+      <div className={styles.row}>
+        <div className={styles.cell}>Adderss:</div>
+        <div className={styles.cell}>{props.get('address')}</div>
+      </div>
+    </div>
+  )
 }

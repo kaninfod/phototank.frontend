@@ -6,6 +6,8 @@ import Zoombox from './photogrid/zoombox';
 import { fetchCities, fetchCountries } from '../../redux/location';
 import {
   togglePhotosBucket,
+  addPhotosBucket,
+  removePhotosBucket,
   fetchPhotos,
   deletePhoto,
   fetchBucket ,
@@ -73,7 +75,7 @@ class Photos extends React.Component {
     }
   }
 
-  componentWillReceiveProps(nextProps, nextContext) {
+    componentWillReceiveProps(nextProps, nextContext) {
     if (nextProps.initialLoad && nextProps.photos.size > 0) {
       this.props.dispatch({type: 'TOGGLE_INITIAL_LOAD'});
       this.props.dispatch(fetchBucket());
@@ -126,12 +128,12 @@ class Photos extends React.Component {
     var searchParams = this.state.searchParams
 
     const photoActions = {
-      DELETE:     this.deletePhoto.bind(this),
-      TOGGLE:     this.toggleBucketPhoto.bind(this),
-      CLICK:      this.handleClick.bind(this),
-      ZOOM:       this.showZoombox.bind(this),
-      SCROLL:     this.handleInfiniteScroll.bind(this),
-      LIKE:       this.likePhoto.bind(this),
+      DELETE:         this.deletePhoto.bind(this),
+      TOGGLE:         this.toggleBucketPhoto.bind(this),
+      CLICK:          this.handleClick.bind(this),
+      ZOOM:           this.showZoombox.bind(this),
+      SCROLL:         this.handleInfiniteScroll.bind(this),
+      LIKE:           this.likePhoto.bind(this),
     }
 
     return (
@@ -174,10 +176,17 @@ class Photos extends React.Component {
    **/
     //Photo
     toggleBucketPhoto(photoId, state) {
+      let _message = '';
+      if (state) {
+        _message = 'You selected a photo';
+      } else {
+        _message = 'You unselected a photo';
+      }
+
       this.props.dispatch(togglePhotosBucket(photoId))
       const payload = {
         type: 'SHOW_MESSAGE',
-        message: state ? 'You selected a photo' : 'You unselected a photo',
+        message: _message,
         timeout: 1500,
       }
       this.props.dispatch(payload)

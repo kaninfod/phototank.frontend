@@ -1,5 +1,5 @@
 import React from 'react';
-import createReactClass from 'create-react-class';
+// import createReactClass from 'create-react-class';
 import styles from '../../stylesheets/card';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
@@ -162,7 +162,8 @@ class NewCatalog extends React.Component {
 export default withRouter(NewCatalog);
 
 
-const StepOne = createReactClass({
+// const StepOne = createReactClass({
+class StepOne extends React.Component {  
   render () {
     if (!this.props.show) { return null }
     return (
@@ -197,7 +198,7 @@ const StepOne = createReactClass({
       </div>
     )
   }
-})
+}
 
 // const StepTwo = createReactClass({
 function StepTwo(props) {

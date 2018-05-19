@@ -48,8 +48,8 @@ class Bucket extends React.Component {
   }
 
   bucketClear() {
-    console.log('imma gonna clear the bucket');
-    this.props.dispatch(clearBucket())
+    this.props.dispatch(clearBucket());
+    this.props.history.push('/photos');
   }
 
   photoDelete() {
@@ -66,22 +66,28 @@ class Bucket extends React.Component {
   }
 
   photoAddComment(payload) {
+    payload.photoId = 'bucket';
     this.props.dispatch(commentPhoto(payload))
   }
 
-  photoAlbumAdd(payload) {
+  photoAlbumAdd(albumId) {
+    const payload = { albumId: albumId, photoId: 'bucket' };
     this.props.dispatch(photoAlbumAdd(payload))
   }
 
   photoAddTag(payload) {
+    payload.photoId = 'bucket';
     this.props.dispatch(addTagPhoto(payload))
   }
 
   photoRemoveTag(payload) {
+    payload.photoId = 'bucket';
     this.props.dispatch(removeTagPhoto(payload))
   }
 
   photoRotate(payload) {
+    payload.photoId = 'bucket';
+    console.log(payload);
     this.props.dispatch(rotatePhoto(payload));
   }
 
